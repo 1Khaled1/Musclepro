@@ -50,6 +50,16 @@ export function tn(base: string, n: number): string {
   return t(`${base}.${form}` as MessageKey, { n: formatNumber(n) });
 }
 
+/** Effort target: "RPE 7", "82% 1RM", "90–102% 1RM" (localized numbers). */
+export function effortLabel(x: { rpe?: number; pct?: number | [number, number] }): string {
+  if (x.pct !== undefined) {
+    const pct = (v: number) => new Intl.NumberFormat(current, { style: 'percent', maximumFractionDigits: 1 }).format(v / 100);
+    const num = (v: number) => new Intl.NumberFormat(current, { maximumFractionDigits: 1 }).format(v);
+    return `${Array.isArray(x.pct) ? `${num(x.pct[0])}–${pct(x.pct[1])}` : pct(x.pct)} 1RM`;
+  }
+  return x.rpe !== undefined ? `RPE ${formatNumber(x.rpe)}` : '';
+}
+
 /** Translate a dynamic key (API error codes, enum values). */
 export function tk(prefix: string, value: string, fallback?: MessageKey): string {
   const key = `${prefix}.${value}` as MessageKey;

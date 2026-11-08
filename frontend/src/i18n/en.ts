@@ -85,7 +85,7 @@ export const en = {
   'equip.machine': 'Machine',
   'equip.band': 'Band',
 
-  // 3D body
+  // Body map
   'body.male': 'Male',
   'body.female': 'Female',
   'body.front': 'Front',
@@ -93,12 +93,6 @@ export const en = {
   'body.hint': 'Tap a muscle to see its exercises',
   'body.showBack': 'Show the back of the body',
   'body.showFront': 'Show the front of the body',
-  'body.mode': 'Display',
-  'body.hint3d': 'Drag to rotate · pinch to zoom · tap a muscle',
-  'body.loading3d': 'Loading 3D anatomy…',
-  'body.error3d': '3D view is unavailable on this device. Switch back to 2D.',
-  'body.maleModel': '3D reference model: male anatomy',
-  'body.credit3d': '3D anatomy: BodyParts3D (DBCLS) & Z-Anatomy —',
   'body.view': 'View',
   'body.model': 'Body model',
 
@@ -172,6 +166,13 @@ export const en = {
   'prog.leave': 'Stop following',
   'prog.progress': '{done} of {total} sessions done',
   'prog.week': 'Week',
+  'prog.weekN': 'Week {n}',
+  'prog.weeksRange': 'Weeks {a}–{b}',
+  'prog.phaseOf': 'Phase {n} of {total}',
+  'prog.deload': 'Deload',
+  'prog.structure': 'Program structure',
+  'prog.effort': 'Effort',
+  'prog.effortHelp': 'RPE = how hard the set feels out of 10 (RPE 7 ≈ 3 reps left in reserve, RPE 9 ≈ 1). % 1RM = share of your one-rep max. — = maximal intent or a timed hold.',
   'prog.startDay': 'Start session',
   'prog.loginToEnroll': 'Sign in to follow this program and tick off sessions.',
   'prog.exercise': 'Exercise',
@@ -287,7 +288,7 @@ export const en = {
   'profile.training': 'Training preferences',
   'profile.goal': 'Main goal',
   'profile.unit': 'Default unit',
-  'profile.body': '3D body model',
+  'profile.body': 'Body model',
   'profile.language': 'Language',
   'profile.saved': 'Profile saved',
   'profile.security': 'Security',
@@ -359,6 +360,7 @@ export const en = {
   'nf.lead': 'We could not find what you were looking for.',
   'nf.home': 'Back to the body map',
   'foot.tagline': 'MusclePro — train smart, from first rep to podium.',
+  'foot.devBy': 'Developed by',
   'foot.disclaimer': 'Check with a health professional before starting a new training program.',
 } as const;
 

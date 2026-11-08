@@ -81,6 +81,22 @@ def get_program(program_id: str) -> dict | None:
     return next((p for p in programs() if p["id"] == program_id), None)
 
 
+def program_summary(program: dict) -> dict:
+    """A program without its week-by-week plan (for lists)."""
+    return {k: v for k, v in program.items() if k != "plan"}
+
+
+def program_exercise_ids(program: dict) -> set[str]:
+    return {x["id"] for week in program["plan"] for d in week["days"] for x in d["exercises"]}
+
+
+def program_day(program: dict, week: int, day_id: str) -> dict | None:
+    """The session `day_id` of `week` (1-based), if the plan has it."""
+    if not 1 <= week <= len(program["plan"]):
+        return None
+    return next((d for d in program["plan"][week - 1]["days"] if d["id"] == day_id), None)
+
+
 def filter_exercises(
     muscle: str | None = None,
     equipment: str | None = None,

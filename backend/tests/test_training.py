@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 
-from app.catalog import exercise_index, generate_workout, programs
+from app.catalog import exercise_index, generate_workout, program_exercise_ids, programs
 from app.routes.workouts import compute_stats
 
 from .conftest import register
@@ -10,9 +10,8 @@ def test_catalog_integrity():
     index = exercise_index()
     assert len(index) >= 60
     for p in programs():
-        for day in p["days"]:
-            for item in day["exercises"]:
-                assert item["id"] in index, (p["id"], item["id"])
+        for ex_id in program_exercise_ids(p):
+            assert ex_id in index, (p["id"], ex_id)
     for e in index.values():
         assert e["name"]["en"] and e["name"]["fr"]
         assert len(e["steps"]["en"]) == len(e["steps"]["fr"])
@@ -187,3 +186,42 @@ def test_replayed_workout_is_saved_once(api):
     assert api.get("/api/workouts").json["total"] == 2
     for bad in ("short", "Z" * 32, 42, "../" + "a" * 29):
         assert api.post("/api/workouts", json=_workout(client_id=bad)).json["error"] == "client_id_invalid"
+
+
+def test_programs_are_periodized():
+    """Every week is its own session plan: no two consecutive weeks are the
+    same, phases change exercises, and each week has every training day."""
+    index = exercise_index()
+    for p in programs():
+        plan = p["plan"]
+        assert len(plan) == p["weeks"], p["id"]
+        day_ids = [d["id"] for d in plan[0]["days"]]
+        assert len(day_ids) == p["days_per_week"], p["id"]
+        for week in plan:
+            assert [d["id"] for d in week["days"]] == day_ids
+            assert week["note"]["en"] and week["note"]["fr"]
+            for day in week["days"]:
+                for x in day["exercises"]:
+                    assert index[x["id"]]["equipment"] in p["equipment"], (p["id"], x["id"])
+                    assert x["sets"] >= 1 and x["reps"] and x["rest"] > 0
+        for a, b in zip(plan, plan[1:]):
+            assert a["days"] != b["days"], (p["id"], a["week"])
+        # More than one phase, and the exercise selection changes at least once.
+        selections = {tuple(x["id"] for d in w["days"] for x in d["exercises"]) for w in plan}
+        assert len(p["phases"]) >= 2 and len(selections) >= 2, p["id"]
+
+
+def test_program_list_is_light_and_detail_has_plan(api):
+    listed = api.get("/api/programs").json["programs"]
+    assert listed and all("plan" not in p and p["phases"] for p in listed)
+    detail = api.get("/api/programs/peak-strength-block").json["program"]
+    loads = [w["days"][0]["exercises"][0]["pct"] for w in detail["plan"]]
+    assert loads == [82, 86, 90, [90, 102]]
+
+
+def test_workout_day_must_exist_in_that_week(api):
+    register(api)
+    ok = api.post("/api/workouts", json=_workout(program_id="push-pull-legs", day_id="legs-b", week=5))
+    assert ok.status_code == 201
+    bad_week = api.post("/api/workouts", json=_workout(program_id="peak-strength-block", day_id="squat", week=9))
+    assert bad_week.json["error"] == "program_invalid"

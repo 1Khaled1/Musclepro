@@ -2,7 +2,7 @@ import { api } from '../api';
 import { formatNumber, t } from '../i18n';
 import { navigate, type View } from '../router';
 import { store } from '../store';
-import { EQUIPMENT, MUSCLES, type Equipment, type Exercise, type Muscle, type Program, type Stats } from '../types';
+import { EQUIPMENT, MUSCLES, type Equipment, type Exercise, type Muscle, type ProgramSummary, type Stats } from '../types';
 import { bestView, mountBody, type BodyViewer } from '../ui/bodyViewer';
 import { bindFavorites, exerciseTile, programCard } from '../ui/components';
 import { glass, html, qs, raw } from '../ui/dom';
@@ -25,7 +25,7 @@ export const homeView: View = async (root, ctx) => {
   const initial = MUSCLES.includes(ctx.query.get('muscle') as Muscle) ? (ctx.query.get('muscle') as Muscle) : null;
   let selected: Muscle | null = initial;
   let exercises: Exercise[] = [];
-  let programs: Program[] = [];
+  let programs: ProgramSummary[] = [];
   let stats: Stats | null = null;
   let equipment: Equipment | '' = savedEquipment();
 
@@ -177,7 +177,7 @@ export const homeView: View = async (root, ctx) => {
   // One program per tier, matched to the athlete's level when signed in.
   const pick = ['beginner', 'intermediate', 'pro']
     .map((lvl) => programs.find((p) => p.level === lvl))
-    .filter((p): p is Program => !!p);
+    .filter((p): p is ProgramSummary => !!p);
   qs('#home-programs', root).innerHTML = pick.map((p, i) => programCard(p, i * 70)).join('');
 
   const genCard = glass(

@@ -8,6 +8,13 @@ import { esc, glass, html, initials, qs, raw } from './dom';
 import { icon } from './icons';
 import { toast, toastError } from './toast';
 
+/** Signature shown in the footer and the menu. */
+const AUTHORS = ['Khaled Bel Hedi', 'Coach Khalil Haded'] as const;
+
+function signature(cls = ''): string {
+  return html`<p class="signature ${cls}">${t('foot.devBy')} <strong>${AUTHORS[0]}</strong> &amp; <strong>${AUTHORS[1]}</strong></p>`;
+}
+
 let currentPath = '/';
 let drawerOpen = false;
 let lastFocus: HTMLElement | null = null;
@@ -146,6 +153,7 @@ function renderDrawer(): void {
           <input type="checkbox" data-action="theme-switch" ${raw(getTheme() === 'dark' ? 'checked' : '')} />
           <span class="track" aria-hidden="true"></span>
         </label>
+        ${raw(signature('drawer-sign'))}
       </div>
     `,
     { tag: 'div', cls: 'no-enter' },
@@ -156,7 +164,7 @@ function renderDrawer(): void {
 }
 
 function renderFooter(): void {
-  qs('#foot').innerHTML = html`<span>${t('foot.tagline')}</span><span>${t('foot.disclaimer')}</span>`;
+  qs('#foot').innerHTML = html`<span>${t('foot.tagline')}</span><span>${t('foot.disclaimer')}</span>${raw(signature())}`;
 }
 
 function setBackgroundInert(inert: boolean): void {

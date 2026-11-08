@@ -2,7 +2,7 @@
 import { loc, t } from '../i18n';
 import { navigate } from '../router';
 import { store } from '../store';
-import type { Exercise, Level, Program } from '../types';
+import type { Exercise, Level, ProgramSummary } from '../types';
 import { glass, html, raw } from './dom';
 import { icon } from './icons';
 
@@ -34,7 +34,7 @@ export function levelBar(level: Level): string {
   return `<span class="level-bar" aria-hidden="true">${[1, 2, 3, 4].map((i) => `<i class="${i <= n ? 'on' : ''}"></i>`).join('')}</span>`;
 }
 
-export function programCard(p: Program, delay = 0): string {
+export function programCard(p: ProgramSummary, delay = 0): string {
   const mine = store.user && (store.user.level === p.level);
   return glass(
     html`

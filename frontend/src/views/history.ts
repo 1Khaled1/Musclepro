@@ -203,7 +203,7 @@ export const historyView: View = async (root, ctx) => {
 
   bindChart(root, stats.weekly);
 
-  // 3D heat map: sequential single hue, intensity = sets in the last 7 days.
+  // Heat map: sequential single hue, intensity = sets in the last 7 days.
   const levels: Partial<Record<Muscle, number>> = {};
   for (const [m, sets] of Object.entries(stats.muscle_sets_7d)) {
     levels[m as Muscle] = Math.min(1, 0.2 + (sets ?? 0) / 12);

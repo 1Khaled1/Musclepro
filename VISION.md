@@ -4,6 +4,8 @@
 
 # MusclePro — Product Vision
 
+_By Khaled Bel Hedi & Coach Khalil Haded_
+
 > **Pick a muscle. Master the move.**
 > One training companion that takes anyone from their first rep to the podium —
 > starting from the body itself.
@@ -15,7 +17,7 @@
 Most people who want to get stronger don't know *what* to train, *how* to do
 it safely, or *what to do next week*. MusclePro answers all three, starting from
 the most intuitive interface there is: the human body. Tap a muscle on a
-professional anatomy map (2D or real 3D), get the right exercises with
+professional anatomy map, get the right exercises with
 step-by-step form, follow a program built for your level, and watch your body
 light up as you train it. The same app serves a beginner doing push-ups at home
 and a competitive athlete running a power block — in English and in French.
@@ -49,8 +51,8 @@ anatomy as a flat sticker rather than a living picture of your training.
 ## 4. Product principles
 
 1. **Anatomy first.** The body is the home screen. Every exercise, program and
-   statistic connects back to the muscles it trains — in 2D for speed, in real
-   3D for understanding.
+   statistic connects back to the muscles it trains, on a clear, professional
+   anatomy illustration.
 2. **Form before load.** Every exercise ships with numbered steps and a coach
    tip. We never push volume over technique.
 3. **One app, first rep to podium.** Levels from beginner to pro athlete live
@@ -62,19 +64,19 @@ anatomy as a flat sticker rather than a living picture of your training.
 6. **Trust and privacy.** Strong security by default, data export (CSV) and
    one-tap account deletion. We never sell personal or training data.
 7. **Free to start, light to run.** Runs on free hosting tiers; heavy assets
-   (the 3D model) load only when asked for.
+   load only when asked for.
 
 ## 5. Where we are today (v1)
 
 Shipped and running:
 
-- **Muscle map** — professional 2D anatomy illustrations (male/female,
-  front/back, dark/light) and a real 3D anatomical model (BodyParts3D +
-  Z-Anatomy, 467 muscle structures and skeleton) mapped to 14 training groups.
+- **Muscle map** — professional anatomy illustrations (male/female,
+  front/back, dark/light) mapped to 14 training groups.
 - **67 exercises** with step-by-step form and coach tips, in EN/FR.
 - **6 programs** from beginner to pro: Foundation Full Body, Home Bodyweight
   Starter, Upper/Lower Strength, Push·Pull·Legs, Athlete Power & Speed, Peak
-  Strength Block.
+  Strength Block — periodized week by week with Coach Khalil Haded: phases,
+  weekly sets × reps × effort (RPE or % 1RM) and deload weeks.
 - **Workout generator** — goal × level × time × equipment × muscles.
 - **Workout logger** — per-set kg/lbs, rest timer, autosaved drafts.
 - **Progress** — streaks, weekly volume, estimated 1RM records, weekly muscle
@@ -89,8 +91,8 @@ Shipped and running:
 ### Now — make v1 excellent (next 3 months)
 
 - **Go live** on Render with Firebase, monitoring and backups.
-- **Exercise media** — short looping form clips or posed 3D demonstrations for
-  every exercise, starting with the 20 most used.
+- **Exercise media** — short looping form clips for every exercise, starting
+  with the 20 most used.
 - **150+ exercises**, including mobility, stretching and rehab-friendly
   variations.
 - ~~**Installable app (PWA)**~~ — **shipped**: home-screen install, offline
@@ -103,7 +105,7 @@ Shipped and running:
 
 - **Smart progression** — suggest next session's loads and reps from what was
   actually logged (RPE, missed reps, deloads).
-- **Recovery map** — the 3D body shows which muscles are fresh or fatigued based
+- **Recovery map** — the body map shows which muscles are fresh or fatigued based
   on recent training, and the generator respects it.
 - **Coach mode** — coaches assign programs, athletes train, coaches review logs
   and records; the coach role already exists in the data model.
@@ -141,13 +143,13 @@ Shipped and running:
 | People progress | Users who move up a level (beginner → intermediate…) | 20 % within 6 months |
 | Athletes trust it | Pro-level users logging 3+ sessions a week | 70 % of pro accounts |
 | It feels great | Satisfaction score (NPS) | ≥ 50 |
-| It stays fast | Mobile page load (LCP), 2D map interactive | < 2.5 s; 3D model < 3 MB |
+| It stays fast | Mobile page load (LCP), muscle map interactive | < 2.5 s |
 
 These are targets to aim for, not current results.
 
 ## 9. Business model (hypothesis to validate)
 
-- **Free** — muscle map (2D and 3D), exercise library, programs, logging and
+- **Free** — muscle map, exercise library, programs, logging and
   progress. The core must stay free.
 - **MusclePro Plus** — smart progression, recovery map, unlimited custom
   programs, advanced analytics.
@@ -160,37 +162,33 @@ These are targets to aim for, not current results.
   secure and cheap to run.
 - Firebase Realtime Database for user data now; revisit (Firestore or
   PostgreSQL) when we need richer queries for coaches and teams.
-- **Anatomy as a platform** — one muscle taxonomy shared by the 2D map, the 3D
-  model, exercises, programs and analytics, so every new feature lights up the
-  body for free.
-- Performance budgets are features: lazy-load heavy assets, render 3D on
-  demand, respect reduced-motion and low-power devices.
+- **Anatomy as a platform** — one muscle taxonomy shared by the body map,
+  exercises, programs and analytics, so every new feature lights up the body
+  for free.
+- Performance budgets are features: lazy-load heavy assets, respect
+  reduced-motion and low-power devices.
 - Security stays non-negotiable: strict CSP, hashed passwords, revocable
   sessions, rate limits, and a security scan in CI before launch.
 
 ## 11. Risks and open questions
 
-- **Content depth vs. speed** — exercise media is costly to produce; posed 3D
-  demonstrations may scale better than filmed video.
-- **3D on low-end phones** — keep 2D as the default and 3D as an opt-in.
+- **Content depth vs. speed** — exercise media is costly to produce; short
+  illustrated loops may scale better than filmed video.
 - **Free-tier limits** — Render's free plan sleeps when idle; plan the move to
   a paid instance before public launch.
-- **Licensing** — the 3D model is CC BY-SA: attribution must stay visible, and
-  changes to the model file must remain under the same licence.
-- **Female 3D anatomy** — the open 3D dataset is male; a female model is
-  needed for parity with the 2D map.
+- **Licensing** — the anatomy illustrations are MIT-licensed: keep the
+  licence file with them.
 
 ---
 
 ## Résumé en français
 
 **MusclePro : choisissez un muscle, maîtrisez le geste.** Une application
-d'entraînement qui part du corps humain — carte musculaire professionnelle en
-2D et modèle anatomique réel en 3D — pour guider chacun, du débutant à
+d'entraînement qui part du corps humain — une carte musculaire
+professionnelle — pour guider chacun, du débutant à
 l'athlète de haut niveau : exercices détaillés étape par étape, programmes
-adaptés au niveau, générateur de séances et suivi des progrès, en français et
+périodisés semaine par semaine avec le coach Khalil Haded, générateur de séances et suivi des progrès, en français et
 en anglais. Nos principes : l'anatomie d'abord, la technique avant la charge,
 un design premium sans publicité pendant l'entraînement, et le respect de la
-vie privée. Prochaines étapes : mise en production, vidéos ou démonstrations
-3D des exercices, progression intelligente, carte de récupération musculaire
+vie privée. Prochaines étapes : mise en production, vidéos des exercices, progression intelligente, carte de récupération musculaire
 et mode coach.

@@ -162,7 +162,7 @@ export function startDraft(
     ...meta,
     items: items.map((p) => ({
       id: p.id,
-      target: { sets: p.sets, reps: p.reps, rest: p.rest },
+      target: { sets: p.sets, reps: p.reps, rest: p.rest, rpe: p.rpe, pct: p.pct },
       sets: setsFor(p, store.unit),
     })),
   };

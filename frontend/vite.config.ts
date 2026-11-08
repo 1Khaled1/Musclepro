@@ -12,7 +12,7 @@ function serviceWorker(): Plugin {
     generateBundle(_options, bundle) {
       const files = Object.keys(bundle)
         .filter((f) => /\.(js|css)$/.test(f) || /-latin-(wght|500)-normal-.*\.woff2$/.test(f))
-        .filter((f) => !/three-|Anatomy3D-|AuraBackdrop-/.test(f))
+        .filter((f) => !/three-|AuraBackdrop-/.test(f))
         .map((f) => `/${f}`);
       const precache = [
         '/',

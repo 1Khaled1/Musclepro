@@ -4,7 +4,7 @@
  *
  *  - App shell (HTML, JS, CSS, core fonts, icons): precached → opens offline.
  *  - Pages: network first, cached shell as fallback (the SPA routes itself).
- *  - Hashed assets, anatomy art, 3D model: cache first (immutable content).
+ *  - Hashed assets and anatomy art: cache first (immutable content).
  *  - Exercise / program catalog API: stale-while-revalidate → library works offline.
  *  - Everything else (auth, user data, writes): network only, never cached.
  */
@@ -76,7 +76,7 @@ self.addEventListener('fetch', (event) => {
     // Logo, icons, manifest, theme script: the shell cache is rebuilt on
     // every deploy, so serving it first never goes stale.
     event.respondWith(cacheFirst(request, SHELL));
-  } else if (url.pathname.startsWith('/assets/') || url.pathname.startsWith('/anatomy/') || url.pathname.startsWith('/models/')) {
+  } else if (url.pathname.startsWith('/assets/') || url.pathname.startsWith('/anatomy/')) {
     event.respondWith(cacheFirst(request, url.pathname.startsWith('/assets/') ? SHELL : RUNTIME));
   } else if (CATALOG_PATHS.some((p) => url.pathname === p || url.pathname.startsWith(`${p}/`))) {
     event.respondWith(staleWhileRevalidate(request));

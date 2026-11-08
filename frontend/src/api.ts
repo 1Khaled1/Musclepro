@@ -4,6 +4,7 @@ import type {
   Exercise,
   GeneratedWorkout,
   Program,
+  ProgramSummary,
   Stats,
   User,
   Workout,
@@ -89,7 +90,7 @@ export const api = {
         `/api/exercises/${encodeURIComponent(id)}`,
       ),
     ),
-  programs: () => cached('programs', async () => (await get<{ programs: Program[] }>('/api/programs')).programs),
+  programs: () => cached('programs', async () => (await get<{ programs: ProgramSummary[] }>('/api/programs')).programs),
   program: (id: string) =>
     cached(`program:${id}`, async () => (await get<{ program: Program }>(`/api/programs/${encodeURIComponent(id)}`)).program),
   generate: (params: Record<string, unknown>) => post<GeneratedWorkout>('/api/generate', params),

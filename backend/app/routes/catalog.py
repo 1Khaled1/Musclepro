@@ -11,6 +11,8 @@ from ..catalog import (
     generate_workout,
     get_exercise,
     get_program,
+    program_exercise_ids,
+    program_summary,
     programs,
 )
 from ..security import ApiError
@@ -48,7 +50,7 @@ def exercise_detail(exercise_id: str):
     used_in = [
         {"id": p["id"], "name": p["name"], "level": p["level"]}
         for p in programs()
-        if any(x["id"] == exercise_id for d in p["days"] for x in d["exercises"])
+        if exercise_id in program_exercise_ids(p)
     ]
     return {"exercise": ex, "related": related, "programs": used_in}
 
@@ -56,7 +58,7 @@ def exercise_detail(exercise_id: str):
 @bp.get("/programs")
 def list_programs():
     level = request.args.get("level")
-    items = [p for p in programs() if not level or p["level"] == level]
+    items = [program_summary(p) for p in programs() if not level or p["level"] == level]
     return {"programs": items}
 
 

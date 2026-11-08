@@ -119,52 +119,6 @@
 .body-map.is-interactive .body-figure .mg:focus-visible { outline: 2px solid rgb(var(--accent-rgb) / 0.9); outline-offset: 4px; }
 .body-map.is-interactive .body-figure .mg:focus-visible:not(.is-selected) path { opacity: 0.55; }
 
-/* 3D mode */
-.body-map.is-3d { padding: 0; }
-.body-3d { position: absolute; inset: 0; cursor: grab; touch-action: none; }
-.body-3d:active { cursor: grabbing; }
-.body-3d canvas { width: 100% !important; height: 100% !important; display: block; }
-.body-loading {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  display: grid;
-  place-content: center;
-  justify-items: center;
-  gap: 12px;
-  color: var(--text-2);
-  font-weight: 600;
-  font-size: 0.9rem;
-  text-align: center;
-  padding: 24px;
-}
-.spinner {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  border: 3px solid color-mix(in srgb, currentColor 18%, transparent);
-  border-top-color: var(--accent);
-  animation: spin 0.9s linear infinite;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-.body-note {
-  position: absolute;
-  z-index: 2;
-  top: 12px;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 5px 12px;
-  border-radius: 999px;
-  font-size: 0.76rem;
-  font-weight: 600;
-  color: var(--text-2);
-  background: color-mix(in srgb, var(--bg) 60%, transparent);
-  border: 1px solid var(--line);
-  white-space: nowrap;
-}
-.body-credit { margin: 8px 4px 0; font-size: 0.72rem; color: var(--muted); }
-@media (prefers-reduced-motion: reduce) { .spinner { animation-duration: 3s; } }
-
 /* Flip thumbnail (the other side of the body) */
 .body-thumb {
   position: absolute;
@@ -385,6 +339,31 @@
 
 .day-card .table td:first-child { font-weight: 650; }
 .week-dots { display: flex; flex-wrap: wrap; gap: 6px; }
+.week-dots .chip.is-deload:not(.is-active) { border-style: dashed; }
+.phase-panel { display: grid; gap: 6px; padding: 16px 18px; }
+.phase-panel h3 { font-size: 1.12rem; }
+.phase-panel .muted { font-size: 0.92rem; }
+.week-note { display: flex; gap: 8px; align-items: flex-start; margin-top: 4px; font-size: 0.92rem; color: var(--text); }
+.week-note .icon { flex: none; margin-top: 2px; color: var(--accent); }
+.effort-help { display: flex; gap: 6px; align-items: flex-start; font-size: 0.78rem; line-height: 1.45; }
+.effort-help .icon { flex: none; margin-top: 2px; }
+.phase-list { display: grid; gap: 6px; padding: 0; margin: 0; list-style: none; }
+.phase-link {
+  display: grid;
+  gap: 2px;
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--sg-radius-sm);
+  background: transparent;
+  color: var(--text-2);
+  text-align: left;
+  cursor: pointer;
+}
+.phase-link .num { font-size: 0.74rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
+.phase-link strong { font-size: 0.94rem; color: var(--text); }
+.phase-link:hover { background: rgb(var(--sg-base-color) / 0.06); }
+.phase-link.is-current { border-color: rgb(var(--accent-rgb) / 0.55); background: rgb(var(--accent-rgb) / 0.08); }
 .week-dots span {
   display: grid;
   place-items: center;

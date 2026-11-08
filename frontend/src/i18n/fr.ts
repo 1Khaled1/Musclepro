@@ -87,7 +87,7 @@ export const fr: Record<MessageKey, string> = {
   'equip.machine': 'Machine',
   'equip.band': 'Élastique',
 
-  // 3D body
+  // Body map
   'body.male': 'Homme',
   'body.female': 'Femme',
   'body.front': 'Face',
@@ -95,12 +95,6 @@ export const fr: Record<MessageKey, string> = {
   'body.hint': 'Touchez un muscle pour voir ses exercices',
   'body.showBack': 'Afficher le dos',
   'body.showFront': 'Afficher la face',
-  'body.mode': 'Affichage',
-  'body.hint3d': 'Glissez pour pivoter · pincez pour zoomer · touchez un muscle',
-  'body.loading3d': 'Chargement de l’anatomie 3D…',
-  'body.error3d': 'La vue 3D n’est pas disponible sur cet appareil. Revenez en 2D.',
-  'body.maleModel': 'Modèle 3D de référence : anatomie masculine',
-  'body.credit3d': 'Anatomie 3D : BodyParts3D (DBCLS) et Z-Anatomy —',
   'body.view': 'Vue',
   'body.model': 'Modèle',
 
@@ -174,6 +168,13 @@ export const fr: Record<MessageKey, string> = {
   'prog.leave': 'Arrêter le suivi',
   'prog.progress': '{done} séances sur {total} effectuées',
   'prog.week': 'Semaine',
+  'prog.weekN': 'Semaine {n}',
+  'prog.weeksRange': 'Semaines {a}–{b}',
+  'prog.phaseOf': 'Phase {n} sur {total}',
+  'prog.deload': 'Décharge',
+  'prog.structure': 'Structure du programme',
+  'prog.effort': 'Effort',
+  'prog.effortHelp': 'RPE = difficulté ressentie sur 10 (RPE 7 ≈ 3 répétitions en réserve, RPE 9 ≈ 1). % 1RM = part de votre maximum sur une répétition. — = intention maximale ou gainage chronométré.',
   'prog.startDay': 'Démarrer la séance',
   'prog.loginToEnroll': 'Connectez-vous pour suivre ce programme et cocher vos séances.',
   'prog.exercise': 'Exercice',
@@ -289,7 +290,7 @@ export const fr: Record<MessageKey, string> = {
   'profile.training': "Préférences d'entraînement",
   'profile.goal': 'Objectif principal',
   'profile.unit': 'Unité par défaut',
-  'profile.body': 'Modèle 3D',
+  'profile.body': 'Modèle anatomique',
   'profile.language': 'Langue',
   'profile.saved': 'Profil enregistré',
   'profile.security': 'Sécurité',
@@ -361,5 +362,6 @@ export const fr: Record<MessageKey, string> = {
   'nf.lead': "Nous n'avons pas trouvé ce que vous cherchiez.",
   'nf.home': 'Retour à la carte du corps',
   'foot.tagline': 'MusclePro — entraînez-vous intelligemment, de la première répétition au podium.',
+  'foot.devBy': 'Développé par',
   'foot.disclaimer': "Consultez un professionnel de santé avant de commencer un nouveau programme d'entraînement.",
 };

@@ -1,12 +1,19 @@
 import { api } from '../api';
-import { fmtReps, loc, t } from '../i18n';
+import { effortLabel, fmtReps, loc, t } from '../i18n';
 import { navigate, type View } from '../router';
 import { loadDraft, startDraft, store } from '../store';
-import type { Enrollment, Exercise, Program } from '../types';
+import type { Enrollment, Exercise, Program, ProgramDay } from '../types';
 import { errorBlock, levelBadge, levelBar, loadingBlock } from '../ui/components';
-import { glass, html, qs, raw } from '../ui/dom';
+import { esc, glass, html, qs, raw } from '../ui/dom';
 import { icon } from '../ui/icons';
 import { errorMessage, toast, toastError } from '../ui/toast';
+
+/** "Weeks 1–3" / "Week 4" (phases list consecutive weeks). */
+function weeksLabel(weeks: number[]): string {
+  const a = weeks[0];
+  const b = weeks[weeks.length - 1];
+  return a === b ? t('prog.weekN', { n: a }) : t('prog.weeksRange', { a, b });
+}
 
 export const programView: View = async (root, ctx) => {
   root.innerHTML = loadingBlock(3);
@@ -21,10 +28,14 @@ export const programView: View = async (root, ctx) => {
     return;
   }
   const byId = new Map(exercises.map((e) => [e.id, e]));
-  let week = 1;
+  const isDone = (w: number, dayId: string) => !!enrollment?.completed?.[`w${w}-${dayId}`];
+  const weekDone = (w: number) => program.plan[w - 1].days.every((d) => isDone(w, d.id));
+  // Open on the first week that still has sessions to do.
+  let week = program.plan.find((w) => !weekDone(w.week))?.week ?? 1;
 
-  const completedCount = () => Object.keys(enrollment?.completed ?? {}).length;
-  const total = program.weeks * program.days.length;
+  const completedCount = () =>
+    program.plan.reduce((n, w) => n + w.days.filter((d) => isDone(w.week, d.id)).length, 0);
+  const total = program.plan.reduce((n, w) => n + w.days.length, 0);
 
   const enrollBlock = () => {
     if (!store.user) {
@@ -47,17 +58,32 @@ export const programView: View = async (root, ctx) => {
 
   const weekPicker = () =>
     html`<div class="week-dots" role="group" aria-label="${t('prog.week')}">${raw(
-      Array.from({ length: program.weeks }, (_, i) => i + 1)
-        .map((w) => {
-          const doneAll = program.days.every((d) => enrollment?.completed?.[`w${w}-${d.id}`]);
-          return html`<button type="button" class="chip${w === week ? ' is-active' : ''}" data-week="${w}" aria-pressed="${String(w === week)}"
-            style="min-height:34px;padding:0 12px">${t('prog.week')} ${w}${doneAll ? raw(' ✓') : ''}</button>`;
+      program.plan
+        .map(({ week: w, deload }) => {
+          const label = `${t('prog.week')} ${w}`;
+          return html`<button type="button" class="chip${w === week ? ' is-active' : ''}${deload ? ' is-deload' : ''}" data-week="${w}"
+            aria-pressed="${String(w === week)}" ${raw(deload ? `aria-label="${esc(`${label} — ${t('prog.deload')}`)}"` : '')}
+            style="min-height:34px;padding:0 12px">${label}${weekDone(w) ? raw(' ✓') : ''}</button>`;
         })
         .join(''),
     )}</div>`;
 
-  const dayCard = (day: Program['days'][number], i: number) => {
-    const done = enrollment?.completed?.[`w${week}-${day.id}`];
+  const weekPanel = () => {
+    const wk = program.plan[week - 1];
+    const phase = program.phases[wk.phase];
+    return html`<div class="panel phase-panel">
+      <div class="row between" style="gap:8px">
+        <span class="eyebrow">${t('prog.phaseOf', { n: wk.phase + 1, total: program.phases.length })} · ${weeksLabel(phase.weeks)}</span>
+        ${wk.deload ? raw(html`<span class="badge holo">${icon('repeat', 'icon-sm')} ${t('prog.deload')}</span>`) : ''}
+      </div>
+      <h3>${loc(phase.name)}</h3>
+      <p class="muted">${loc(phase.focus)}</p>
+      <p class="week-note">${icon('bulb', 'icon-sm')}<span><strong>${t('prog.week')} ${week} —</strong> ${loc(wk.note)}</span></p>
+    </div>`;
+  };
+
+  const dayCard = (day: ProgramDay, i: number) => {
+    const done = isDone(week, day.id);
     return glass(
       html`
         <div class="section-title">
@@ -66,13 +92,16 @@ export const programView: View = async (root, ctx) => {
         </div>
         <div class="table-wrap" tabindex="0" role="region" aria-label="${loc(day.name)}">
           <table class="table">
-            <thead><tr><th scope="col">${t('prog.exercise')}</th><th scope="col">${t('prog.setsReps')}</th><th scope="col">${t('prog.rest')}</th></tr></thead>
+            <thead><tr><th scope="col">${t('prog.exercise')}</th><th scope="col">${t('prog.setsReps')}</th><th scope="col">${t('prog.effort')}</th><th scope="col">${t('prog.rest')}</th></tr></thead>
             <tbody>${raw(
               day.exercises
                 .map((x) => {
                   const ex = byId.get(x.id);
+                  const effort = effortLabel(x);
                   return html`<tr><td><a class="link" href="/exercises/${x.id}">${ex ? loc(ex.name) : x.id}</a></td>
-                    <td class="num">${x.sets} × ${fmtReps(x.reps)}</td><td class="num">${x.rest}s</td></tr>`;
+                    <td class="num">${x.sets} × ${fmtReps(x.reps)}</td>
+                    <td class="num">${effort || raw('<span aria-hidden="true">—</span>')}</td>
+                    <td class="num">${x.rest}s</td></tr>`;
                 })
                 .join(''),
             )}</tbody>
@@ -82,6 +111,18 @@ export const programView: View = async (root, ctx) => {
       { cls: 'day-card', delay: i * 60 },
     );
   };
+
+  const structure = () =>
+    html`<ol class="phase-list">${raw(
+      program.phases
+        .map((ph, i) => {
+          const current = program.plan[week - 1].phase === i;
+          return html`<li><button type="button" class="phase-link${current ? ' is-current' : ''}" data-week="${ph.weeks[0]}"
+            ${raw(current ? 'aria-current="step"' : '')}>
+            <span class="num">${weeksLabel(ph.weeks)}</span><strong>${loc(ph.name)}</strong></button></li>`;
+        })
+        .join(''),
+    )}</ol>`;
 
   const render = () => {
     root.innerHTML = html`
@@ -96,8 +137,10 @@ export const programView: View = async (root, ctx) => {
       <div class="detail-grid">
         <div class="stack" id="days">
           <div class="section-title"><h2>${t('prog.schedule')}</h2></div>
-          ${raw(program.weeks > 1 ? weekPicker() : '')}
-          ${raw(program.days.map(dayCard).join(''))}
+          ${raw(weekPicker())}
+          ${raw(weekPanel())}
+          <p class="muted effort-help">${icon('info', 'icon-sm')} ${t('prog.effortHelp')}</p>
+          ${raw(program.plan[week - 1].days.map(dayCard).join(''))}
         </div>
         <div class="stack">
           ${raw(glass(html`
@@ -107,6 +150,9 @@ export const programView: View = async (root, ctx) => {
               <span>${icon('clock', 'icon-sm')}${t('prog.minutes', { n: program.minutes })}</span>
             </div>
             <div id="enroll">${raw(enrollBlock())}</div>`, { delay: 40 }))}
+          ${raw(glass(html`
+            <h3 style="margin-bottom:12px">${t('prog.structure')}</h3>
+            ${raw(structure())}`, { delay: 70 }))}
           ${raw(glass(html`
             <h3 style="margin-bottom:12px">${t('prog.progression')}</h3>
             <ol class="steps">${raw(program.progression.map((p) => html`<li><span>${loc(p)}</span></li>`).join(''))}</ol>`, { delay: 100 }))}
@@ -123,13 +169,14 @@ export const programView: View = async (root, ctx) => {
     if (weekBtn) {
       week = Number(weekBtn.dataset.week);
       render();
+      qs<HTMLElement>(`#days [data-week="${week}"]`, root).focus();
       return;
     }
     const startBtn = el.closest<HTMLElement>('[data-start]');
     if (startBtn) {
-      const day = program.days.find((d) => d.id === startBtn.dataset.start)!;
+      const day = program.plan[week - 1].days.find((d) => d.id === startBtn.dataset.start)!;
       if (loadDraft() && !confirm(t('wo.discardConfirm'))) return;
-      startDraft(`${loc(program.name)} — ${loc(day.name)}`, day.exercises, {
+      startDraft(`${loc(program.name)} — ${t('prog.week')} ${week} · ${loc(day.name)}`, day.exercises, {
         program_id: program.id,
         day_id: day.id,
         week,

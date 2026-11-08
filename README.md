@@ -8,28 +8,28 @@
   <b>Pick a muscle. Master the move.</b><br />
   Interactive muscle map · 67 exercises with step-by-step form · programs from beginner to pro athlete · workout tracker<br />
   <sub>English &amp; Français · Liquid Glass UI · runs on Render's free plan with Firebase</sub><br />
-  <a href="VISION.md"><b>Product vision →</b></a>
+  <a href="VISION.md"><b>Product vision →</b></a><br />
+  <sub>Developed by <b>Khaled Bel Hedi</b> &amp; <b>Coach Khalil Haded</b></sub>
 </p>
 
 <p align="center">
   <img src="docs/screenshots/home-dark.jpg" alt="MusclePro home: muscle map with the chest selected" width="860" />
 </p>
 
-| 3D anatomy | Exercise detail | Light theme · Français | Mobile 2D | Mobile 3D |
-| --- | --- | --- | --- | --- |
-| <img src="docs/screenshots/home-3d.jpg" width="240" alt="3D anatomy model with the quads selected" /> | <img src="docs/screenshots/exercise-dark.jpg" width="240" alt="Exercise page with front and back muscle map" /> | <img src="docs/screenshots/home-light-fr.jpg" width="240" alt="Light theme in French" /> | <img src="docs/screenshots/mobile-map.jpg" width="120" alt="2D muscle map on mobile" /> | <img src="docs/screenshots/mobile-3d.jpg" width="120" alt="3D anatomy on mobile" /> |
+| Program, week by week | Exercise detail | Light theme · Français | Mobile |
+| --- | --- | --- | --- |
+| <img src="docs/screenshots/program-weeks.jpg" width="260" alt="Upper/Lower Strength, week 5: strength block with RPE per exercise" /> | <img src="docs/screenshots/exercise-dark.jpg" width="260" alt="Exercise page with front and back muscle map" /> | <img src="docs/screenshots/home-light-fr.jpg" width="260" alt="Light theme in French" /> | <img src="docs/screenshots/mobile-map.jpg" width="130" alt="Muscle map on mobile" /> |
 
 ---
 
 ## Features
 
 **Train**
-- **Muscle map — 2D and 3D**:
-  - **2D**: professional écorché illustrations (male & female, front & back, dark & light artwork) with 14 tappable muscle groups (mouse, touch or keyboard); the highlight colour blends into the illustration's shading, and a thumbnail flips the body. A **Three.js + GLSL** light field glows behind the figure and travels to the muscle you pick.
-  - **3D**: a real anatomical model built from MRI-based **BodyParts3D** and **Z-Anatomy** data — 467 muscle structures plus the skeleton, grouped into the same 14 training groups. Orbit, zoom, tap a muscle; deep groups (abs, lower back) are revealed by turning their covering layers translucent. Optimized from 35 MB to 2.8 MB (meshoptimizer), loaded only when 3D is chosen.
+- **Muscle map**:
+  - Professional écorché illustrations (male & female, front & back, dark & light artwork) with 14 tappable muscle groups (mouse, touch or keyboard); the highlight colour blends into the illustration's shading, and a thumbnail flips the body. A **Three.js + GLSL** light field glows behind the figure and travels to the muscle you pick.
   - Next to the body: an equipment filter for the suggested exercises, a quick exercise search and a shortcut to the workout generator. Muscles light up by role: primary, secondary, or how much you trained them this week.
 - **Exercise library**: 67 exercises, each with numbered steps and a coach tip in EN/FR, filters for muscle, equipment, level and search (accent-insensitive: “squat bulgare” works).
-- **Programs for every level**: Foundation Full Body, Home Bodyweight Starter, Upper/Lower Strength, Push·Pull·Legs, Athlete Power & Speed, Peak Strength Block — weekly schedule, progression rules, completion tracking.
+- **Periodized programs for every level**: Foundation Full Body, Home Bodyweight Starter, Upper/Lower Strength, Push·Pull·Legs (6 days, heavy A + volume B), Athlete Power & Speed, Peak Strength Block. Each one is written week by week like a coach would: **phases** that change the exercise variations, a different **sets × reps × effort** every week (RPE, or % of 1RM for strength and power lifts), **deload/taper weeks**, a coach note per week and completion tracking. Programs are generated and validated by `backend/scripts/build_programs.py`.
 - **Workout generator**: goal × level × time × equipment × target muscles → a balanced session ordered like a coach would (power first, compounds, isolation, core last).
 
 **Track**
@@ -51,7 +51,7 @@
 
 | Layer | Tech |
 | --- | --- |
-| Front-end | **Vite**, **TypeScript** (no framework), 2D anatomy illustrations + SVG masks, **Three.js** 3D anatomy (GLTF + meshopt + BVH picking) and **GLSL** light-field shader, CSS design tokens |
+| Front-end | **Vite**, **TypeScript** (no framework), anatomy illustrations + SVG masks, **Three.js** + **GLSL** light-field shader, CSS design tokens |
 | Back-end | **Flask** 3 (REST API + serves the built front-end), Gunicorn |
 | Database | **Firebase Realtime Database** via `firebase-admin` (server-side only) |
 | Auth | scrypt password hashes, signed JWT in an `HttpOnly` `SameSite=Lax` cookie |
@@ -136,15 +136,16 @@ Free-plan notes: the service sleeps after ~15 min idle and takes a few seconds t
 | `AUTH_RATE_LIMIT`, `AUTH_RATE_WINDOW` | `10`, `300` | sign-in/sign-up attempts per IP per window (s) |
 | `WEB_CONCURRENCY` | `1` | Gunicorn workers |
 
+## Authors
+
+Developed by **Khaled Bel Hedi** & **Coach Khalil Haded**. Training programs are
+written with Coach Khalil Haded.
+
 ## Anatomy assets & credits
 
 | Asset | Source | Licence |
 | --- | --- | --- |
 | 2D body illustrations + muscle masks (`frontend/public/anatomy`, `src/data/muscle-masks.json`) | [js-rich-body-highlighter](https://github.com/crmapache/js-rich-body-highlighter) | MIT — `public/anatomy/LICENSE.txt` |
-| 3D muscles + skeleton (`frontend/public/models/musclepro-anatomy.glb`) | [BodyExplorer](https://github.com/JohanBellander/BodyExplorer) asset pack: [BodyParts3D](https://lifesciencedb.jp/bp3d/) © The Database Center for Life Science, and [Z-Anatomy](https://www.z-anatomy.com/) by Gauthier Kervyn | CC BY-SA 2.1 JP / CC BY-SA 4.0 — the derived model is shared under CC BY-SA 4.0, see `public/models/ATTRIBUTION.txt` |
-
-The app credits the 3D data under the viewer. To rebuild the 3D model from the source pack:
-`node frontend/scripts/build-anatomy-model.mjs anatomy.glb skeleton.glb mesh_mapping.json frontend/public/models/musclepro-anatomy.glb` (needs `@gltf-transform/core`, `@gltf-transform/functions`, `@gltf-transform/extensions` and `meshoptimizer`).
 
 ## Security
 
@@ -163,15 +164,15 @@ backend/
   app/security.py        hashing, JWT cookie, CSRF, rate limit
   app/catalog.py         catalog loader + workout generator
   app/routes/            auth, me, catalog, workouts, admin
-  app/data/              exercises.json, programs.json (EN/FR)
+  app/data/              exercises.json, programs.json (EN/FR, generated)
+  scripts/build_programs.py  periodized programs: edit, run, validated output
   tests/                 pytest suite
 frontend/
   src/ui/anatomy.ts      2D muscle map (illustrations + traced masks)
-  src/ui/bodyViewer.ts   2D / 3D viewer component
-  src/three/             Anatomy3D (3D model viewer), AuraBackdrop + GLSL shader
-  public/anatomy/        2D body illustrations (MIT)
-  public/models/         3D anatomy model (CC BY-SA)
-  scripts/               build-anatomy-model.mjs, extract-muscle-masks.py
+  src/ui/bodyViewer.ts   muscle map viewer component
+  src/three/             AuraBackdrop + GLSL light-field shader
+  public/anatomy/        body illustrations (MIT)
+  scripts/               extract-muscle-masks.py
   src/views/             one module per page (code-split)
   src/ui/                shell + hamburger drawer, glass helpers, icons
   src/i18n/              en.ts, fr.ts
@@ -197,6 +198,6 @@ Dockerfile · render.yaml · database.rules.json
 
 ### En français
 
-MusclePro est une application d'entraînement : carte musculaire interactive en 2D (illustrations anatomiques professionnelles) et en 3D (modèle anatomique réel BodyParts3D/Z-Anatomy), face/dos, homme/femme, 67 exercices détaillés étape par étape, programmes du débutant à l'athlète pro, générateur de séances et suivi des performances (kg/lb par série, records, export CSV). Interface « Liquid Glass » en mode sombre/clair, menu hamburger, comptes utilisateurs et gestion des utilisateurs pour les administrateurs, entièrement bilingue anglais/français. Déploiement gratuit sur Render avec Firebase Realtime Database : suivez les sections *Firebase setup* et *Deploy on Render* ci-dessus.
+MusclePro est une application d'entraînement : carte musculaire interactive (illustrations anatomiques professionnelles), face/dos, homme/femme, 67 exercices détaillés étape par étape, programmes périodisés semaine par semaine (phases, séries × répétitions × effort, semaines de décharge) du débutant à l'athlète pro, générateur de séances et suivi des performances (kg/lb par série, records, export CSV). Interface « Liquid Glass » en mode sombre/clair, menu hamburger, comptes utilisateurs et gestion des utilisateurs pour les administrateurs, entièrement bilingue anglais/français. Déploiement gratuit sur Render avec Firebase Realtime Database : suivez les sections *Firebase setup* et *Deploy on Render* ci-dessus.
 
 > Health disclaimer: MusclePro provides general training information, not medical advice. Check with a health professional before starting a new program.

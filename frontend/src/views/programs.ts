@@ -2,7 +2,7 @@ import { api } from '../api';
 import { t } from '../i18n';
 import type { View } from '../router';
 import { store } from '../store';
-import { LEVELS, type Program } from '../types';
+import { LEVELS, type ProgramSummary } from '../types';
 import { errorBlock, loadingBlock, programCard } from '../ui/components';
 import { html, qs, raw } from '../ui/dom';
 import { icon } from '../ui/icons';
@@ -21,7 +21,7 @@ export const programsView: View = async (root, ctx) => {
     </div>
     <div id="prog-list">${raw(loadingBlock(2))}</div>`;
 
-  let programs: Program[];
+  let programs: ProgramSummary[];
   try {
     programs = await api.programs();
   } catch (err) {
@@ -35,7 +35,7 @@ export const programsView: View = async (root, ctx) => {
       .map((l) => html`<button type="button" data-level="${l}" aria-pressed="${String(level === l)}">${l ? t(`level.${l}` as 'level.pro') : t('common.all')}</button>`)
       .join('');
     // The athlete's own level first, then by difficulty.
-    const order = (p: Program) => (store.user?.level === p.level ? -1 : LEVELS.indexOf(p.level));
+    const order = (p: ProgramSummary) => (store.user?.level === p.level ? -1 : LEVELS.indexOf(p.level));
     const items = programs.filter((p) => !level || p.level === level).sort((a, b) => order(a) - order(b));
     qs('#prog-list', root).innerHTML = `<div class="grid-3">${items.map((p, i) => programCard(p, i * 60)).join('')}</div>`;
     history.replaceState({}, '', `/programs${level ? `?level=${level}` : ''}`);

@@ -1,7 +1,7 @@
 /** Live workout logger: per-set weight + unit (kg/lbs) + reps, rest timer,
  *  autosaved draft (survives reloads), save to Firebase via the API. */
 import { api, ApiError } from '../api';
-import { fmtReps, loc, t } from '../i18n';
+import { effortLabel, fmtReps, loc, t } from '../i18n';
 import { navigate, type View } from '../router';
 import { loadDraft, saveDraft, store } from '../store';
 import type { DraftWorkout, Exercise, LoggedSet } from '../types';
@@ -65,7 +65,7 @@ export const workoutView: View = async (root) => {
         <div class="row between" style="align-items:flex-start">
           <div>
             <h2 class="h3"><a href="/exercises/${item.id}">${ex ? loc(ex.name) : item.id}</a></h2>
-            ${item.target ? raw(html`<span class="muted" style="font-size:.82rem">${t('wo.target', { ...item.target, reps: fmtReps(item.target.reps) })}</span>`) : ''}
+            ${item.target ? raw(html`<span class="muted" style="font-size:.82rem">${t('wo.target', { sets: item.target.sets, rest: item.target.rest, reps: fmtReps(item.target.reps) })}${effortLabel(item.target) ? ` · ${effortLabel(item.target)}` : ''}</span>`) : ''}
           </div>
           <button class="btn btn-ghost btn-icon btn-sm" type="button" data-act="remove-ex" data-ei="${ei}" aria-label="${t('wo.removeExercise')}">${icon('trash', 'icon-sm')}</button>
         </div>

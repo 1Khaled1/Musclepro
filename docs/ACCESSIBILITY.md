@@ -8,8 +8,8 @@ and what is still open.
 **Automated: axe-core 4.10** (rules tagged `wcag2a`, `wcag2aa`, `wcag21a`,
 `wcag21aa`, `wcag22aa` and `best-practice`). It ran on every page, signed out
 and signed in as admin, in dark/English and light/French, with the menu
-closed and open. That is 38 page states, plus the 3D view and a phone
-viewport (iPhone 13). **Result: no violations.**
+closed and open. That is 38 page states, plus a phone viewport
+(iPhone 13). **Result: no violations.**
 
 **Scripted checks with Playwright:**
 
@@ -19,7 +19,7 @@ viewport (iPhone 13). **Result: no violations.**
 | Every muscle group on the 2D map can be reached with Tab and selected with Enter or Space (`role="button"`, `aria-pressed`) | ✅ |
 | A focused muscle shows a ring and its name, even when it is already selected | ✅ |
 | The menu is a modal dialog: focus moves into it, Tab stays inside, Escape closes it and returns focus to the menu button | ✅ |
-| In 3D mode the muscle chips next to the model select muscles from the keyboard | ✅ |
+| The muscle chips next to the body select muscles from the keyboard too | ✅ |
 | At 320 CSS px wide (WCAG 1.4.10, Reflow), no page scrolls sideways | ✅ |
 | Text contrast is at least 4.5:1 in both themes, including the small level badges | ✅ |
 
@@ -39,10 +39,6 @@ viewport (iPhone 13). **Result: no violations.**
 
 ## Known limitations
 
-- **3D canvas**: the WebGL model is driven by pointer and touch only, so it
-  is hidden from assistive technology. The muscle chips on the same page are
-  the accessible way to do the same thing, and the 2D map is fully keyboard
-  operable.
 - **Real screen readers**: VoiceOver, TalkBack and NVDA have not been tested
   yet. Automated tools find only part of the issues, so a manual pass with
   real assistive technology is the next step.

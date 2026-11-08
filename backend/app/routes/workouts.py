@@ -11,7 +11,7 @@ from datetime import datetime, timedelta, timezone
 
 from flask import Blueprint, Response, current_app, g, request
 
-from ..catalog import get_exercise, get_program
+from ..catalog import get_exercise, get_program, program_day
 from ..security import ApiError, login_required
 from ..store import as_list
 from ..users import now_iso
@@ -73,11 +73,12 @@ def validate_workout(data: dict) -> dict:
         day_id = data.get("day_id")
         if not program or not isinstance(day_id, str) or not DAY_ID_RE.match(day_id):
             raise ApiError("program_invalid")
-        if not any(d["id"] == day_id for d in program["days"]):
+        week = _num(data.get("week", 1), 1, 52, "program_invalid", True)
+        if not program_day(program, week, day_id):
             raise ApiError("program_invalid")
         out["program_id"] = program_id
         out["day_id"] = day_id
-        out["week"] = _num(data.get("week", 1), 1, 52, "program_invalid", True)
+        out["week"] = week
 
     entries = data.get("entries")
     if not isinstance(entries, list) or not 1 <= len(entries) <= 30:

@@ -48,11 +48,17 @@ export interface Exercise {
   tips: { en: string[]; fr: string[] };
 }
 
+/** % of 1-rep max: one value, or a range such as a test day [90, 102]. */
+export type Percent = number | [number, number];
+
 export interface Prescription {
   id: string;
   sets: number;
   reps: string;
   rest: number;
+  /** Effort: RPE out of 10, or a % of 1RM for strength/power main lifts. */
+  rpe?: number;
+  pct?: Percent;
 }
 
 export interface ProgramDay {
@@ -61,7 +67,22 @@ export interface ProgramDay {
   exercises: Prescription[];
 }
 
-export interface Program {
+export interface ProgramPhase {
+  weeks: number[];
+  name: Localized;
+  focus: Localized;
+}
+
+export interface ProgramWeek {
+  week: number;
+  phase: number;
+  deload: boolean;
+  note: Localized;
+  days: ProgramDay[];
+}
+
+/** A program as listed (no week-by-week plan). */
+export interface ProgramSummary {
   id: string;
   level: Level;
   goal: Goal;
@@ -72,7 +93,11 @@ export interface Program {
   name: Localized;
   summary: Localized;
   progression: Localized[];
-  days: ProgramDay[];
+  phases: ProgramPhase[];
+}
+
+export interface Program extends ProgramSummary {
+  plan: ProgramWeek[];
 }
 
 export interface Enrollment {
@@ -137,7 +162,7 @@ export interface DraftWorkout {
   notes: string;
   items: {
     id: string;
-    target?: { sets: number; reps: string; rest: number };
+    target?: { sets: number; reps: string; rest: number; rpe?: number; pct?: Percent };
     sets: LoggedSet[];
   }[];
 }

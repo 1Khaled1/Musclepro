@@ -244,6 +244,15 @@
   color: var(--muted);
   font-size: 0.84rem;
 }
+.site-foot .signature {
+  flex-basis: 100%;
+  margin: 0;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  color: var(--text-2);
+}
+.signature strong { color: var(--text); font-weight: 700; white-space: nowrap; }
+.drawer-foot .signature { margin: 0; font-size: 0.76rem; line-height: 1.5; color: var(--muted); text-align: center; }
 
 @media (prefers-reduced-motion: reduce) {
   .page { animation: none; }

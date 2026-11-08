@@ -1,7 +1,7 @@
 {
   "name": "MusclePro",
   "short_name": "MusclePro",
-  "description": "3D muscle map, exercise library, training programs and workout tracker.",
+  "description": "Interactive muscle map, exercise library, training programs and workout tracker.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#06080e",
