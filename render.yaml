@@ -1,0 +1,23 @@
+# Render Blueprint — New + > Blueprint > pick this repository.
+# One free web service: Docker builds the Vite front-end and runs Flask.
+services:
+  - type: web
+    name: musclepro
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: SECRET_KEY
+        generateValue: true          # random signing key for session tokens
+      - key: FIREBASE_DATABASE_URL   # e.g. https://<project>-default-rtdb.europe-west1.firebasedatabase.app
+        sync: false
+      - key: FIREBASE_SERVICE_ACCOUNT  # service-account JSON (raw or base64)
+        sync: false
+      - key: ADMIN_EMAIL             # first administrator, created at start-up
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false

@@ -1,0 +1,672 @@
+[
+  {
+    "id": "push-up", "equipment": "bodyweight", "difficulty": "beginner", "mechanic": "compound", "force": "push", "type": "strength",
+    "name": {"en": "Push-Up", "fr": "Pompe"},
+    "primary": ["chest"], "secondary": ["triceps", "shoulders", "abs"],
+    "steps": {
+      "en": ["Place your hands slightly wider than your shoulders, body in a straight line from head to heels.", "Brace your abs and glutes, then lower your chest toward the floor with elbows at about 45°.", "Stop when your chest is a fist's width from the floor.", "Press the floor away until your arms are straight, keeping the body rigid."],
+      "fr": ["Placez les mains un peu plus larges que les épaules, le corps aligné de la tête aux talons.", "Gainez abdos et fessiers, puis descendez la poitrine vers le sol, coudes à environ 45°.", "Arrêtez-vous quand la poitrine est à un poing du sol.", "Repoussez le sol jusqu'à tendre les bras, sans casser l'alignement."]
+    },
+    "tips": {"en": ["Hips sagging? Squeeze your glutes harder or switch to incline push-ups."], "fr": ["Les hanches s'affaissent ? Serrez davantage les fessiers ou passez aux pompes inclinées."]}
+  },
+  {
+    "id": "incline-push-up", "equipment": "bodyweight", "difficulty": "beginner", "mechanic": "compound", "force": "push", "type": "strength",
+    "name": {"en": "Incline Push-Up", "fr": "Pompe inclinée"},
+    "primary": ["chest"], "secondary": ["triceps", "shoulders"],
+    "steps": {
+      "en": ["Put your hands on a bench, box or wall, shoulder-width apart.", "Walk your feet back until your body forms a straight plank.", "Lower your chest to the edge of the support, elbows at 45°.", "Push back up to full arm extension."],
+      "fr": ["Posez les mains sur un banc, une box ou un mur, écartées de la largeur des épaules.", "Reculez les pieds jusqu'à former une planche bien droite.", "Descendez la poitrine jusqu'au rebord du support, coudes à 45°.", "Remontez jusqu'à l'extension complète des bras."]
+    },
+    "tips": {"en": ["The higher the support, the easier it gets. Lower it week by week."], "fr": ["Plus le support est haut, plus c'est facile. Abaissez-le semaine après semaine."]}
+  },
+  {
+    "id": "barbell-bench-press", "equipment": "barbell", "difficulty": "intermediate", "mechanic": "compound", "force": "push", "type": "strength",
+    "name": {"en": "Barbell Bench Press", "fr": "Développé couché à la barre"},
+    "primary": ["chest"], "secondary": ["triceps", "shoulders"],
+    "steps": {
+      "en": ["Lie on the bench with eyes under the bar, feet planted, shoulder blades pinched together.", "Grip the bar slightly wider than shoulder-width and unrack it over your shoulders.", "Lower the bar under control to your mid-chest, forearms vertical.", "Drive the bar back up and slightly toward your face until the arms lock out."],
+      "fr": ["Allongez-vous, les yeux sous la barre, pieds ancrés au sol, omoplates serrées.", "Saisissez la barre un peu plus large que les épaules et décrochez-la au-dessus des épaules.", "Descendez la barre sous contrôle jusqu'au milieu de la poitrine, avant-bras verticaux.", "Poussez la barre vers le haut et légèrement vers le visage jusqu'à verrouiller les bras."]
+    },
+    "tips": {"en": ["Always use a spotter or safety pins when training close to failure."], "fr": ["Utilisez toujours un pareur ou des barres de sécurité près de l'échec."]}
+  },
+  {
+    "id": "dumbbell-bench-press", "equipment": "dumbbell", "difficulty": "beginner", "mechanic": "compound", "force": "push", "type": "strength",
+    "name": {"en": "Dumbbell Bench Press", "fr": "Développé couché aux haltères"},
+    "primary": ["chest"], "secondary": ["triceps", "shoulders"],
+    "steps": {
+      "en": ["Sit on a flat bench with dumbbells on your thighs, then lie back and bring them to chest level.", "Press the dumbbells up until your arms are straight above your chest.", "Lower them slowly to the sides of your chest, elbows at about 45°.", "Press back up, bringing the dumbbells close together at the top."],
+      "fr": ["Asseyez-vous sur un banc plat, haltères sur les cuisses, puis allongez-vous en les ramenant à la poitrine.", "Poussez les haltères jusqu'à tendre les bras au-dessus de la poitrine.", "Redescendez lentement sur les côtés de la poitrine, coudes à environ 45°.", "Remontez en rapprochant les haltères en haut du mouvement."]
+    },
+    "tips": {"en": ["Dumbbells let each arm work alone — great for fixing left/right imbalances."], "fr": ["Les haltères font travailler chaque bras séparément : idéal pour corriger les déséquilibres."]}
+  },
+  {
+    "id": "incline-dumbbell-press", "equipment": "dumbbell", "difficulty": "intermediate", "mechanic": "compound", "force": "push", "type": "strength",
+    "name": {"en": "Incline Dumbbell Press", "fr": "Développé incliné aux haltères"},
+    "primary": ["chest"], "secondary": ["shoulders", "triceps"],
+    "steps": {
+      "en": ["Set the bench to 30–45° and sit back with a dumbbell in each hand at shoulder level.", "Press the dumbbells up over your upper chest.", "Lower them under control until you feel a stretch in the upper chest.", "Press back up without letting your lower back arch off the bench."],
+      "fr": ["Réglez le banc entre 30 et 45° et installez-vous, un haltère dans chaque main au niveau des épaules.", "Poussez les haltères au-dessus du haut de la poitrine.", "Redescendez sous contrôle jusqu'à sentir l'étirement du haut des pectoraux.", "Remontez sans décoller le bas du dos du banc."]
+    },
+    "tips": {"en": ["A steeper bench shifts work to the shoulders. Stay at 30–45°."], "fr": ["Un banc trop incliné sollicite surtout les épaules. Restez entre 30 et 45°."]}
+  },
+  {
+    "id": "cable-chest-fly", "equipment": "cable", "difficulty": "intermediate", "mechanic": "isolation", "force": "push", "type": "strength",
+    "name": {"en": "Cable Chest Fly", "fr": "Écarté à la poulie"},
+    "primary": ["chest"], "secondary": ["shoulders"],
+    "steps": {
+      "en": ["Set both pulleys at shoulder height and take a handle in each hand.", "Step forward into a split stance, arms open with a slight bend at the elbows.", "Bring the handles together in front of your chest in a wide hugging arc.", "Return slowly until you feel a stretch across the chest."],
+      "fr": ["Réglez les deux poulies à hauteur d'épaules et saisissez une poignée dans chaque main.", "Avancez d'un pas en fente, bras ouverts et coudes légèrement fléchis.", "Ramenez les poignées devant la poitrine en décrivant un grand arc, comme pour une étreinte.", "Revenez lentement jusqu'à sentir l'étirement des pectoraux."]
+    },
+    "tips": {"en": ["Keep the elbow angle fixed: it is a hug, not a press."], "fr": ["Gardez l'angle du coude fixe : c'est une étreinte, pas une poussée."]}
+  },
+  {
+    "id": "chest-dip", "equipment": "bodyweight", "difficulty": "advanced", "mechanic": "compound", "force": "push", "type": "strength",
+    "name": {"en": "Chest Dip", "fr": "Dips pectoraux"},
+    "primary": ["chest", "triceps"], "secondary": ["shoulders"],
+    "steps": {
+      "en": ["Support yourself on parallel bars with locked arms.", "Lean your torso forward about 30° and bend your knees.", "Lower yourself until your shoulders are just below your elbows.", "Push back up to lockout while keeping the forward lean."],
+      "fr": ["Prenez appui sur des barres parallèles, bras tendus.", "Penchez le buste d'environ 30° vers l'avant et fléchissez les genoux.", "Descendez jusqu'à ce que les épaules passent juste sous les coudes.", "Remontez jusqu'à l'extension en gardant l'inclinaison du buste."]
+    },
+    "tips": {"en": ["Stop the descent if you feel pinching at the front of the shoulder."], "fr": ["Stoppez la descente si vous ressentez un pincement à l'avant de l'épaule."]}
+  },
+  {
+    "id": "machine-chest-press", "equipment": "machine", "difficulty": "beginner", "mechanic": "compound", "force": "push", "type": "strength",
+    "name": {"en": "Machine Chest Press", "fr": "Presse pectorale à la machine"},
+    "primary": ["chest"], "secondary": ["triceps", "shoulders"],
+    "steps": {
+      "en": ["Adjust the seat so the handles are level with your mid-chest.", "Sit tall with your back against the pad and grip the handles.", "Press forward until your arms are almost straight.", "Return slowly until you feel a stretch in the chest."],
+      "fr": ["Réglez le siège pour que les poignées soient au niveau du milieu de la poitrine.", "Asseyez-vous bien droit, dos contre le dossier, et saisissez les poignées.", "Poussez vers l'avant jusqu'à ce que les bras soient presque tendus.", "Revenez lentement jusqu'à sentir l'étirement des pectoraux."]
+    },
+    "tips": {"en": ["A guided path makes this ideal for learning to push hard safely."], "fr": ["La trajectoire guidée en fait un excellent exercice pour apprendre à pousser fort en sécurité."]}
+  },
+  {
+    "id": "overhead-press", "equipment": "barbell", "difficulty": "intermediate", "mechanic": "compound", "force": "push", "type": "strength",
+    "name": {"en": "Standing Overhead Press", "fr": "Développé militaire debout"},
+    "primary": ["shoulders"], "secondary": ["triceps", "traps", "abs"],
+    "steps": {
+      "en": ["Hold the bar at your collarbones with hands just outside shoulder-width.", "Squeeze glutes and abs so your torso stays rigid.", "Press the bar straight up, moving your head back slightly to clear it.", "Lock out overhead with the bar over mid-foot, then lower under control."],
+      "fr": ["Tenez la barre au niveau des clavicules, mains juste plus larges que les épaules.", "Contractez fessiers et abdos pour garder le tronc rigide.", "Poussez la barre à la verticale en reculant légèrement la tête pour la laisser passer.", "Verrouillez au-dessus de la tête, barre à l'aplomb du milieu du pied, puis redescendez sous contrôle."]
+    },
+    "tips": {"en": ["Don't lean back to finish the rep — that turns it into a sloppy incline press."], "fr": ["Ne vous cambrez pas pour finir la répétition : cela devient un développé incliné mal exécuté."]}
+  },
+  {
+    "id": "dumbbell-shoulder-press", "equipment": "dumbbell", "difficulty": "beginner", "mechanic": "compound", "force": "push", "type": "strength",
+    "name": {"en": "Seated Dumbbell Shoulder Press", "fr": "Développé épaules assis aux haltères"},
+    "primary": ["shoulders"], "secondary": ["triceps"],
+    "steps": {
+      "en": ["Sit on an upright bench with dumbbells at shoulder height, palms forward.", "Press the dumbbells overhead until the arms are straight.", "Pause briefly with the weights above your head.", "Lower them back to shoulder height under control."],
+      "fr": ["Asseyez-vous sur un banc droit, haltères à hauteur d'épaules, paumes vers l'avant.", "Poussez les haltères au-dessus de la tête jusqu'à tendre les bras.", "Marquez une courte pause en haut.", "Redescendez à hauteur d'épaules sous contrôle."]
+    },
+    "tips": {"en": ["Keep your ribs down; don't let the lower back arch away from the pad."], "fr": ["Gardez les côtes basses : le bas du dos ne doit pas se décoller du dossier."]}
+  },
+  {
+    "id": "lateral-raise", "equipment": "dumbbell", "difficulty": "beginner", "mechanic": "isolation", "force": "push", "type": "strength",
+    "name": {"en": "Dumbbell Lateral Raise", "fr": "Élévations latérales aux haltères"},
+    "primary": ["shoulders"], "secondary": ["traps"],
+    "steps": {
+      "en": ["Stand tall with light dumbbells at your sides, elbows slightly bent.", "Raise the arms out to the sides, leading with the elbows.", "Stop at shoulder height, pinkies roughly level with thumbs.", "Lower slowly over two to three seconds."],
+      "fr": ["Tenez-vous droit, haltères légers le long du corps, coudes légèrement fléchis.", "Montez les bras sur les côtés en menant le mouvement avec les coudes.", "Arrêtez-vous à hauteur d'épaules, petits doigts au niveau des pouces.", "Redescendez lentement en deux à trois secondes."]
+    },
+    "tips": {"en": ["Go lighter than you think. Swinging hands the work to the traps."], "fr": ["Prenez plus léger que prévu : l'élan transfère le travail aux trapèzes."]}
+  },
+  {
+    "id": "face-pull", "equipment": "cable", "difficulty": "beginner", "mechanic": "isolation", "force": "pull", "type": "strength",
+    "name": {"en": "Face Pull", "fr": "Face pull"},
+    "primary": ["shoulders", "traps"], "secondary": ["biceps"],
+    "steps": {
+      "en": ["Set a rope on a cable at upper-chest height and grip it with thumbs pointing back.", "Step back so the cable is tight and arms are straight.", "Pull the rope toward your face, splitting the ends past your ears.", "Pause with elbows high, then return slowly."],
+      "fr": ["Fixez une corde à la poulie à hauteur du haut de la poitrine, pouces vers l'arrière.", "Reculez pour tendre le câble, bras tendus.", "Tirez la corde vers le visage en écartant les extrémités de part et d'autre des oreilles.", "Marquez une pause coudes hauts, puis revenez lentement."]
+    },
+    "tips": {"en": ["A great shoulder-health exercise for anyone who benches or swims."], "fr": ["Un excellent exercice de santé des épaules pour ceux qui font du développé ou nagent."]}
+  },
+  {
+    "id": "pike-push-up", "equipment": "bodyweight", "difficulty": "intermediate", "mechanic": "compound", "force": "push", "type": "strength",
+    "name": {"en": "Pike Push-Up", "fr": "Pompe en pike"},
+    "primary": ["shoulders"], "secondary": ["triceps", "chest"],
+    "steps": {
+      "en": ["Start in a push-up position, then walk your feet in so your hips rise into an inverted V.", "Bend your elbows to lower the top of your head toward the floor.", "Keep the hips high and elbows tracking slightly forward.", "Press back up until the arms are straight."],
+      "fr": ["Partez en position de pompe puis rapprochez les pieds pour former un V inversé.", "Fléchissez les coudes pour amener le sommet du crâne vers le sol.", "Gardez les hanches hautes et les coudes légèrement vers l'avant.", "Repoussez jusqu'à tendre les bras."]
+    },
+    "tips": {"en": ["Elevate your feet on a box to progress toward handstand push-ups."], "fr": ["Surélevez les pieds sur une box pour progresser vers les pompes en équilibre."]}
+  },
+  {
+    "id": "band-pull-apart", "equipment": "band", "difficulty": "beginner", "mechanic": "isolation", "force": "pull", "type": "strength",
+    "name": {"en": "Band Pull-Apart", "fr": "Écartés à l'élastique"},
+    "primary": ["shoulders", "traps"], "secondary": [],
+    "steps": {
+      "en": ["Hold a resistance band at shoulder height with straight arms, hands shoulder-width apart.", "Pull the band apart by moving your hands out to the sides.", "Squeeze your shoulder blades together when the band touches your chest.", "Return slowly to the start."],
+      "fr": ["Tenez un élastique à hauteur d'épaules, bras tendus, mains écartées de la largeur des épaules.", "Écartez l'élastique en ouvrant les bras sur les côtés.", "Serrez les omoplates quand l'élastique touche la poitrine.", "Revenez lentement à la position de départ."]
+    },
+    "tips": {"en": ["Perfect as a warm-up before any pressing session."], "fr": ["Parfait en échauffement avant toute séance de poussée."]}
+  },
+  {
+    "id": "dumbbell-curl", "equipment": "dumbbell", "difficulty": "beginner", "mechanic": "isolation", "force": "pull", "type": "strength",
+    "name": {"en": "Dumbbell Biceps Curl", "fr": "Curl biceps aux haltères"},
+    "primary": ["biceps"], "secondary": ["forearms"],
+    "steps": {
+      "en": ["Stand with a dumbbell in each hand, palms facing forward, elbows at your sides.", "Curl the weights up by bending at the elbows only.", "Squeeze the biceps at the top without letting the elbows drift forward.", "Lower slowly to full arm extension."],
+      "fr": ["Debout, un haltère dans chaque main, paumes vers l'avant, coudes le long du corps.", "Montez les charges en fléchissant uniquement les coudes.", "Contractez les biceps en haut sans avancer les coudes.", "Redescendez lentement jusqu'à l'extension complète."]
+    },
+    "tips": {"en": ["If your torso swings, the weight is too heavy."], "fr": ["Si le buste se balance, la charge est trop lourde."]}
+  },
+  {
+    "id": "hammer-curl", "equipment": "dumbbell", "difficulty": "beginner", "mechanic": "isolation", "force": "pull", "type": "strength",
+    "name": {"en": "Hammer Curl", "fr": "Curl marteau"},
+    "primary": ["biceps", "forearms"], "secondary": [],
+    "steps": {
+      "en": ["Hold dumbbells at your sides with palms facing each other.", "Curl the weights up keeping the neutral grip.", "Stop when the forearms are vertical and squeeze.", "Lower under control."],
+      "fr": ["Tenez les haltères le long du corps, paumes face à face.", "Montez les charges en conservant la prise neutre.", "Arrêtez-vous quand les avant-bras sont verticaux et contractez.", "Redescendez sous contrôle."]
+    },
+    "tips": {"en": ["Builds the brachialis and forearms for thicker-looking arms."], "fr": ["Développe le brachial et les avant-bras pour des bras plus épais."]}
+  },
+  {
+    "id": "barbell-curl", "equipment": "barbell", "difficulty": "intermediate", "mechanic": "isolation", "force": "pull", "type": "strength",
+    "name": {"en": "Barbell Curl", "fr": "Curl à la barre"},
+    "primary": ["biceps"], "secondary": ["forearms"],
+    "steps": {
+      "en": ["Stand tall holding a barbell with an underhand, shoulder-width grip.", "Pin your elbows to your sides and curl the bar toward your shoulders.", "Squeeze hard at the top.", "Lower the bar slowly until the arms are straight."],
+      "fr": ["Debout, tenez la barre en supination, mains écartées de la largeur des épaules.", "Coudes collés au corps, montez la barre vers les épaules.", "Contractez fort en haut.", "Redescendez lentement jusqu'à tendre les bras."]
+    },
+    "tips": {"en": ["An EZ bar is kinder to the wrists if a straight bar hurts."], "fr": ["Une barre EZ ménage les poignets si la barre droite est inconfortable."]}
+  },
+  {
+    "id": "chin-up", "equipment": "bodyweight", "difficulty": "intermediate", "mechanic": "compound", "force": "pull", "type": "strength",
+    "name": {"en": "Chin-Up", "fr": "Traction en supination"},
+    "primary": ["lats", "biceps"], "secondary": ["forearms", "abs"],
+    "steps": {
+      "en": ["Hang from a bar with an underhand grip, hands shoulder-width apart.", "Pull your shoulder blades down, then drive your elbows toward your ribs.", "Pull until your chin passes the bar.", "Lower yourself all the way to a dead hang."],
+      "fr": ["Suspendez-vous à la barre en supination, mains écartées de la largeur des épaules.", "Abaissez les omoplates puis tirez les coudes vers les côtes.", "Montez jusqu'à ce que le menton dépasse la barre.", "Redescendez complètement jusqu'à la suspension."]
+    },
+    "tips": {"en": ["Can't do one yet? Use a band for assistance or do slow negatives."], "fr": ["Pas encore de répétition ? Aidez-vous d'un élastique ou faites des négatives lentes."]}
+  },
+  {
+    "id": "triceps-pushdown", "equipment": "cable", "difficulty": "beginner", "mechanic": "isolation", "force": "push", "type": "strength",
+    "name": {"en": "Cable Triceps Pushdown", "fr": "Extension triceps à la poulie haute"},
+    "primary": ["triceps"], "secondary": [],
+    "steps": {
+      "en": ["Attach a rope or bar to a high pulley and grip it with elbows at your sides.", "Lean forward slightly and keep the upper arms still.", "Push the handle down until your arms are fully straight.", "Let it rise slowly until the forearms pass parallel."],
+      "fr": ["Fixez une corde ou une barre à la poulie haute, coudes le long du corps.", "Penchez-vous légèrement et gardez les bras immobiles.", "Poussez vers le bas jusqu'à l'extension complète.", "Laissez remonter lentement au-delà de l'horizontale."]
+    },
+    "tips": {"en": ["Only the forearms move. Elbows stay glued to your sides."], "fr": ["Seuls les avant-bras bougent. Les coudes restent collés au corps."]}
+  },
+  {
+    "id": "overhead-triceps-extension", "equipment": "dumbbell", "difficulty": "beginner", "mechanic": "isolation", "force": "push", "type": "strength",
+    "name": {"en": "Overhead Triceps Extension", "fr": "Extension triceps au-dessus de la tête"},
+    "primary": ["triceps"], "secondary": [],
+    "steps": {
+      "en": ["Hold one dumbbell with both hands overhead, arms straight.", "Keep your elbows pointing forward and lower the weight behind your head.", "Go down until you feel a deep stretch in the triceps.", "Extend the arms back to the top."],
+      "fr": ["Tenez un haltère à deux mains au-dessus de la tête, bras tendus.", "Coudes pointés vers l'avant, descendez la charge derrière la tête.", "Descendez jusqu'à sentir un étirement profond des triceps.", "Tendez à nouveau les bras."]
+    },
+    "tips": {"en": ["The stretched position trains the long head of the triceps best."], "fr": ["La position étirée sollicite au mieux le chef long du triceps."]}
+  },
+  {
+    "id": "bench-dip", "equipment": "bodyweight", "difficulty": "beginner", "mechanic": "compound", "force": "push", "type": "strength",
+    "name": {"en": "Bench Dip", "fr": "Dips sur banc"},
+    "primary": ["triceps"], "secondary": ["chest", "shoulders"],
+    "steps": {
+      "en": ["Sit on the edge of a bench, hands beside your hips, fingers forward.", "Slide your hips off the bench with legs extended or knees bent.", "Bend your elbows to lower your hips until the upper arms are parallel to the floor.", "Press back up to straight arms."],
+      "fr": ["Asseyez-vous au bord d'un banc, mains à côté des hanches, doigts vers l'avant.", "Avancez les hanches hors du banc, jambes tendues ou genoux fléchis.", "Fléchissez les coudes jusqu'à ce que les bras soient parallèles au sol.", "Remontez jusqu'à tendre les bras."]
+    },
+    "tips": {"en": ["Bend your knees to make it easier; elevate your feet to make it harder."], "fr": ["Fléchissez les genoux pour simplifier, surélevez les pieds pour corser."]}
+  },
+  {
+    "id": "close-grip-bench-press", "equipment": "barbell", "difficulty": "intermediate", "mechanic": "compound", "force": "push", "type": "strength",
+    "name": {"en": "Close-Grip Bench Press", "fr": "Développé couché prise serrée"},
+    "primary": ["triceps"], "secondary": ["chest", "shoulders"],
+    "steps": {
+      "en": ["Lie on the bench and grip the bar about shoulder-width apart.", "Unrack and hold the bar over your shoulders.", "Lower it to your lower chest, keeping elbows tucked close to the body.", "Press up to lockout."],
+      "fr": ["Allongé sur le banc, saisissez la barre à largeur d'épaules.", "Décrochez la barre et tenez-la au-dessus des épaules.", "Descendez-la vers le bas de la poitrine, coudes proches du corps.", "Poussez jusqu'au verrouillage."]
+    },
+    "tips": {"en": ["Too narrow a grip strains the wrists. Shoulder-width is enough."], "fr": ["Une prise trop serrée fatigue les poignets. La largeur des épaules suffit."]}
+  },
+  {
+    "id": "diamond-push-up", "equipment": "bodyweight", "difficulty": "intermediate", "mechanic": "compound", "force": "push", "type": "strength",
+    "name": {"en": "Diamond Push-Up", "fr": "Pompe diamant"},
+    "primary": ["triceps"], "secondary": ["chest", "shoulders"],
+    "steps": {
+      "en": ["Get into a plank with your hands together under your chest, thumbs and index fingers forming a diamond.", "Brace your core and keep the body straight.", "Lower your chest to your hands, elbows close to your sides.", "Press back up to full extension."],
+      "fr": ["En planche, placez les mains sous la poitrine, pouces et index formant un losange.", "Gainez-vous et gardez le corps aligné.", "Descendez la poitrine vers les mains, coudes près du corps.", "Repoussez jusqu'à l'extension complète."]
+    },
+    "tips": {"en": ["Drop to your knees to finish a set with good form."], "fr": ["Passez sur les genoux pour finir une série proprement."]}
+  },
+  {
+    "id": "farmers-carry", "equipment": "dumbbell", "difficulty": "beginner", "mechanic": "compound", "force": "static", "type": "strength",
+    "name": {"en": "Farmer's Carry", "fr": "Marche du fermier"},
+    "primary": ["forearms", "traps"], "secondary": ["abs", "obliques", "glutes"],
+    "steps": {
+      "en": ["Pick up a heavy dumbbell or kettlebell in each hand using a proper hip hinge.", "Stand tall: shoulders back, chest up, core braced.", "Walk with short, controlled steps for the set distance or time.", "Set the weights down by hinging at the hips, not rounding the back."],
+      "fr": ["Ramassez un haltère ou un kettlebell lourd dans chaque main en fléchissant les hanches.", "Tenez-vous droit : épaules en arrière, poitrine sortie, abdos gainés.", "Marchez à petits pas contrôlés sur la distance ou la durée prévue.", "Reposez les charges en fléchissant les hanches, sans arrondir le dos."]
+    },
+    "tips": {"en": ["A simple drill that builds grip and real-world strength."], "fr": ["Un exercice simple qui développe la poigne et la force fonctionnelle."]}
+  },
+  {
+    "id": "wrist-curl", "equipment": "dumbbell", "difficulty": "beginner", "mechanic": "isolation", "force": "pull", "type": "strength",
+    "name": {"en": "Dumbbell Wrist Curl", "fr": "Flexion des poignets aux haltères"},
+    "primary": ["forearms"], "secondary": [],
+    "steps": {
+      "en": ["Sit and rest your forearms on your thighs, palms up, wrists past your knees.", "Let the dumbbells roll down toward your fingertips.", "Curl the wrists up as high as possible.", "Lower slowly and repeat."],
+      "fr": ["Assis, posez les avant-bras sur les cuisses, paumes vers le haut, poignets dans le vide.", "Laissez les haltères rouler vers le bout des doigts.", "Fléchissez les poignets le plus haut possible.", "Redescendez lentement et recommencez."]
+    },
+    "tips": {"en": ["Use high reps (15–25) for forearm endurance."], "fr": ["Visez des séries longues (15 à 25) pour l'endurance des avant-bras."]}
+  },
+  {
+    "id": "dead-hang", "equipment": "bodyweight", "difficulty": "beginner", "mechanic": "isolation", "force": "static", "type": "mobility",
+    "name": {"en": "Dead Hang", "fr": "Suspension à la barre"},
+    "primary": ["forearms"], "secondary": ["lats", "shoulders"],
+    "steps": {
+      "en": ["Grab a pull-up bar with an overhand grip, hands shoulder-width apart.", "Lift your feet and hang with arms fully straight.", "Breathe slowly and let your shoulders stretch.", "Hold for the target time, then step down."],
+      "fr": ["Saisissez une barre de traction en pronation, mains à largeur d'épaules.", "Décollez les pieds et restez suspendu, bras tendus.", "Respirez lentement et laissez les épaules s'étirer.", "Tenez le temps prévu puis redescendez."]
+    },
+    "tips": {"en": ["Builds grip and decompresses the spine after heavy lifting."], "fr": ["Renforce la poigne et décompresse la colonne après un entraînement lourd."]}
+  },
+  {
+    "id": "plank", "equipment": "bodyweight", "difficulty": "beginner", "mechanic": "isolation", "force": "static", "type": "strength",
+    "name": {"en": "Plank", "fr": "Gainage planche"},
+    "primary": ["abs"], "secondary": ["obliques", "shoulders", "glutes"],
+    "steps": {
+      "en": ["Rest on your forearms with elbows under your shoulders.", "Extend your legs and lift your hips so your body forms a straight line.", "Squeeze your glutes and pull your belly button toward your spine.", "Hold while breathing steadily."],
+      "fr": ["Appuyez-vous sur les avant-bras, coudes sous les épaules.", "Tendez les jambes et soulevez les hanches pour aligner le corps.", "Serrez les fessiers et rentrez le nombril.", "Tenez la position en respirant calmement."]
+    },
+    "tips": {"en": ["Quality over time: 3 × 30 s perfect beats 1 × 2 min sagging."], "fr": ["La qualité avant la durée : 3 × 30 s parfaites valent mieux qu'1 × 2 min affaissé."]}
+  },
+  {
+    "id": "dead-bug", "equipment": "bodyweight", "difficulty": "beginner", "mechanic": "isolation", "force": "static", "type": "strength",
+    "name": {"en": "Dead Bug", "fr": "Dead bug"},
+    "primary": ["abs"], "secondary": ["obliques"],
+    "steps": {
+      "en": ["Lie on your back, arms pointing to the ceiling, hips and knees bent at 90°.", "Press your lower back flat into the floor.", "Slowly extend your opposite arm and leg toward the floor.", "Return and repeat on the other side without the lower back lifting."],
+      "fr": ["Allongé sur le dos, bras vers le plafond, hanches et genoux à 90°.", "Plaquez le bas du dos au sol.", "Tendez lentement le bras et la jambe opposés vers le sol.", "Revenez et alternez sans décoller le bas du dos."]
+    },
+    "tips": {"en": ["Exhale fully as you extend — it locks the ribs down."], "fr": ["Expirez à fond pendant l'extension : cela verrouille les côtes."]}
+  },
+  {
+    "id": "hanging-leg-raise", "equipment": "bodyweight", "difficulty": "advanced", "mechanic": "isolation", "force": "pull", "type": "strength",
+    "name": {"en": "Hanging Leg Raise", "fr": "Relevé de jambes suspendu"},
+    "primary": ["abs"], "secondary": ["obliques", "forearms"],
+    "steps": {
+      "en": ["Hang from a bar with straight arms and legs together.", "Brace your core to stop any swinging.", "Raise your legs by curling your pelvis up until the legs pass horizontal.", "Lower slowly without swinging."],
+      "fr": ["Suspendu à la barre, bras tendus, jambes serrées.", "Gainez-vous pour éviter tout balancement.", "Montez les jambes en enroulant le bassin jusqu'à dépasser l'horizontale.", "Redescendez lentement sans vous balancer."]
+    },
+    "tips": {"en": ["Bend the knees to regress; touch the bar with your toes to progress."], "fr": ["Fléchissez les genoux pour simplifier ; touchez la barre avec les pieds pour progresser."]}
+  },
+  {
+    "id": "cable-crunch", "equipment": "cable", "difficulty": "intermediate", "mechanic": "isolation", "force": "pull", "type": "strength",
+    "name": {"en": "Kneeling Cable Crunch", "fr": "Crunch à la poulie à genoux"},
+    "primary": ["abs"], "secondary": ["obliques"],
+    "steps": {
+      "en": ["Kneel facing a high pulley and hold the rope beside your head.", "Keep your hips still above your knees.", "Crunch down by curling your ribs toward your pelvis.", "Return slowly until the abs are stretched."],
+      "fr": ["À genoux face à la poulie haute, tenez la corde de part et d'autre de la tête.", "Gardez les hanches immobiles au-dessus des genoux.", "Enroulez le buste en rapprochant les côtes du bassin.", "Revenez lentement jusqu'à étirer les abdos."]
+    },
+    "tips": {"en": ["Think 'curl', not 'bow': the movement comes from the spine, not the hips."], "fr": ["Pensez « enrouler », pas « saluer » : le mouvement vient de la colonne, pas des hanches."]}
+  },
+  {
+    "id": "side-plank", "equipment": "bodyweight", "difficulty": "beginner", "mechanic": "isolation", "force": "static", "type": "strength",
+    "name": {"en": "Side Plank", "fr": "Gainage latéral"},
+    "primary": ["obliques"], "secondary": ["abs", "glutes", "shoulders"],
+    "steps": {
+      "en": ["Lie on your side with your elbow under your shoulder and legs stacked.", "Lift your hips so your body forms a straight line.", "Keep the top hip stacked over the bottom one.", "Hold, then switch sides."],
+      "fr": ["Allongé sur le côté, coude sous l'épaule, jambes superposées.", "Soulevez les hanches pour aligner le corps.", "Gardez la hanche du dessus à l'aplomb de celle du dessous.", "Tenez, puis changez de côté."]
+    },
+    "tips": {"en": ["Bottom knee down for an easier version."], "fr": ["Genou du dessous au sol pour une version plus facile."]}
+  },
+  {
+    "id": "russian-twist", "equipment": "bodyweight", "difficulty": "beginner", "mechanic": "isolation", "force": "pull", "type": "strength",
+    "name": {"en": "Russian Twist", "fr": "Rotation russe"},
+    "primary": ["obliques"], "secondary": ["abs"],
+    "steps": {
+      "en": ["Sit with knees bent and lean back about 45°, keeping the back long.", "Clasp your hands (or hold a light weight) in front of your chest.", "Rotate your torso to one side, bringing your hands beside your hip.", "Rotate to the other side in a controlled rhythm."],
+      "fr": ["Assis, genoux fléchis, inclinez-vous d'environ 45° en gardant le dos long.", "Joignez les mains (ou tenez une charge légère) devant la poitrine.", "Tournez le buste d'un côté en amenant les mains à côté de la hanche.", "Tournez de l'autre côté à un rythme contrôlé."]
+    },
+    "tips": {"en": ["Lift the feet only once you can keep the back straight."], "fr": ["Ne décollez les pieds que si vous gardez le dos droit."]}
+  },
+  {
+    "id": "pallof-press", "equipment": "band", "difficulty": "intermediate", "mechanic": "isolation", "force": "static", "type": "strength",
+    "name": {"en": "Pallof Press", "fr": "Pallof press"},
+    "primary": ["obliques", "abs"], "secondary": ["shoulders"],
+    "steps": {
+      "en": ["Anchor a band or cable at chest height and stand side-on to it.", "Hold the handle at your chest with both hands, feet shoulder-width apart.", "Press your hands straight out without letting your torso rotate.", "Hold for two seconds, bring the hands back, and repeat."],
+      "fr": ["Fixez un élastique ou un câble à hauteur de poitrine et placez-vous de profil.", "Tenez la poignée à deux mains contre la poitrine, pieds à largeur d'épaules.", "Tendez les bras devant vous sans laisser le buste tourner.", "Tenez deux secondes, ramenez les mains et recommencez."]
+    },
+    "tips": {"en": ["An anti-rotation drill: the win is not moving."], "fr": ["Un exercice anti-rotation : réussir, c'est ne pas bouger."]}
+  },
+  {
+    "id": "mountain-climber", "equipment": "bodyweight", "difficulty": "beginner", "mechanic": "compound", "force": "push", "type": "power",
+    "name": {"en": "Mountain Climber", "fr": "Mountain climber"},
+    "primary": ["abs"], "secondary": ["shoulders", "quads", "obliques"],
+    "steps": {
+      "en": ["Start in a high plank with hands under your shoulders.", "Drive one knee toward your chest.", "Switch legs quickly, as if running in place.", "Keep the hips level and the shoulders over the hands."],
+      "fr": ["Partez en planche haute, mains sous les épaules.", "Ramenez un genou vers la poitrine.", "Alternez rapidement les jambes comme si vous couriez sur place.", "Gardez le bassin stable et les épaules au-dessus des mains."]
+    },
+    "tips": {"en": ["Great as a conditioning finisher: 30 s on, 30 s off."], "fr": ["Idéal en fin de séance cardio : 30 s d'effort, 30 s de repos."]}
+  },
+  {
+    "id": "barbell-shrug", "equipment": "barbell", "difficulty": "beginner", "mechanic": "isolation", "force": "pull", "type": "strength",
+    "name": {"en": "Barbell Shrug", "fr": "Haussement d'épaules à la barre"},
+    "primary": ["traps"], "secondary": ["forearms"],
+    "steps": {
+      "en": ["Stand holding a barbell in front of your thighs, arms straight.", "Shrug your shoulders straight up toward your ears.", "Pause and squeeze at the top for one second.", "Lower slowly to a full stretch."],
+      "fr": ["Debout, tenez la barre devant les cuisses, bras tendus.", "Haussez les épaules à la verticale vers les oreilles.", "Marquez une pause d'une seconde en contractant.", "Redescendez lentement jusqu'à l'étirement complet."]
+    },
+    "tips": {"en": ["Don't roll the shoulders — straight up, straight down."], "fr": ["Ne faites pas rouler les épaules : montée et descente verticales."]}
+  },
+  {
+    "id": "pull-up", "equipment": "bodyweight", "difficulty": "advanced", "mechanic": "compound", "force": "pull", "type": "strength",
+    "name": {"en": "Pull-Up", "fr": "Traction en pronation"},
+    "primary": ["lats"], "secondary": ["biceps", "traps", "forearms"],
+    "steps": {
+      "en": ["Hang from the bar with an overhand grip slightly wider than your shoulders.", "Set your shoulders by pulling them down and back.", "Drive your elbows down to pull your chest toward the bar.", "Lower under control to a full hang."],
+      "fr": ["Suspendez-vous à la barre en pronation, mains un peu plus larges que les épaules.", "Placez les épaules en les tirant vers le bas et l'arrière.", "Tirez les coudes vers le bas pour amener la poitrine à la barre.", "Redescendez sous contrôle jusqu'à la suspension complète."]
+    },
+    "tips": {"en": ["A benchmark of relative strength — track your max reps monthly."], "fr": ["Un indicateur de force relative : notez votre maximum chaque mois."]}
+  },
+  {
+    "id": "lat-pulldown", "equipment": "cable", "difficulty": "beginner", "mechanic": "compound", "force": "pull", "type": "strength",
+    "name": {"en": "Lat Pulldown", "fr": "Tirage vertical"},
+    "primary": ["lats"], "secondary": ["biceps", "traps"],
+    "steps": {
+      "en": ["Sit with thighs locked under the pad and grip the bar wider than your shoulders.", "Lean back slightly and lift your chest.", "Pull the bar to your upper chest by driving the elbows down.", "Let the bar rise slowly until the arms are straight."],
+      "fr": ["Assis, cuisses bloquées sous les boudins, saisissez la barre plus large que les épaules.", "Inclinez-vous légèrement en arrière, poitrine sortie.", "Tirez la barre vers le haut de la poitrine en abaissant les coudes.", "Laissez remonter lentement jusqu'à tendre les bras."]
+    },
+    "tips": {"en": ["The stepping stone to your first pull-up."], "fr": ["Le tremplin vers votre première traction."]}
+  },
+  {
+    "id": "bent-over-row", "equipment": "barbell", "difficulty": "intermediate", "mechanic": "compound", "force": "pull", "type": "strength",
+    "name": {"en": "Barbell Bent-Over Row", "fr": "Rowing barre buste penché"},
+    "primary": ["lats", "traps"], "secondary": ["biceps", "lower_back", "shoulders"],
+    "steps": {
+      "en": ["Hold the bar with an overhand grip and hinge forward until your torso is near 45°.", "Keep a flat back and slightly bent knees.", "Row the bar to your lower ribs, squeezing your shoulder blades.", "Lower the bar under control without standing up."],
+      "fr": ["Tenez la barre en pronation et penchez le buste à environ 45° en fléchissant les hanches.", "Gardez le dos plat et les genoux légèrement fléchis.", "Tirez la barre vers le bas des côtes en serrant les omoplates.", "Redescendez sous contrôle sans vous redresser."]
+    },
+    "tips": {"en": ["If your torso rises each rep, the weight is too heavy."], "fr": ["Si le buste se redresse à chaque répétition, la charge est trop lourde."]}
+  },
+  {
+    "id": "one-arm-dumbbell-row", "equipment": "dumbbell", "difficulty": "beginner", "mechanic": "compound", "force": "pull", "type": "strength",
+    "name": {"en": "One-Arm Dumbbell Row", "fr": "Rowing unilatéral à l'haltère"},
+    "primary": ["lats"], "secondary": ["traps", "biceps", "shoulders"],
+    "steps": {
+      "en": ["Put one knee and hand on a bench, the other foot on the floor, back flat.", "Hold a dumbbell with the free arm hanging straight.", "Pull the dumbbell toward your hip, keeping the elbow close.", "Lower it slowly to a full stretch."],
+      "fr": ["Un genou et une main sur le banc, l'autre pied au sol, dos plat.", "Tenez un haltère, bras libre tendu vers le sol.", "Tirez l'haltère vers la hanche, coude proche du corps.", "Redescendez lentement jusqu'à l'étirement complet."]
+    },
+    "tips": {"en": ["Pull to the hip, not the shoulder, to target the lats."], "fr": ["Tirez vers la hanche, pas vers l'épaule, pour cibler les dorsaux."]}
+  },
+  {
+    "id": "seated-cable-row", "equipment": "cable", "difficulty": "beginner", "mechanic": "compound", "force": "pull", "type": "strength",
+    "name": {"en": "Seated Cable Row", "fr": "Tirage horizontal assis"},
+    "primary": ["lats", "traps"], "secondary": ["biceps"],
+    "steps": {
+      "en": ["Sit with feet on the platform, knees soft, and grip the handle.", "Sit tall with a neutral spine and arms extended.", "Row the handle to your stomach, squeezing the shoulder blades together.", "Return slowly, letting the shoulders reach forward."],
+      "fr": ["Assis, pieds sur les cales, genoux souples, saisissez la poignée.", "Tenez-vous droit, colonne neutre, bras tendus.", "Tirez la poignée vers le ventre en serrant les omoplates.", "Revenez lentement en laissant les épaules s'avancer."]
+    },
+    "tips": {"en": ["Keep the torso still; don't rock back to move the weight."], "fr": ["Gardez le buste immobile : ne basculez pas pour déplacer la charge."]}
+  },
+  {
+    "id": "inverted-row", "equipment": "bodyweight", "difficulty": "beginner", "mechanic": "compound", "force": "pull", "type": "strength",
+    "name": {"en": "Inverted Row", "fr": "Rowing inversé"},
+    "primary": ["lats", "traps"], "secondary": ["biceps", "abs"],
+    "steps": {
+      "en": ["Lie under a bar set at waist height and grab it with an overhand grip.", "Straighten your body from heels to head, heels on the floor.", "Pull your chest to the bar, squeezing your shoulder blades.", "Lower until your arms are straight."],
+      "fr": ["Allongez-vous sous une barre placée à hauteur de taille, prise en pronation.", "Alignez le corps des talons à la tête, talons au sol.", "Tirez la poitrine vers la barre en serrant les omoplates.", "Redescendez jusqu'à tendre les bras."]
+    },
+    "tips": {"en": ["Walk your feet forward to make it harder."], "fr": ["Avancez les pieds pour augmenter la difficulté."]}
+  },
+  {
+    "id": "back-extension", "equipment": "machine", "difficulty": "beginner", "mechanic": "isolation", "force": "pull", "type": "strength",
+    "name": {"en": "Back Extension", "fr": "Extension lombaire"},
+    "primary": ["lower_back"], "secondary": ["glutes", "hamstrings"],
+    "steps": {
+      "en": ["Set the hip pad just below your hip bones and hook your feet in.", "Cross your arms over your chest.", "Lower your torso by hinging at the hips.", "Raise until your body forms a straight line — don't over-arch."],
+      "fr": ["Réglez le support juste sous les os du bassin et calez les pieds.", "Croisez les bras sur la poitrine.", "Descendez le buste en fléchissant les hanches.", "Remontez jusqu'à aligner le corps, sans hyper-cambrer."]
+    },
+    "tips": {"en": ["Hold a plate at your chest once bodyweight gets easy."], "fr": ["Tenez un disque contre la poitrine quand le poids du corps devient facile."]}
+  },
+  {
+    "id": "bird-dog", "equipment": "bodyweight", "difficulty": "beginner", "mechanic": "compound", "force": "static", "type": "mobility",
+    "name": {"en": "Bird Dog", "fr": "Bird dog"},
+    "primary": ["lower_back"], "secondary": ["abs", "glutes", "shoulders"],
+    "steps": {
+      "en": ["Start on all fours, hands under shoulders and knees under hips.", "Brace your core to keep the back flat.", "Extend one arm forward and the opposite leg back until both are level with the torso.", "Hold for two seconds, return, and switch sides."],
+      "fr": ["À quatre pattes, mains sous les épaules et genoux sous les hanches.", "Gainez-vous pour garder le dos plat.", "Tendez un bras vers l'avant et la jambe opposée vers l'arrière, à l'horizontale.", "Tenez deux secondes, revenez et changez de côté."]
+    },
+    "tips": {"en": ["Imagine a glass of water on your lower back — don't spill it."], "fr": ["Imaginez un verre d'eau sur le bas du dos : ne le renversez pas."]}
+  },
+  {
+    "id": "deadlift", "equipment": "barbell", "difficulty": "advanced", "mechanic": "compound", "force": "pull", "type": "strength",
+    "name": {"en": "Conventional Deadlift", "fr": "Soulevé de terre"},
+    "primary": ["hamstrings", "glutes", "lower_back"], "secondary": ["traps", "forearms", "quads", "lats"],
+    "steps": {
+      "en": ["Stand with mid-foot under the bar, feet hip-width apart.", "Hinge down and grip the bar just outside your legs; shins touch the bar.", "Flatten your back, pull the slack out of the bar and brace.", "Push the floor away and stand tall, then lower the bar along the same path."],
+      "fr": ["Placez le milieu du pied sous la barre, pieds écartés de la largeur des hanches.", "Penchez-vous et saisissez la barre juste à l'extérieur des jambes, tibias contre la barre.", "Mettez le dos à plat, tendez la barre et gainez-vous.", "Poussez le sol pour vous redresser, puis redescendez la barre sur la même trajectoire."]
+    },
+    "tips": {"en": ["Never round your lower back under load. Film your sets to check."], "fr": ["N'arrondissez jamais le bas du dos sous charge. Filmez vos séries pour vérifier."]}
+  },
+  {
+    "id": "romanian-deadlift", "equipment": "barbell", "difficulty": "intermediate", "mechanic": "compound", "force": "pull", "type": "strength",
+    "name": {"en": "Romanian Deadlift", "fr": "Soulevé de terre roumain"},
+    "primary": ["hamstrings", "glutes"], "secondary": ["lower_back", "forearms"],
+    "steps": {
+      "en": ["Stand holding the bar at hip height, knees softly bent.", "Push your hips back, sliding the bar down your thighs.", "Stop when you feel a strong hamstring stretch, usually just below the knees.", "Drive the hips forward to stand back up."],
+      "fr": ["Debout, barre à hauteur de hanches, genoux légèrement fléchis.", "Reculez les hanches en faisant glisser la barre le long des cuisses.", "Arrêtez-vous à l'étirement marqué des ischios, en général sous les genoux.", "Poussez les hanches vers l'avant pour vous redresser."]
+    },
+    "tips": {"en": ["It's a hip hinge, not a squat: the knee angle barely changes."], "fr": ["C'est une flexion de hanche, pas un squat : l'angle du genou change peu."]}
+  },
+  {
+    "id": "hip-thrust", "equipment": "barbell", "difficulty": "intermediate", "mechanic": "compound", "force": "push", "type": "strength",
+    "name": {"en": "Barbell Hip Thrust", "fr": "Hip thrust à la barre"},
+    "primary": ["glutes"], "secondary": ["hamstrings", "quads"],
+    "steps": {
+      "en": ["Sit with your upper back against a bench and a padded bar over your hips.", "Plant your feet so your shins will be vertical at the top.", "Drive through your heels to lift your hips until your torso is level.", "Squeeze your glutes for a second, then lower."],
+      "fr": ["Assis, haut du dos contre un banc, barre protégée sur les hanches.", "Placez les pieds pour que les tibias soient verticaux en haut.", "Poussez sur les talons pour monter les hanches jusqu'à l'horizontale.", "Contractez les fessiers une seconde, puis redescendez."]
+    },
+    "tips": {"en": ["Tuck your chin and keep ribs down to avoid arching the lower back."], "fr": ["Rentrez le menton et gardez les côtes basses pour ne pas cambrer."]}
+  },
+  {
+    "id": "glute-bridge", "equipment": "bodyweight", "difficulty": "beginner", "mechanic": "isolation", "force": "push", "type": "strength",
+    "name": {"en": "Glute Bridge", "fr": "Pont fessier"},
+    "primary": ["glutes"], "secondary": ["hamstrings", "lower_back"],
+    "steps": {
+      "en": ["Lie on your back with knees bent and feet flat, hip-width apart.", "Press through your heels and lift your hips.", "Stop when your body is straight from knees to shoulders and squeeze the glutes.", "Lower slowly."],
+      "fr": ["Allongé sur le dos, genoux fléchis, pieds à plat écartés de la largeur des hanches.", "Poussez sur les talons pour soulever les hanches.", "Arrêtez-vous quand le corps est aligné des genoux aux épaules et contractez les fessiers.", "Redescendez lentement."]
+    },
+    "tips": {"en": ["Single-leg bridges double the challenge without any equipment."], "fr": ["Le pont sur une jambe double la difficulté sans matériel."]}
+  },
+  {
+    "id": "kettlebell-swing", "equipment": "kettlebell", "difficulty": "intermediate", "mechanic": "compound", "force": "pull", "type": "power",
+    "name": {"en": "Kettlebell Swing", "fr": "Swing au kettlebell"},
+    "primary": ["glutes", "hamstrings"], "secondary": ["lower_back", "abs", "shoulders", "forearms"],
+    "steps": {
+      "en": ["Stand with feet a little wider than hips, kettlebell a foot in front of you.", "Hinge and hike the bell back between your legs like a football snap.", "Snap your hips forward explosively to float the bell to chest height.", "Let it fall back into the hinge and repeat."],
+      "fr": ["Pieds un peu plus larges que les hanches, kettlebell à trente centimètres devant vous.", "Fléchissez les hanches et lancez la cloche entre les jambes vers l'arrière.", "Projetez les hanches vers l'avant de façon explosive pour amener la cloche à hauteur de poitrine.", "Laissez-la redescendre dans la flexion et enchaînez."]
+    },
+    "tips": {"en": ["The arms are ropes: power comes from the hips, not the shoulders."], "fr": ["Les bras sont des cordes : la puissance vient des hanches, pas des épaules."]}
+  },
+  {
+    "id": "lying-leg-curl", "equipment": "machine", "difficulty": "beginner", "mechanic": "isolation", "force": "pull", "type": "strength",
+    "name": {"en": "Lying Leg Curl", "fr": "Leg curl allongé"},
+    "primary": ["hamstrings"], "secondary": ["calves"],
+    "steps": {
+      "en": ["Lie face down with the pad just above your heels and knees off the bench edge.", "Hold the handles and keep your hips pressed down.", "Curl your heels toward your glutes.", "Lower slowly to full extension."],
+      "fr": ["Allongé sur le ventre, boudin juste au-dessus des talons, genoux dans le vide.", "Tenez les poignées et gardez les hanches plaquées.", "Ramenez les talons vers les fessiers.", "Redescendez lentement jusqu'à l'extension complète."]
+    },
+    "tips": {"en": ["A 3-second lowering phase builds strong, resilient hamstrings."], "fr": ["Une descente en 3 secondes renforce des ischios solides et résistants."]}
+  },
+  {
+    "id": "nordic-curl", "equipment": "bodyweight", "difficulty": "advanced", "mechanic": "isolation", "force": "pull", "type": "strength",
+    "name": {"en": "Nordic Hamstring Curl", "fr": "Nordic curl"},
+    "primary": ["hamstrings"], "secondary": ["glutes", "calves"],
+    "steps": {
+      "en": ["Kneel on a pad with your ankles anchored under something solid.", "Keep a straight line from knees to head, hips extended.", "Lower your body forward as slowly as you can using your hamstrings.", "Catch yourself with your hands and push back up to the start."],
+      "fr": ["À genoux sur un tapis, chevilles bloquées sous un appui solide.", "Gardez le corps aligné des genoux à la tête, hanches tendues.", "Descendez vers l'avant le plus lentement possible en freinant avec les ischios.", "Rattrapez-vous avec les mains et repoussez pour revenir."]
+    },
+    "tips": {"en": ["Proven to reduce hamstring injuries in sprinters and footballers."], "fr": ["Réduit prouvé des blessures aux ischios chez les sprinteurs et footballeurs."]}
+  },
+  {
+    "id": "bodyweight-squat", "equipment": "bodyweight", "difficulty": "beginner", "mechanic": "compound", "force": "push", "type": "strength",
+    "name": {"en": "Bodyweight Squat", "fr": "Squat au poids du corps"},
+    "primary": ["quads", "glutes"], "secondary": ["hamstrings", "abs"],
+    "steps": {
+      "en": ["Stand with feet shoulder-width apart, toes turned out slightly.", "Push your hips back and bend your knees, arms forward for balance.", "Sit down until your thighs are at least parallel to the floor.", "Drive through your whole foot to stand back up."],
+      "fr": ["Debout, pieds écartés de la largeur des épaules, pointes légèrement ouvertes.", "Reculez les hanches et fléchissez les genoux, bras devant pour l'équilibre.", "Descendez au moins jusqu'à ce que les cuisses soient parallèles au sol.", "Poussez sur tout le pied pour remonter."]
+    },
+    "tips": {"en": ["Knees track over your toes — never let them cave in."], "fr": ["Les genoux suivent l'axe des pieds : ne les laissez jamais rentrer."]}
+  },
+  {
+    "id": "goblet-squat", "equipment": "kettlebell", "difficulty": "beginner", "mechanic": "compound", "force": "push", "type": "strength",
+    "name": {"en": "Goblet Squat", "fr": "Goblet squat"},
+    "primary": ["quads", "glutes"], "secondary": ["abs", "hamstrings"],
+    "steps": {
+      "en": ["Hold a kettlebell or dumbbell vertically against your chest.", "Stand with feet slightly wider than shoulders.", "Squat down between your knees, keeping the chest tall.", "Stand up by driving through the mid-foot."],
+      "fr": ["Tenez un kettlebell ou un haltère vertical contre la poitrine.", "Pieds légèrement plus larges que les épaules.", "Descendez entre les genoux en gardant la poitrine haute.", "Remontez en poussant sur le milieu du pied."]
+    },
+    "tips": {"en": ["The front-loaded weight teaches an upright squat — the best way to learn."], "fr": ["La charge devant apprend un squat bien droit : la meilleure porte d'entrée."]}
+  },
+  {
+    "id": "back-squat", "equipment": "barbell", "difficulty": "intermediate", "mechanic": "compound", "force": "push", "type": "strength",
+    "name": {"en": "Barbell Back Squat", "fr": "Squat arrière à la barre"},
+    "primary": ["quads", "glutes"], "secondary": ["hamstrings", "lower_back", "abs"],
+    "steps": {
+      "en": ["Set the bar on your upper back, grip it firmly and unrack with a tight torso.", "Step back, feet shoulder-width, toes slightly out.", "Take a big breath, brace, and sit down until the hips pass knee height.", "Drive up, keeping the chest and hips rising together."],
+      "fr": ["Placez la barre sur le haut du dos, serrez-la et décrochez-la, tronc gainé.", "Reculez, pieds à largeur d'épaules, pointes légèrement ouvertes.", "Inspirez à fond, gainez-vous et descendez jusqu'à ce que les hanches passent sous les genoux.", "Remontez en faisant monter poitrine et hanches ensemble."]
+    },
+    "tips": {"en": ["Set the safety bars just below your bottom position."], "fr": ["Réglez les sécurités juste sous votre position basse."]}
+  },
+  {
+    "id": "front-squat", "equipment": "barbell", "difficulty": "advanced", "mechanic": "compound", "force": "push", "type": "strength",
+    "name": {"en": "Front Squat", "fr": "Squat avant"},
+    "primary": ["quads"], "secondary": ["glutes", "abs", "lower_back"],
+    "steps": {
+      "en": ["Rest the bar on the front of your shoulders, elbows high.", "Stand with feet shoulder-width and brace hard.", "Squat straight down keeping the elbows up and torso upright.", "Drive up through the mid-foot."],
+      "fr": ["Posez la barre sur l'avant des épaules, coudes hauts.", "Pieds à largeur d'épaules, gainez-vous fort.", "Descendez droit en gardant les coudes hauts et le buste vertical.", "Remontez en poussant sur le milieu du pied."]
+    },
+    "tips": {"en": ["If your elbows drop, the bar rolls forward. Think 'elbows to the ceiling'."], "fr": ["Si les coudes tombent, la barre roule. Pensez « coudes au plafond »."]}
+  },
+  {
+    "id": "walking-lunge", "equipment": "dumbbell", "difficulty": "beginner", "mechanic": "compound", "force": "push", "type": "strength",
+    "name": {"en": "Walking Lunge", "fr": "Fentes marchées"},
+    "primary": ["quads", "glutes"], "secondary": ["hamstrings", "calves"],
+    "steps": {
+      "en": ["Stand tall with dumbbells at your sides.", "Step forward and lower until both knees are bent at about 90°.", "Push through the front heel and bring the back leg forward into the next step.", "Keep alternating for the set distance."],
+      "fr": ["Debout, haltères le long du corps.", "Faites un pas en avant et descendez jusqu'à ce que les deux genoux soient à 90°.", "Poussez sur le talon avant et amenez la jambe arrière dans le pas suivant.", "Alternez sur la distance prévue."]
+    },
+    "tips": {"en": ["Longer steps hit the glutes more; shorter steps hit the quads."], "fr": ["Des pas longs ciblent les fessiers, des pas courts les quadriceps."]}
+  },
+  {
+    "id": "bulgarian-split-squat", "equipment": "dumbbell", "difficulty": "intermediate", "mechanic": "compound", "force": "push", "type": "strength",
+    "name": {"en": "Bulgarian Split Squat", "fr": "Squat bulgare"},
+    "primary": ["quads", "glutes"], "secondary": ["hamstrings", "abs"],
+    "steps": {
+      "en": ["Stand in front of a bench and rest the top of your back foot on it.", "Hold dumbbells at your sides with the front foot far enough forward.", "Lower straight down until the front thigh is parallel to the floor.", "Drive through the front foot to stand up. Finish all reps, then switch."],
+      "fr": ["Dos à un banc, posez le dessus du pied arrière dessus.", "Haltères le long du corps, pied avant suffisamment avancé.", "Descendez à la verticale jusqu'à ce que la cuisse avant soit parallèle au sol.", "Poussez sur le pied avant pour remonter. Finissez la série puis changez."]
+    },
+    "tips": {"en": ["Hard, humbling, and one of the best leg builders there is."], "fr": ["Exigeant et humble, mais l'un des meilleurs exercices pour les jambes."]}
+  },
+  {
+    "id": "leg-press", "equipment": "machine", "difficulty": "beginner", "mechanic": "compound", "force": "push", "type": "strength",
+    "name": {"en": "Leg Press", "fr": "Presse à cuisses"},
+    "primary": ["quads", "glutes"], "secondary": ["hamstrings", "calves"],
+    "steps": {
+      "en": ["Sit with your back flat against the pad and feet shoulder-width on the platform.", "Release the safety handles.", "Lower the platform until your knees reach about 90° without the hips lifting.", "Press back up without locking the knees hard."],
+      "fr": ["Assis, dos plaqué contre le dossier, pieds à largeur d'épaules sur la plateforme.", "Débloquez les sécurités.", "Descendez la plateforme jusqu'à environ 90° aux genoux sans décoller le bassin.", "Poussez sans verrouiller brutalement les genoux."]
+    },
+    "tips": {"en": ["Lets you load the legs heavily without loading the spine."], "fr": ["Permet de charger lourd les jambes sans charger la colonne."]}
+  },
+  {
+    "id": "leg-extension", "equipment": "machine", "difficulty": "beginner", "mechanic": "isolation", "force": "push", "type": "strength",
+    "name": {"en": "Leg Extension", "fr": "Leg extension"},
+    "primary": ["quads"], "secondary": [],
+    "steps": {
+      "en": ["Sit with the pad on your lower shins and knees in line with the machine pivot.", "Hold the handles and sit tall.", "Extend your knees until the legs are straight.", "Pause, then lower slowly."],
+      "fr": ["Assis, boudin sur le bas des tibias, genoux alignés avec l'axe de la machine.", "Tenez les poignées et tenez-vous droit.", "Tendez les genoux jusqu'à l'extension complète.", "Marquez une pause, puis redescendez lentement."]
+    },
+    "tips": {"en": ["Excellent for knee rehab and quad definition with moderate loads."], "fr": ["Excellent pour la rééducation du genou et la définition des quadriceps avec des charges modérées."]}
+  },
+  {
+    "id": "step-up", "equipment": "dumbbell", "difficulty": "beginner", "mechanic": "compound", "force": "push", "type": "strength",
+    "name": {"en": "Dumbbell Step-Up", "fr": "Montée sur banc aux haltères"},
+    "primary": ["quads", "glutes"], "secondary": ["hamstrings", "calves"],
+    "steps": {
+      "en": ["Stand facing a knee-height box with dumbbells at your sides.", "Place one whole foot on the box.", "Drive through that foot to stand tall on the box without pushing off the back leg.", "Step down with control and repeat."],
+      "fr": ["Face à une box à hauteur de genou, haltères le long du corps.", "Posez un pied entier sur la box.", "Poussez sur ce pied pour vous redresser sans vous aider de la jambe arrière.", "Redescendez avec contrôle et recommencez."]
+    },
+    "tips": {"en": ["A great sport-specific single-leg drill for runners."], "fr": ["Un excellent exercice unilatéral pour les coureurs."]}
+  },
+  {
+    "id": "standing-calf-raise", "equipment": "bodyweight", "difficulty": "beginner", "mechanic": "isolation", "force": "push", "type": "strength",
+    "name": {"en": "Standing Calf Raise", "fr": "Extension mollets debout"},
+    "primary": ["calves"], "secondary": [],
+    "steps": {
+      "en": ["Stand with the balls of your feet on a step, heels hanging off.", "Lower your heels below the step for a deep stretch.", "Rise as high as you can onto your toes.", "Pause at the top, then lower slowly."],
+      "fr": ["Debout, l'avant des pieds sur une marche, talons dans le vide.", "Descendez les talons sous la marche pour un étirement profond.", "Montez le plus haut possible sur la pointe des pieds.", "Marquez une pause en haut, puis redescendez lentement."]
+    },
+    "tips": {"en": ["Hold a dumbbell or do one leg at a time to progress."], "fr": ["Tenez un haltère ou travaillez sur une jambe pour progresser."]}
+  },
+  {
+    "id": "seated-calf-raise", "equipment": "machine", "difficulty": "beginner", "mechanic": "isolation", "force": "push", "type": "strength",
+    "name": {"en": "Seated Calf Raise", "fr": "Extension mollets assis"},
+    "primary": ["calves"], "secondary": [],
+    "steps": {
+      "en": ["Sit with the pad resting on your lower thighs and the balls of your feet on the platform.", "Release the safety and lower your heels for a full stretch.", "Push up onto your toes as high as possible.", "Pause, then lower slowly."],
+      "fr": ["Assis, boudin sur le bas des cuisses, avant des pieds sur la plateforme.", "Débloquez la sécurité et descendez les talons pour un étirement complet.", "Montez le plus haut possible sur la pointe des pieds.", "Marquez une pause, puis redescendez lentement."]
+    },
+    "tips": {"en": ["Bent knees target the soleus, the deep calf muscle runners rely on."], "fr": ["Genoux fléchis, on cible le soléaire, le muscle profond du mollet sollicité en course."]}
+  },
+  {
+    "id": "box-jump", "equipment": "bodyweight", "difficulty": "intermediate", "mechanic": "compound", "force": "push", "type": "power",
+    "name": {"en": "Box Jump", "fr": "Saut sur box"},
+    "primary": ["quads", "glutes"], "secondary": ["calves", "hamstrings"],
+    "steps": {
+      "en": ["Stand facing a sturdy box, feet hip-width apart.", "Swing your arms back while dipping into a quarter squat.", "Explode up, swinging the arms forward, and land softly on the box in a squat.", "Stand tall, then step down — don't jump down."],
+      "fr": ["Face à une box stable, pieds à largeur de hanches.", "Lancez les bras en arrière en descendant en quart de squat.", "Explosez vers le haut, bras vers l'avant, et réceptionnez-vous en douceur sur la box.", "Redressez-vous puis descendez en marchant, sans sauter."]
+    },
+    "tips": {"en": ["Box height is ego — land quietly; height comes later."], "fr": ["La hauteur de box, c'est de l'ego : atterrissez en silence, la hauteur viendra."]}
+  },
+  {
+    "id": "broad-jump", "equipment": "bodyweight", "difficulty": "intermediate", "mechanic": "compound", "force": "push", "type": "power",
+    "name": {"en": "Broad Jump", "fr": "Saut en longueur sans élan"},
+    "primary": ["glutes", "quads"], "secondary": ["hamstrings", "calves"],
+    "steps": {
+      "en": ["Stand with feet hip-width apart behind a line.", "Swing your arms back and load your hips.", "Jump forward as far as possible, driving the arms forward.", "Stick the landing in a balanced squat, then walk back."],
+      "fr": ["Pieds à largeur de hanches derrière une ligne.", "Lancez les bras en arrière et chargez les hanches.", "Sautez le plus loin possible en projetant les bras vers l'avant.", "Stabilisez la réception en squat équilibré, puis revenez en marchant."]
+    },
+    "tips": {"en": ["Measure your best jump each block — it tracks lower-body power."], "fr": ["Mesurez votre meilleur saut à chaque cycle : il reflète la puissance des jambes."]}
+  },
+  {
+    "id": "power-clean", "equipment": "barbell", "difficulty": "advanced", "mechanic": "compound", "force": "pull", "type": "power",
+    "name": {"en": "Power Clean", "fr": "Épaulé en puissance"},
+    "primary": ["hamstrings", "glutes", "traps"], "secondary": ["quads", "shoulders", "lower_back", "forearms"],
+    "steps": {
+      "en": ["Set up like a deadlift with a hook or overhand grip just outside the legs.", "Lift the bar to mid-thigh with a flat back and the bar close.", "Extend the hips, knees and ankles explosively and shrug.", "Pull yourself under the bar, catching it on your shoulders in a quarter squat with elbows high."],
+      "fr": ["Placez-vous comme pour un soulevé de terre, prise juste à l'extérieur des jambes.", "Montez la barre à mi-cuisse, dos plat, barre près du corps.", "Tendez hanches, genoux et chevilles de façon explosive en haussant les épaules.", "Passez sous la barre et réceptionnez-la sur les épaules en quart de squat, coudes hauts."]
+    },
+    "tips": {"en": ["Learn it with a coach and light weights; technique is everything."], "fr": ["Apprenez-le avec un coach et des charges légères : la technique est primordiale."]}
+  },
+  {
+    "id": "burpee", "equipment": "bodyweight", "difficulty": "intermediate", "mechanic": "compound", "force": "push", "type": "power",
+    "name": {"en": "Burpee", "fr": "Burpee"},
+    "primary": ["quads", "chest"], "secondary": ["shoulders", "abs", "triceps", "glutes"],
+    "steps": {
+      "en": ["From standing, squat and place your hands on the floor.", "Jump your feet back into a plank and do a push-up.", "Jump your feet back toward your hands.", "Explode into a jump with arms overhead."],
+      "fr": ["Debout, accroupissez-vous et posez les mains au sol.", "Sautez pieds en arrière en planche et faites une pompe.", "Ramenez les pieds vers les mains d'un saut.", "Sautez de façon explosive, bras au-dessus de la tête."]
+    },
+    "tips": {"en": ["Pace yourself: steady burpees beat fast sloppy ones."], "fr": ["Gérez le rythme : des burpees réguliers valent mieux que des burpees bâclés."]}
+  },
+  {
+    "id": "jump-squat", "equipment": "bodyweight", "difficulty": "intermediate", "mechanic": "compound", "force": "push", "type": "power",
+    "name": {"en": "Jump Squat", "fr": "Squat sauté"},
+    "primary": ["quads", "glutes"], "secondary": ["calves", "hamstrings"],
+    "steps": {
+      "en": ["Stand with feet shoulder-width apart.", "Squat to roughly parallel with arms back.", "Jump as high as possible, swinging the arms up.", "Land softly through the balls of the feet into the next squat."],
+      "fr": ["Debout, pieds à largeur d'épaules.", "Descendez en squat jusqu'à environ la parallèle, bras en arrière.", "Sautez le plus haut possible en lançant les bras vers le haut.", "Réceptionnez-vous en douceur sur l'avant des pieds et enchaînez."]
+    },
+    "tips": {"en": ["Rest fully between sets: power training is about quality, not fatigue."], "fr": ["Récupérez complètement entre les séries : la puissance exige la qualité, pas la fatigue."]}
+  },
+  {
+    "id": "push-press", "equipment": "barbell", "difficulty": "advanced", "mechanic": "compound", "force": "push", "type": "power",
+    "name": {"en": "Push Press", "fr": "Push press"},
+    "primary": ["shoulders"], "secondary": ["triceps", "quads", "glutes", "abs"],
+    "steps": {
+      "en": ["Hold the bar on the front of your shoulders like an overhead press.", "Dip by bending your knees a few inches, torso vertical.", "Drive explosively with the legs, launching the bar off your shoulders.", "Finish the press with the arms and lock out overhead."],
+      "fr": ["Tenez la barre sur l'avant des épaules comme pour un développé militaire.", "Fléchissez légèrement les genoux, buste vertical.", "Poussez de façon explosive avec les jambes pour lancer la barre.", "Terminez la poussée avec les bras et verrouillez au-dessus de la tête."]
+    },
+    "tips": {"en": ["Transfers leg drive to the upper body — key for throwers and fighters."], "fr": ["Transfère la poussée des jambes vers le haut du corps : clé pour les lanceurs et combattants."]}
+  }
+]

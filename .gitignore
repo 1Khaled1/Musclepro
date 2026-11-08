@@ -1,0 +1,22 @@
+# dependencies & builds
+node_modules/
+frontend/dist/
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+
+# local data & secrets — never commit these
+backend/instance/
+.env
+.env.*
+!.env.example
+*firebase-adminsdk*.json
+service-account*.json
+
+# editors / OS
+.DS_Store
+.idea/
+.vscode/
+*.local

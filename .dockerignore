@@ -1,0 +1,13 @@
+.git
+**/node_modules
+frontend/dist
+**/__pycache__
+**/*.pyc
+**/.pytest_cache
+backend/instance
+.venv
+venv
+.env
+*.local
+**/*firebase-adminsdk*.json
+**/service-account*.json

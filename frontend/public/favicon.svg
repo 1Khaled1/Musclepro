@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="MusclePro">
+  <defs>
+    <linearGradient id="mp-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1b2133"/>
+      <stop offset="1" stop-color="#05070c"/>
+    </linearGradient>
+    <radialGradient id="mp-glow" cx="0.78" cy="0.12" r="0.75">
+      <stop offset="0" stop-color="#ff6a2b" stop-opacity=".38"/>
+      <stop offset="1" stop-color="#ff6a2b" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="mp-m" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#b9c6dc"/>
+    </linearGradient>
+    <linearGradient id="mp-peak" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#ff4d1a"/>
+      <stop offset="1" stop-color="#ffb347"/>
+    </linearGradient>
+    <linearGradient id="mp-rim" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity=".42"/>
+      <stop offset=".5" stop-color="#ffffff" stop-opacity=".04"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity=".14"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="116" fill="url(#mp-bg)"/>
+  <rect width="512" height="512" rx="116" fill="url(#mp-glow)"/>
+  <rect x="3" y="3" width="506" height="506" rx="113" fill="none" stroke="url(#mp-rim)" stroke-width="6"/>
+  <!-- the M: two pillars and a valley -->
+  <path d="M138 384V176l118 128 118-128v208" fill="none" stroke="url(#mp-m)" stroke-width="60" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- the peak: progress, always upward -->
+  <path d="M194 158l62-64 62 64" fill="none" stroke="url(#mp-peak)" stroke-width="40" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

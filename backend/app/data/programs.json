@@ -1,0 +1,246 @@
+[
+  {
+    "id": "foundation-full-body", "level": "beginner", "goal": "general", "days_per_week": 3, "weeks": 6, "minutes": 45,
+    "equipment": ["dumbbell", "kettlebell", "machine", "cable", "bodyweight"],
+    "name": {"en": "Foundation Full Body", "fr": "Fondations Corps Complet"},
+    "summary": {
+      "en": "Your first 6 weeks in the gym. Three full-body sessions a week teach the key movement patterns — squat, hinge, push, pull, carry — with machines and dumbbells you can load safely.",
+      "fr": "Vos 6 premières semaines en salle. Trois séances corps complet par semaine pour apprendre les mouvements clés — squat, charnière de hanche, poussée, tirage, portage — avec des machines et haltères faciles à charger en sécurité."
+    },
+    "progression": [
+      {"en": "Weeks 1–2: pick weights that leave 3 reps in the tank. Focus on form.", "fr": "Semaines 1–2 : choisissez des charges qui laissent 3 répétitions en réserve. Priorité à la technique."},
+      {"en": "Weeks 3–4: when you hit every rep on all sets, add the smallest weight increment next session.", "fr": "Semaines 3–4 : quand toutes les répétitions sont réussies, ajoutez le plus petit incrément de charge à la séance suivante."},
+      {"en": "Weeks 5–6: push the last set to 1–2 reps from failure. Then move to Upper/Lower Strength.", "fr": "Semaines 5–6 : amenez la dernière série à 1–2 répétitions de l'échec. Passez ensuite au programme Haut/Bas Force."}
+    ],
+    "days": [
+      {"id": "a", "name": {"en": "Day A — Squat & Push", "fr": "Jour A — Squat & poussée"}, "exercises": [
+        {"id": "goblet-squat", "sets": 3, "reps": "10", "rest": 90},
+        {"id": "dumbbell-bench-press", "sets": 3, "reps": "10", "rest": 90},
+        {"id": "one-arm-dumbbell-row", "sets": 3, "reps": "10/side", "rest": 60},
+        {"id": "glute-bridge", "sets": 3, "reps": "12", "rest": 60},
+        {"id": "plank", "sets": 3, "reps": "30s", "rest": 45}
+      ]},
+      {"id": "b", "name": {"en": "Day B — Hinge & Pull", "fr": "Jour B — Charnière & tirage"}, "exercises": [
+        {"id": "leg-press", "sets": 3, "reps": "12", "rest": 90},
+        {"id": "lat-pulldown", "sets": 3, "reps": "10", "rest": 90},
+        {"id": "dumbbell-shoulder-press", "sets": 3, "reps": "10", "rest": 75},
+        {"id": "back-extension", "sets": 3, "reps": "12", "rest": 60},
+        {"id": "dead-bug", "sets": 3, "reps": "8/side", "rest": 45}
+      ]},
+      {"id": "c", "name": {"en": "Day C — Single-Leg & Arms", "fr": "Jour C — Unilatéral & bras"}, "exercises": [
+        {"id": "walking-lunge", "sets": 3, "reps": "8/leg", "rest": 90},
+        {"id": "incline-push-up", "sets": 3, "reps": "10", "rest": 60},
+        {"id": "seated-cable-row", "sets": 3, "reps": "10", "rest": 75},
+        {"id": "dumbbell-curl", "sets": 2, "reps": "12", "rest": 45},
+        {"id": "triceps-pushdown", "sets": 2, "reps": "12", "rest": 45},
+        {"id": "farmers-carry", "sets": 3, "reps": "30m", "rest": 60}
+      ]}
+    ]
+  },
+  {
+    "id": "home-bodyweight-starter", "level": "beginner", "goal": "fat_loss", "days_per_week": 3, "weeks": 4, "minutes": 30,
+    "equipment": ["bodyweight"],
+    "name": {"en": "Home Bodyweight Starter", "fr": "Démarrage Maison au Poids du Corps"},
+    "summary": {
+      "en": "No gym, no equipment, no excuses. Thirty-minute sessions that build a strength and conditioning base anywhere — a chair, a table and a floor are all you need.",
+      "fr": "Pas de salle, pas de matériel, pas d'excuses. Des séances de 30 minutes pour bâtir une base de force et de condition physique partout — une chaise, une table et un sol suffisent."
+    },
+    "progression": [
+      {"en": "Each week add 1–2 reps per set, or 5 seconds to timed holds.", "fr": "Chaque semaine, ajoutez 1 à 2 répétitions par série, ou 5 secondes aux exercices chronométrés."},
+      {"en": "Week 3: shorten rest by 15 seconds to raise the conditioning effect.", "fr": "Semaine 3 : réduisez le repos de 15 secondes pour augmenter l'effet cardio."},
+      {"en": "Week 4: swap incline push-ups for full push-ups if you can do 3 × 12.", "fr": "Semaine 4 : remplacez les pompes inclinées par des pompes classiques si vous réussissez 3 × 12."}
+    ],
+    "days": [
+      {"id": "a", "name": {"en": "Day A — Strength Base", "fr": "Jour A — Base de force"}, "exercises": [
+        {"id": "bodyweight-squat", "sets": 3, "reps": "15", "rest": 60},
+        {"id": "incline-push-up", "sets": 3, "reps": "10", "rest": 60},
+        {"id": "inverted-row", "sets": 3, "reps": "8", "rest": 60},
+        {"id": "glute-bridge", "sets": 3, "reps": "15", "rest": 45},
+        {"id": "plank", "sets": 3, "reps": "30s", "rest": 45}
+      ]},
+      {"id": "b", "name": {"en": "Day B — Posture & Core", "fr": "Jour B — Posture & gainage"}, "exercises": [
+        {"id": "push-up", "sets": 3, "reps": "max", "rest": 75},
+        {"id": "bench-dip", "sets": 3, "reps": "10", "rest": 60},
+        {"id": "bird-dog", "sets": 3, "reps": "8/side", "rest": 45},
+        {"id": "side-plank", "sets": 2, "reps": "20s/side", "rest": 45},
+        {"id": "standing-calf-raise", "sets": 3, "reps": "15", "rest": 45}
+      ]},
+      {"id": "c", "name": {"en": "Day C — Conditioning Circuit", "fr": "Jour C — Circuit cardio"}, "exercises": [
+        {"id": "mountain-climber", "sets": 4, "reps": "30s", "rest": 30},
+        {"id": "bodyweight-squat", "sets": 4, "reps": "20", "rest": 30},
+        {"id": "push-up", "sets": 4, "reps": "8", "rest": 30},
+        {"id": "dead-bug", "sets": 3, "reps": "10/side", "rest": 30},
+        {"id": "dead-hang", "sets": 3, "reps": "20s", "rest": 45}
+      ]}
+    ]
+  },
+  {
+    "id": "upper-lower-strength", "level": "intermediate", "goal": "strength", "days_per_week": 4, "weeks": 8, "minutes": 60,
+    "equipment": ["barbell", "dumbbell", "cable", "machine", "bodyweight"],
+    "name": {"en": "Upper / Lower Strength", "fr": "Haut / Bas Force"},
+    "summary": {
+      "en": "Four sessions a week built around the big barbell lifts. Heavy, low-rep main lifts followed by accessory work to bulletproof joints and fill the gaps.",
+      "fr": "Quatre séances par semaine autour des grands mouvements à la barre. Mouvements principaux lourds en faibles répétitions, puis travail complémentaire pour renforcer les articulations et combler les lacunes."
+    },
+    "progression": [
+      {"en": "Main lifts: add 2.5 kg (upper) or 5 kg (lower) each week while all sets are completed.", "fr": "Mouvements principaux : ajoutez 2,5 kg (haut) ou 5 kg (bas) chaque semaine tant que toutes les séries sont réussies."},
+      {"en": "Miss reps two sessions in a row? Drop 10% and build back up.", "fr": "Échec deux séances de suite ? Retirez 10 % et remontez progressivement."},
+      {"en": "Week 8 is a deload: same exercises, half the sets, 60% of the weight.", "fr": "La semaine 8 est une décharge : mêmes exercices, moitié des séries, 60 % de la charge."}
+    ],
+    "days": [
+      {"id": "upper-a", "name": {"en": "Upper A — Bench Focus", "fr": "Haut A — Focus développé couché"}, "exercises": [
+        {"id": "barbell-bench-press", "sets": 4, "reps": "5", "rest": 180},
+        {"id": "bent-over-row", "sets": 4, "reps": "6", "rest": 120},
+        {"id": "overhead-press", "sets": 3, "reps": "6", "rest": 120},
+        {"id": "chin-up", "sets": 3, "reps": "6-8", "rest": 90},
+        {"id": "triceps-pushdown", "sets": 3, "reps": "10", "rest": 60}
+      ]},
+      {"id": "lower-a", "name": {"en": "Lower A — Squat Focus", "fr": "Bas A — Focus squat"}, "exercises": [
+        {"id": "back-squat", "sets": 4, "reps": "5", "rest": 180},
+        {"id": "romanian-deadlift", "sets": 3, "reps": "8", "rest": 120},
+        {"id": "walking-lunge", "sets": 3, "reps": "8/leg", "rest": 90},
+        {"id": "standing-calf-raise", "sets": 3, "reps": "12", "rest": 60},
+        {"id": "cable-crunch", "sets": 3, "reps": "12", "rest": 60}
+      ]},
+      {"id": "upper-b", "name": {"en": "Upper B — Press Focus", "fr": "Haut B — Focus développé militaire"}, "exercises": [
+        {"id": "overhead-press", "sets": 4, "reps": "5", "rest": 180},
+        {"id": "lat-pulldown", "sets": 4, "reps": "8", "rest": 90},
+        {"id": "incline-dumbbell-press", "sets": 3, "reps": "8", "rest": 90},
+        {"id": "seated-cable-row", "sets": 3, "reps": "10", "rest": 75},
+        {"id": "barbell-curl", "sets": 3, "reps": "10", "rest": 60},
+        {"id": "face-pull", "sets": 3, "reps": "15", "rest": 45}
+      ]},
+      {"id": "lower-b", "name": {"en": "Lower B — Deadlift Focus", "fr": "Bas B — Focus soulevé de terre"}, "exercises": [
+        {"id": "deadlift", "sets": 3, "reps": "5", "rest": 180},
+        {"id": "leg-press", "sets": 3, "reps": "10", "rest": 120},
+        {"id": "hip-thrust", "sets": 3, "reps": "8", "rest": 90},
+        {"id": "lying-leg-curl", "sets": 3, "reps": "10", "rest": 60},
+        {"id": "pallof-press", "sets": 3, "reps": "10/side", "rest": 45}
+      ]}
+    ]
+  },
+  {
+    "id": "push-pull-legs", "level": "intermediate", "goal": "hypertrophy", "days_per_week": 6, "weeks": 8, "minutes": 70,
+    "equipment": ["barbell", "dumbbell", "cable", "machine", "bodyweight"],
+    "name": {"en": "Push · Pull · Legs Hypertrophy", "fr": "Push · Pull · Legs Hypertrophie"},
+    "summary": {
+      "en": "The classic muscle-building split. Run the three days twice a week for high weekly volume per muscle, with moderate reps taken close to failure.",
+      "fr": "Le grand classique de la prise de muscle. Enchaînez les trois jours deux fois par semaine pour un volume hebdomadaire élevé par muscle, en répétitions modérées proches de l'échec."
+    },
+    "progression": [
+      {"en": "Use double progression: when you hit the top of the rep range on every set, add weight.", "fr": "Double progression : quand vous atteignez le haut de la fourchette sur toutes les séries, augmentez la charge."},
+      {"en": "Keep 1–2 reps in reserve on compounds; isolation work can go to failure.", "fr": "Gardez 1 à 2 répétitions en réserve sur les polyarticulaires ; les isolations peuvent aller à l'échec."},
+      {"en": "Short on time? Run it 3 days a week — progress is slower but steady.", "fr": "Peu de temps ? Faites-le 3 jours par semaine : la progression est plus lente mais régulière."}
+    ],
+    "days": [
+      {"id": "push", "name": {"en": "Push — Chest, Shoulders, Triceps", "fr": "Push — Pectoraux, épaules, triceps"}, "exercises": [
+        {"id": "barbell-bench-press", "sets": 4, "reps": "6-8", "rest": 150},
+        {"id": "incline-dumbbell-press", "sets": 3, "reps": "8-10", "rest": 90},
+        {"id": "dumbbell-shoulder-press", "sets": 3, "reps": "10", "rest": 90},
+        {"id": "lateral-raise", "sets": 4, "reps": "12-15", "rest": 45},
+        {"id": "cable-chest-fly", "sets": 3, "reps": "12", "rest": 60},
+        {"id": "overhead-triceps-extension", "sets": 3, "reps": "12", "rest": 60}
+      ]},
+      {"id": "pull", "name": {"en": "Pull — Back, Biceps, Rear Delts", "fr": "Pull — Dos, biceps, arrière d'épaule"}, "exercises": [
+        {"id": "pull-up", "sets": 4, "reps": "6-10", "rest": 120},
+        {"id": "bent-over-row", "sets": 4, "reps": "8", "rest": 120},
+        {"id": "seated-cable-row", "sets": 3, "reps": "10", "rest": 75},
+        {"id": "face-pull", "sets": 3, "reps": "15", "rest": 45},
+        {"id": "hammer-curl", "sets": 3, "reps": "12", "rest": 60},
+        {"id": "barbell-shrug", "sets": 3, "reps": "12", "rest": 60}
+      ]},
+      {"id": "legs", "name": {"en": "Legs — Quads, Hamstrings, Calves", "fr": "Legs — Quadriceps, ischios, mollets"}, "exercises": [
+        {"id": "back-squat", "sets": 4, "reps": "6-8", "rest": 180},
+        {"id": "romanian-deadlift", "sets": 3, "reps": "8-10", "rest": 120},
+        {"id": "bulgarian-split-squat", "sets": 3, "reps": "10/leg", "rest": 90},
+        {"id": "leg-extension", "sets": 3, "reps": "12-15", "rest": 60},
+        {"id": "lying-leg-curl", "sets": 3, "reps": "12", "rest": 60},
+        {"id": "seated-calf-raise", "sets": 4, "reps": "15", "rest": 45}
+      ]}
+    ]
+  },
+  {
+    "id": "athlete-power-speed", "level": "pro", "goal": "power", "days_per_week": 4, "weeks": 6, "minutes": 75,
+    "equipment": ["barbell", "dumbbell", "kettlebell", "cable", "bodyweight", "band"],
+    "name": {"en": "Athlete Power & Speed", "fr": "Athlète Puissance & Vitesse"},
+    "summary": {
+      "en": "For competitive athletes in team and field sports. Explosive jumps and Olympic-style pulls come first while you are fresh, followed by heavy strength and injury-proofing work.",
+      "fr": "Pour les athlètes en sports collectifs et de terrain. Les sauts explosifs et tirages olympiques passent en premier, à frais, suivis de la force lourde et du travail de prévention des blessures."
+    },
+    "progression": [
+      {"en": "Power work: every rep at maximal intent. Stop the set if speed visibly drops.", "fr": "Travail de puissance : chaque répétition à intention maximale. Arrêtez la série si la vitesse chute visiblement."},
+      {"en": "Strength lifts: start at 75% of 1RM, add 2.5% per week up to 87.5%.", "fr": "Mouvements de force : démarrez à 75 % du 1RM, ajoutez 2,5 % par semaine jusqu'à 87,5 %."},
+      {"en": "In season, keep days 1 and 2 only and cut sets by a third.", "fr": "En saison, gardez seulement les jours 1 et 2 et réduisez les séries d'un tiers."}
+    ],
+    "days": [
+      {"id": "lower-power", "name": {"en": "Day 1 — Lower Power", "fr": "Jour 1 — Puissance bas du corps"}, "exercises": [
+        {"id": "box-jump", "sets": 5, "reps": "3", "rest": 90},
+        {"id": "power-clean", "sets": 5, "reps": "3", "rest": 150},
+        {"id": "back-squat", "sets": 4, "reps": "4", "rest": 180},
+        {"id": "nordic-curl", "sets": 3, "reps": "5", "rest": 90},
+        {"id": "pallof-press", "sets": 3, "reps": "10/side", "rest": 45}
+      ]},
+      {"id": "upper-power", "name": {"en": "Day 2 — Upper Power", "fr": "Jour 2 — Puissance haut du corps"}, "exercises": [
+        {"id": "push-press", "sets": 5, "reps": "3", "rest": 150},
+        {"id": "barbell-bench-press", "sets": 4, "reps": "4", "rest": 150},
+        {"id": "pull-up", "sets": 4, "reps": "5", "rest": 120},
+        {"id": "one-arm-dumbbell-row", "sets": 3, "reps": "8/side", "rest": 75},
+        {"id": "face-pull", "sets": 3, "reps": "15", "rest": 45}
+      ]},
+      {"id": "elastic", "name": {"en": "Day 3 — Speed & Elasticity", "fr": "Jour 3 — Vitesse & élasticité"}, "exercises": [
+        {"id": "broad-jump", "sets": 5, "reps": "3", "rest": 90},
+        {"id": "jump-squat", "sets": 4, "reps": "5", "rest": 90},
+        {"id": "kettlebell-swing", "sets": 4, "reps": "10", "rest": 75},
+        {"id": "bulgarian-split-squat", "sets": 3, "reps": "6/leg", "rest": 90},
+        {"id": "hanging-leg-raise", "sets": 3, "reps": "10", "rest": 60}
+      ]},
+      {"id": "robustness", "name": {"en": "Day 4 — Strength & Robustness", "fr": "Jour 4 — Force & robustesse"}, "exercises": [
+        {"id": "front-squat", "sets": 4, "reps": "5", "rest": 150},
+        {"id": "romanian-deadlift", "sets": 3, "reps": "6", "rest": 120},
+        {"id": "chest-dip", "sets": 3, "reps": "8", "rest": 90},
+        {"id": "farmers-carry", "sets": 4, "reps": "30m", "rest": 75},
+        {"id": "side-plank", "sets": 3, "reps": "30s/side", "rest": 45}
+      ]}
+    ]
+  },
+  {
+    "id": "peak-strength-block", "level": "advanced", "goal": "strength", "days_per_week": 4, "weeks": 4, "minutes": 75,
+    "equipment": ["barbell", "dumbbell", "cable", "machine", "bodyweight"],
+    "name": {"en": "Peak Strength Block", "fr": "Bloc Pic de Force"},
+    "summary": {
+      "en": "A four-week peaking block for experienced lifters testing a new max. One heavy day per lift, low reps, long rest and focused accessories.",
+      "fr": "Un bloc de pic de quatre semaines pour pratiquants confirmés qui veulent tester un nouveau maximum. Un jour lourd par mouvement, peu de répétitions, de longs repos et des compléments ciblés."
+    },
+    "progression": [
+      {"en": "Week 1: 5 × 3 at 82%. Week 2: 5 × 3 at 86%. Week 3: 4 × 2 at 90%.", "fr": "Semaine 1 : 5 × 3 à 82 %. Semaine 2 : 5 × 3 à 86 %. Semaine 3 : 4 × 2 à 90 %."},
+      {"en": "Week 4: work up to a new single, then rest 3–4 days.", "fr": "Semaine 4 : montez jusqu'à un nouveau maximum sur une répétition, puis reposez-vous 3 à 4 jours."},
+      {"en": "Accessories: stay at RPE 7. Recovery is the priority this block.", "fr": "Compléments : restez à RPE 7. La récupération est la priorité de ce bloc."}
+    ],
+    "days": [
+      {"id": "squat", "name": {"en": "Day 1 — Squat", "fr": "Jour 1 — Squat"}, "exercises": [
+        {"id": "back-squat", "sets": 5, "reps": "3", "rest": 240},
+        {"id": "front-squat", "sets": 3, "reps": "5", "rest": 150},
+        {"id": "lying-leg-curl", "sets": 3, "reps": "8", "rest": 75},
+        {"id": "plank", "sets": 3, "reps": "45s", "rest": 60}
+      ]},
+      {"id": "bench", "name": {"en": "Day 2 — Bench", "fr": "Jour 2 — Développé couché"}, "exercises": [
+        {"id": "barbell-bench-press", "sets": 5, "reps": "3", "rest": 240},
+        {"id": "close-grip-bench-press", "sets": 3, "reps": "5", "rest": 150},
+        {"id": "pull-up", "sets": 4, "reps": "6", "rest": 120},
+        {"id": "face-pull", "sets": 3, "reps": "15", "rest": 45}
+      ]},
+      {"id": "deadlift", "name": {"en": "Day 3 — Deadlift", "fr": "Jour 3 — Soulevé de terre"}, "exercises": [
+        {"id": "deadlift", "sets": 5, "reps": "2", "rest": 240},
+        {"id": "romanian-deadlift", "sets": 3, "reps": "5", "rest": 150},
+        {"id": "bent-over-row", "sets": 4, "reps": "6", "rest": 120},
+        {"id": "hanging-leg-raise", "sets": 3, "reps": "8", "rest": 60}
+      ]},
+      {"id": "press", "name": {"en": "Day 4 — Overhead Press", "fr": "Jour 4 — Développé militaire"}, "exercises": [
+        {"id": "overhead-press", "sets": 5, "reps": "3", "rest": 210},
+        {"id": "incline-dumbbell-press", "sets": 3, "reps": "8", "rest": 90},
+        {"id": "chin-up", "sets": 3, "reps": "6", "rest": 120},
+        {"id": "farmers-carry", "sets": 3, "reps": "40m", "rest": 90}
+      ]}
+    ]
+  }
+]

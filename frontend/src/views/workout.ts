@@ -1,0 +1,251 @@
+/** Live workout logger: per-set weight + unit (kg/lbs) + reps, rest timer,
+ *  autosaved draft (survives reloads), save to Firebase via the API. */
+import { api } from '../api';
+import { fmtReps, loc, t } from '../i18n';
+import { navigate, type View } from '../router';
+import { loadDraft, saveDraft, store } from '../store';
+import type { DraftWorkout, Exercise, LoggedSet } from '../types';
+import { glass, html, raw } from '../ui/dom';
+import { icon } from '../ui/icons';
+import { toast, toastError } from '../ui/toast';
+
+function clock(seconds: number): string {
+  const s = Math.max(0, Math.floor(seconds));
+  const h = Math.floor(s / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  const ss = String(s % 60).padStart(2, '0');
+  return h ? `${h}:${String(m).padStart(2, '0')}:${ss}` : `${m}:${ss}`;
+}
+
+export const workoutView: View = async (root) => {
+  let draft = loadDraft();
+  let exercises: Exercise[] = [];
+  try {
+    exercises = await api.exercises();
+  } catch (err) {
+    toastError(err);
+  }
+  const byId = new Map(exercises.map((e) => [e.id, e]));
+
+  if (!draft) {
+    root.innerHTML = glass(
+      html`<div class="empty" style="padding:48px 16px">
+        ${icon('timer')}<h2>${t('wo.none')}</h2><p>${t('wo.noneLead')}</p>
+        <div class="row" style="justify-content:center">
+          <a class="btn btn-primary" href="/programs">${icon('calendar')} ${t('nav.programs')}</a>
+          <a class="btn" href="/generator">${icon('spark')} ${t('nav.generator')}</a>
+          <a class="btn" href="/exercises">${icon('library')} ${t('nav.exercises')}</a>
+        </div>
+      </div>`,
+    );
+    return;
+  }
+
+  let restEnd = 0;
+  let saving = false;
+  const persist = () => saveDraft(draft);
+
+  const setRow = (ei: number, si: number, s: LoggedSet) => html`
+    <div class="set-row${s.done ? ' is-done' : ''}" data-ei="${ei}" data-si="${si}">
+      <span class="set-n">${si + 1}</span>
+      <label><span class="visually-hidden">${t('wo.weight')} ${si + 1}</span>
+        <input class="input input-num" type="number" inputmode="decimal" min="0" max="2000" step="0.5" data-field="weight" value="${s.weight || ''}" placeholder="0" /></label>
+      <button class="unit-toggle" type="button" data-act="unit" aria-label="${t('wo.toggleUnit')}">${t(`common.${s.unit}`)}</button>
+      <label><span class="visually-hidden">${t('wo.reps')} ${si + 1}</span>
+        <input class="input input-num" type="number" inputmode="numeric" min="0" max="1000" step="1" data-field="reps" value="${s.reps}" /></label>
+      <button class="done-btn" type="button" data-act="done" aria-pressed="${String(s.done)}" aria-label="${t('wo.markDone')} ${si + 1}">${icon('check')}</button>
+      <span></span>
+    </div>`;
+
+  const exerciseCard = (item: DraftWorkout['items'][number], ei: number) => {
+    const ex = byId.get(item.id);
+    return glass(
+      html`
+        <div class="row between" style="align-items:flex-start">
+          <div>
+            <h3><a href="/exercises/${item.id}">${ex ? loc(ex.name) : item.id}</a></h3>
+            ${item.target ? raw(html`<span class="muted" style="font-size:.82rem">${t('wo.target', { ...item.target, reps: fmtReps(item.target.reps) })}</span>`) : ''}
+          </div>
+          <button class="btn btn-ghost btn-icon btn-sm" type="button" data-act="remove-ex" data-ei="${ei}" aria-label="${t('wo.removeExercise')}">${icon('trash', 'icon-sm')}</button>
+        </div>
+        <div class="set-grid">
+          <div class="set-row head" aria-hidden="true"><span>${t('wo.set')}</span><span>${t('wo.weight')}</span><span>${t('wo.unit')}</span><span>${t('wo.reps')}</span><span>${t('wo.done')}</span><span></span></div>
+          ${raw(item.sets.map((s, si) => setRow(ei, si, s)).join(''))}
+        </div>
+        <div class="row">
+          <button class="btn btn-sm" type="button" data-act="add-set" data-ei="${ei}">${icon('plus', 'icon-sm')} ${t('wo.addSet')}</button>
+          ${item.sets.length > 1 ? raw(html`<button class="btn btn-sm btn-ghost" type="button" data-act="remove-set" data-ei="${ei}">${icon('minus', 'icon-sm')} ${t('wo.removeSet')}</button>`) : ''}
+        </div>`,
+      { cls: 'ex-log', delay: Math.min(ei, 6) * 40 },
+    );
+  };
+
+  const render = () => {
+    if (!draft) return;
+    root.innerHTML = html`
+      ${raw(glass(html`
+        <div>
+          <span class="muted" style="font-size:.78rem;font-weight:700">${t('wo.elapsed')}</span>
+          <div class="timer" id="elapsed">0:00</div>
+        </div>
+        <span id="rest"></span>
+        <div class="row">
+          <button class="btn btn-sm btn-ghost btn-danger" type="button" data-act="discard">${t('wo.discard')}</button>
+          <button class="btn btn-primary" type="button" data-act="finish">${icon('check')} ${t('wo.finish')}</button>
+        </div>`, { cls: 'session-bar no-enter' }))}
+      <div class="stack" style="margin-top:18px">
+        <label class="field"><span>${t('wo.name')}</span>
+          <input class="input" type="text" maxlength="120" data-field="title" value="${draft.title}" /></label>
+        ${raw(draft.items.map(exerciseCard).join(''))}
+        ${raw(glass(html`
+          <label class="field"><span>${t('wo.addExercise')}</span>
+            <select class="select" data-act="add-ex">
+              <option value="">${t('wo.pickExercise')}</option>
+              ${raw([...exercises].sort((a, b) => loc(a.name).localeCompare(loc(b.name))).map((e) => html`<option value="${e.id}">${loc(e.name)}</option>`).join(''))}
+            </select></label>
+          <label class="field" style="margin-top:14px"><span>${t('wo.notes')}</span>
+            <textarea class="input textarea" maxlength="1000" data-field="notes" placeholder="${t('wo.notesPlaceholder')}">${draft.notes}</textarea></label>`))}
+        ${store.user ? '' : raw(html`<div class="panel tip">${icon('lock')}<div><p>${t('wo.loginToSave')}</p><a class="link" href="/login?next=/workout">${t('nav.login')}</a></div></div>`)}
+      </div>`;
+    tick();
+  };
+
+  const tick = () => {
+    const el = root.querySelector('#elapsed');
+    if (!el || !draft) return;
+    el.textContent = clock((Date.now() - draft.started_at) / 1000);
+    const restEl = root.querySelector('#rest')!;
+    const left = (restEnd - Date.now()) / 1000;
+    if (left > 0) {
+      restEl.innerHTML = html`<span class="rest-pill" role="timer" aria-live="off">${icon('timer', 'icon-sm')} ${t('wo.rest')} ${clock(left)}
+        <button class="btn btn-sm btn-ghost" type="button" data-act="skip-rest" style="--btn-h:28px">${t('wo.skipRest')}</button></span>`;
+    } else if (restEl.innerHTML) {
+      restEl.innerHTML = '';
+      if (restEnd) {
+        restEnd = 0;
+        navigator.vibrate?.(200);
+      }
+    }
+  };
+  const timer = window.setInterval(tick, 1000);
+
+  root.addEventListener('input', (e) => {
+    if (!draft) return;
+    const el = e.target as HTMLInputElement;
+    const field = el.dataset.field;
+    if (field === 'title') draft.title = el.value;
+    else if (field === 'notes') draft.notes = el.value;
+    else if (field === 'weight' || field === 'reps') {
+      const row = el.closest<HTMLElement>('.set-row')!;
+      const set = draft.items[Number(row.dataset.ei)].sets[Number(row.dataset.si)];
+      const v = parseFloat(el.value);
+      set[field] = Number.isFinite(v) ? Math.max(0, field === 'reps' ? Math.round(v) : v) : 0;
+    } else return;
+    persist();
+  });
+
+  root.addEventListener('change', (e) => {
+    const el = e.target as HTMLSelectElement;
+    if (el.dataset.act !== 'add-ex' || !el.value || !draft) return;
+    draft.items.push({
+      id: el.value,
+      sets: Array.from({ length: 3 }, () => ({ reps: 10, weight: 0, unit: store.unit, done: false })),
+    });
+    persist();
+    render();
+  });
+
+  root.addEventListener('click', async (e) => {
+    const btn = (e.target as HTMLElement).closest<HTMLElement>('[data-act]');
+    if (!btn || !draft || btn.tagName === 'SELECT') return;
+    const act = btn.dataset.act;
+    const row = btn.closest<HTMLElement>('.set-row');
+    const ei = Number(row?.dataset.ei ?? btn.dataset.ei);
+    const si = Number(row?.dataset.si);
+
+    switch (act) {
+      case 'unit': {
+        const set = draft.items[ei].sets[si];
+        set.unit = set.unit === 'kg' ? 'lbs' : 'kg';
+        btn.textContent = t(`common.${set.unit}`);
+        persist();
+        return;
+      }
+      case 'done': {
+        const set = draft.items[ei].sets[si];
+        set.done = !set.done;
+        btn.setAttribute('aria-pressed', String(set.done));
+        row?.classList.toggle('is-done', set.done);
+        if (set.done) restEnd = Date.now() + (draft.items[ei].target?.rest ?? 90) * 1000;
+        persist();
+        tick();
+        return;
+      }
+      case 'skip-rest':
+        restEnd = 0;
+        tick();
+        return;
+      case 'add-set': {
+        const sets = draft.items[ei].sets;
+        const last = sets[sets.length - 1];
+        sets.push({ reps: last?.reps ?? 10, weight: last?.weight ?? 0, unit: last?.unit ?? store.unit, done: false });
+        break;
+      }
+      case 'remove-set':
+        draft.items[ei].sets.pop();
+        break;
+      case 'remove-ex':
+        draft.items.splice(ei, 1);
+        break;
+      case 'discard':
+        if (!confirm(t('wo.discardConfirm'))) return;
+        draft = null;
+        saveDraft(null);
+        navigate('/');
+        return;
+      case 'finish':
+        await finish();
+        return;
+      default:
+        return;
+    }
+    persist();
+    render();
+  });
+
+  async function finish() {
+    if (!draft || saving) return;
+    if (!store.user) {
+      navigate('/login?next=/workout');
+      return;
+    }
+    const entries = draft.items
+      .map((it) => ({ exercise_id: it.id, sets: it.sets.filter((s) => s.done) }))
+      .filter((it) => it.sets.length);
+    if (!entries.length) {
+      toast(t('wo.nothingDone'), 'error');
+      return;
+    }
+    saving = true;
+    try {
+      await api.saveWorkout({
+        title: draft.title.trim() || t('wo.custom'),
+        notes: draft.notes,
+        duration_min: Math.min(600, Math.round((Date.now() - draft.started_at) / 60000)),
+        entries,
+        ...(draft.program_id ? { program_id: draft.program_id, day_id: draft.day_id, week: draft.week } : {}),
+      });
+      draft = null;
+      saveDraft(null);
+      toast(t('wo.saved'));
+      navigate('/history');
+    } catch (err) {
+      toastError(err);
+    } finally {
+      saving = false;
+    }
+  }
+
+  render();
+  return () => window.clearInterval(timer);
+};
