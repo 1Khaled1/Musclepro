@@ -75,8 +75,8 @@ Shipped and running:
 - **67 exercises** with step-by-step form and coach tips, in EN/FR.
 - **6 programs** from beginner to pro: Foundation Full Body, Home Bodyweight
   Starter, Upper/Lower Strength, Push·Pull·Legs, Athlete Power & Speed, Peak
-  Strength Block — periodized week by week with Coach Khalil Haded: phases,
-  weekly sets × reps × effort (RPE or % 1RM) and deload weeks.
+  Strength Block — periodized week by week: phases, weekly
+  sets × reps × effort (RPE or % 1RM) and deload weeks.
 - **Workout generator** — goal × level × time × equipment × muscles.
 - **Workout logger** — per-set kg/lbs, rest timer, autosaved drafts.
 - **Progress** — streaks, weekly volume, estimated 1RM records, weekly muscle
@@ -187,7 +187,7 @@ These are targets to aim for, not current results.
 d'entraînement qui part du corps humain — une carte musculaire
 professionnelle — pour guider chacun, du débutant à
 l'athlète de haut niveau : exercices détaillés étape par étape, programmes
-périodisés semaine par semaine avec le coach Khalil Haded, générateur de séances et suivi des progrès, en français et
+périodisés semaine par semaine, générateur de séances et suivi des progrès, en français et
 en anglais. Nos principes : l'anatomie d'abord, la technique avant la charge,
 un design premium sans publicité pendant l'entraînement, et le respect de la
 vie privée. Prochaines étapes : mise en production, vidéos des exercices, progression intelligente, carte de récupération musculaire

@@ -138,8 +138,7 @@ Free-plan notes: the service sleeps after ~15 min idle and takes a few seconds t
 
 ## Authors
 
-Developed by **Khaled Bel Hedi** & **Coach Khalil Haded**. Training programs are
-written with Coach Khalil Haded.
+Developed by **Khaled Bel Hedi** & **Coach Khalil Haded**.
 
 ## Anatomy assets & credits
 
