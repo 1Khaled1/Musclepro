@@ -7,7 +7,8 @@
 <p align="center">
   <b>Pick a muscle. Master the move.</b><br />
   Interactive muscle map · 67 exercises with step-by-step form · programs from beginner to pro athlete · workout tracker<br />
-  <sub>English &amp; Français · Liquid Glass UI · runs on Render's free plan with Firebase</sub>
+  <sub>English &amp; Français · Liquid Glass UI · runs on Render's free plan with Firebase</sub><br />
+  <a href="VISION.md"><b>Product vision →</b></a>
 </p>
 
 <p align="center">
