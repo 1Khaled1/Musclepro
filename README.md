@@ -6,31 +6,31 @@
 
 <p align="center">
   <b>Pick a muscle. Master the move.</b><br />
-  Interactive 3D muscle map · 67 exercises with step-by-step form · programs from beginner to pro athlete · workout tracker<br />
+  Interactive muscle map · 67 exercises with step-by-step form · programs from beginner to pro athlete · workout tracker<br />
   <sub>English &amp; Français · Liquid Glass UI · runs on Render's free plan with Firebase</sub>
 </p>
 
 <p align="center">
-  <img src="docs/screenshots/home-dark.jpg" alt="MusclePro home: 3D body map with the chest selected" width="860" />
+  <img src="docs/screenshots/home-dark.jpg" alt="MusclePro home: muscle map with the chest selected" width="860" />
 </p>
 
-| Exercise detail | Light theme · Français | Mobile hamburger menu |
-| --- | --- | --- |
-| <img src="docs/screenshots/exercise-dark.jpg" width="300" alt="Exercise page" /> | <img src="docs/screenshots/home-light-fr.jpg" width="300" alt="Light theme in French" /> | <img src="docs/screenshots/mobile-menu.jpg" width="150" alt="Mobile menu" /> |
+| Exercise detail | Light theme · Français | Mobile muscle map | Hamburger menu |
+| --- | --- | --- | --- |
+| <img src="docs/screenshots/exercise-dark.jpg" width="280" alt="Exercise page with front and back muscle map" /> | <img src="docs/screenshots/home-light-fr.jpg" width="280" alt="Light theme in French" /> | <img src="docs/screenshots/mobile-map.jpg" width="140" alt="Muscle map on mobile" /> | <img src="docs/screenshots/mobile-menu.jpg" width="140" alt="Mobile menu" /> |
 
 ---
 
 ## Features
 
 **Train**
-- **3D body map** (Three.js + custom GLSL): drag to rotate, tap any of 14 muscle groups, Front/Back and Male/Female models. Muscles glow by role — primary, secondary, or how much you trained them this week.
+- **Muscle map**: an original hand-drawn anatomy chart — front and back, male and female — with 14 tappable muscle groups (mouse, touch or keyboard) and a thumbnail to flip the body. Muscles light up by role: primary, secondary, or how much you trained them this week. A **Three.js + GLSL** light field glows behind the figure and travels to the muscle you pick.
 - **Exercise library**: 67 exercises, each with numbered steps and a coach tip in EN/FR, filters for muscle, equipment, level and search (accent-insensitive: “squat bulgare” works).
 - **Programs for every level**: Foundation Full Body, Home Bodyweight Starter, Upper/Lower Strength, Push·Pull·Legs, Athlete Power & Speed, Peak Strength Block — weekly schedule, progression rules, completion tracking.
 - **Workout generator**: goal × level × time × equipment × target muscles → a balanced session ordered like a coach would (power first, compounds, isolation, core last).
 
 **Track**
 - **Live workout logger**: per-set weight with **per-set kg/lbs**, reps, done check, automatic rest timer, autosaved draft (survives reloads).
-- **Progress**: sessions, week streak, total volume, 8-week volume chart, estimated 1RM records (Epley), 3D “muscles trained this week” heat map, **CSV export**.
+- **Progress**: sessions, week streak, total volume, 8-week volume chart, estimated 1RM records (Epley), “muscles trained this week” heat map on the body, **CSV export**.
 - **Favorites** on any exercise.
 
 **Accounts**
@@ -45,7 +45,7 @@
 
 | Layer | Tech |
 | --- | --- |
-| Front-end | **Vite**, **TypeScript** (no framework), **Three.js** + **GLSL** shaders, CSS design tokens |
+| Front-end | **Vite**, **TypeScript** (no framework), SVG muscle map, **Three.js** + **GLSL** light-field shader, CSS design tokens |
 | Back-end | **Flask** 3 (REST API + serves the built front-end), Gunicorn |
 | Database | **Firebase Realtime Database** via `firebase-admin` (server-side only) |
 | Auth | scrypt password hashes, signed JWT in an `HttpOnly` `SameSite=Lax` cookie |
@@ -150,7 +150,8 @@ backend/
   app/data/              exercises.json, programs.json (EN/FR)
   tests/                 pytest suite
 frontend/
-  src/three/             BodyScene, procedural anatomy, GLSL shaders
+  src/ui/anatomy.ts      muscle-map artwork (front/back, male/female)
+  src/three/             AuraBackdrop + GLSL light-field shader
   src/views/             one module per page (code-split)
   src/ui/                shell + hamburger drawer, glass helpers, icons
   src/i18n/              en.ts, fr.ts
@@ -176,6 +177,6 @@ Dockerfile · render.yaml · database.rules.json
 
 ### En français
 
-MusclePro est une application d'entraînement : carte musculaire 3D interactive, 67 exercices détaillés étape par étape, programmes du débutant à l'athlète pro, générateur de séances et suivi des performances (kg/lb par série, records, export CSV). Interface « Liquid Glass » en mode sombre/clair, menu hamburger, comptes utilisateurs et gestion des utilisateurs pour les administrateurs, entièrement bilingue anglais/français. Déploiement gratuit sur Render avec Firebase Realtime Database : suivez les sections *Firebase setup* et *Deploy on Render* ci-dessus.
+MusclePro est une application d'entraînement : carte musculaire interactive (face/dos, homme/femme), 67 exercices détaillés étape par étape, programmes du débutant à l'athlète pro, générateur de séances et suivi des performances (kg/lb par série, records, export CSV). Interface « Liquid Glass » en mode sombre/clair, menu hamburger, comptes utilisateurs et gestion des utilisateurs pour les administrateurs, entièrement bilingue anglais/français. Déploiement gratuit sur Render avec Firebase Realtime Database : suivez les sections *Firebase setup* et *Deploy on Render* ci-dessus.
 
 > Health disclaimer: MusclePro provides general training information, not medical advice. Check with a health professional before starting a new program.

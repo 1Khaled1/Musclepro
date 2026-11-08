@@ -3,7 +3,7 @@ import { formatNumber, t } from '../i18n';
 import type { View } from '../router';
 import { store } from '../store';
 import { MUSCLES, type Exercise, type Muscle, type Program, type Stats } from '../types';
-import { mountBody, type BodyViewer } from '../ui/bodyViewer';
+import { bestView, mountBody, type BodyViewer } from '../ui/bodyViewer';
 import { bindFavorites, exerciseTile, programCard } from '../ui/components';
 import { glass, html, qs, raw } from '../ui/dom';
 import { scanBeams } from '../ui/effects';
@@ -101,7 +101,7 @@ export const homeView: View = async (root, ctx) => {
   const bodyHost = qs('#body-host', root);
   const viewerPromise = mountBody(bodyHost, {
     onSelect: (m) => select(m, true),
-    view: initial && ['triceps', 'traps', 'lats', 'lower_back', 'glutes', 'hamstrings', 'calves'].includes(initial) ? 'back' : 'front',
+    view: initial ? bestView(initial) : 'front',
   }).then((v) => {
     viewer = v;
     if (selected) v.setSelected(selected);

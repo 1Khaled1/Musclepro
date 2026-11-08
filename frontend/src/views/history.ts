@@ -192,7 +192,7 @@ export const historyView: View = async (root, ctx) => {
   for (const [m, sets] of Object.entries(stats.muscle_sets_7d)) {
     levels[m as Muscle] = Math.min(1, 0.2 + (sets ?? 0) / 12);
   }
-  const viewerPromise = mountBody(qs('#heat-body', root), { compact: true, autoRotate: true, hint: false }).then((v) => {
+  const viewerPromise = mountBody(qs('#heat-body', root), { layout: 'dual' }).then((v) => {
     v.setLevels(levels);
     return v;
   });

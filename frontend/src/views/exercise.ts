@@ -9,8 +9,6 @@ import { glass, html, qs, raw } from '../ui/dom';
 import { icon } from '../ui/icons';
 import { errorMessage, toast, toastError } from '../ui/toast';
 
-const BACK: Muscle[] = ['triceps', 'traps', 'lats', 'lower_back', 'glutes', 'hamstrings', 'calves'];
-
 export const exerciseView: View = async (root, ctx) => {
   root.innerHTML = loadingBlock(2);
   let data: Awaited<ReturnType<typeof api.exercise>>;
@@ -24,7 +22,6 @@ export const exerciseView: View = async (root, ctx) => {
   const fav = store.favorites.has(ex.id);
   const name = loc(ex.name);
   document.title = `${name} — MusclePro`;
-  const backFirst = BACK.includes(ex.primary[0]);
 
   root.innerHTML = html`
     <a class="back-link" href="/exercises?muscle=${ex.primary[0]}">${icon('left', 'icon-sm')} ${t('nav.exercises')}</a>
@@ -86,12 +83,7 @@ export const exerciseView: View = async (root, ctx) => {
   const levels: Partial<Record<Muscle, number>> = {};
   ex.secondary.forEach((m) => (levels[m] = 0.42));
   ex.primary.forEach((m) => (levels[m] = 1));
-  const viewerPromise = mountBody(qs('#ex-body', root), {
-    compact: true,
-    autoRotate: true,
-    hint: false,
-    view: backFirst ? 'back' : 'front',
-  }).then((v) => {
+  const viewerPromise = mountBody(qs('#ex-body', root), { layout: 'dual' }).then((v) => {
     v.setLevels(levels);
     return v;
   });

@@ -1,116 +1,273 @@
-/** Glass-framed 3D body viewer with Front/Back + Male/Female controls.
- *  Three.js is loaded lazily, so pages without the body stay light. */
+/** Muscle-map viewer: the hand-drawn anatomy (front/back, male/female) with
+ *  hover labels, tap/keyboard selection and highlight levels. On the home
+ *  page a Three.js/GLSL light field glows behind the figure and travels to
+ *  the selected muscle. */
 import { t } from '../i18n';
 import { getTheme, onThemeChange, store } from '../store';
 import type { BodyType, Muscle } from '../types';
-import type { BodyScene } from '../three/BodyScene';
-import { esc } from './dom';
+import type { AuraBackdrop } from '../three/AuraBackdrop';
+import { renderAnatomy, type View } from './anatomy';
+import { esc, prefersReducedMotion } from './dom';
 import { iconHtml } from './icons';
 
 export interface BodyViewer {
   setSelected(m: Muscle | null): void;
   setLevels(levels: Partial<Record<Muscle, number>>): void;
-  setView(v: 'front' | 'back'): void;
+  setView(v: View): void;
   dispose(): void;
 }
 
 export interface BodyViewerOptions {
+  /** 'single': one large figure + a thumbnail to flip; 'dual': front & back side by side. */
+  layout?: 'single' | 'dual';
   interactive?: boolean;
-  autoRotate?: boolean;
-  compact?: boolean;
-  toolbar?: boolean;
-  hint?: boolean;
-  view?: 'front' | 'back';
+  view?: View;
   onSelect?: (m: Muscle) => void;
 }
+
+/** Where each muscle is best seen, used to flip automatically. */
+const BEST_VIEW: Record<Muscle, View> = {
+  chest: 'front', shoulders: 'front', biceps: 'front', forearms: 'front', abs: 'front',
+  obliques: 'front', quads: 'front', traps: 'back', lats: 'back', lower_back: 'back',
+  triceps: 'back', glutes: 'back', hamstrings: 'back', calves: 'back',
+};
+
+export const bestView = (m: Muscle): View => BEST_VIEW[m];
 
 let preferredBody: BodyType | null = null;
 
 export async function mountBody(host: HTMLElement, opts: BodyViewerOptions = {}): Promise<BodyViewer> {
+  const layout = opts.layout ?? 'single';
+  const interactive = opts.interactive ?? layout === 'single';
   let body: BodyType = preferredBody ?? store.user?.body ?? 'male';
-  let view: 'front' | 'back' = opts.view ?? 'front';
-  const seg = (attr: string, items: [string, string][], current: string, label: string) =>
-    `<div class="segmented" role="group" aria-label="${esc(label)}">${items
+  let view: View = opts.view ?? 'front';
+  let selected: Muscle | null = null;
+  let levels: Partial<Record<Muscle, number>> = {};
+  let aura: AuraBackdrop | null = null;
+  let disposed = false;
+  const label = (m: Muscle) => t(`muscle.${m}`);
+
+  const seg = (attr: string, items: [string, string][], current: string, aria: string) =>
+    `<div class="segmented" role="group" aria-label="${esc(aria)}">${items
       .map(([v, l]) => `<button type="button" data-${attr}="${v}" aria-pressed="${v === current}">${esc(l)}</button>`)
       .join('')}</div>`;
 
-  host.innerHTML = `
-    ${opts.toolbar === false ? '' : `<div class="body-toolbar">
-      ${seg('view', [['front', t('body.front')], ['back', t('body.back')]], view, t('body.view'))}
+  const figure = (v: View, isInteractive: boolean) =>
+    renderAnatomy(v, body, { label, interactive: isInteractive });
+
+  const render = () => {
+    const toolbar = `<div class="body-toolbar">
+      ${layout === 'single' ? seg('view', [['front', t('body.front')], ['back', t('body.back')]], view, t('body.view')) : '<span></span>'}
       ${seg('body', [['male', t('body.male')], ['female', t('body.female')]], body, t('body.model'))}
-    </div>`}
-    <div class="body-canvas${opts.compact ? ' compact' : ''}">
-      ${opts.hint === false ? '' : `<span class="body-hint">${iconHtml('rotate', 'icon-sm')}${esc(t('body.hint'))}</span>`}
     </div>`;
-  const canvasHost = host.querySelector<HTMLElement>('.body-canvas')!;
+    if (layout === 'single') {
+      const other: View = view === 'front' ? 'back' : 'front';
+      host.innerHTML = `${toolbar}
+        <div class="body-map single${interactive ? ' is-interactive' : ''}">
+          <div class="body-figure" data-view="${view}">${figure(view, interactive)}</div>
+          <button class="body-thumb" type="button" data-flip aria-label="${esc(t(other === 'back' ? 'body.showBack' : 'body.showFront'))}">
+            ${figure(other, false)}<span>${esc(t(other === 'back' ? 'body.back' : 'body.front'))}</span>
+          </button>
+          ${interactive ? `<span class="body-hint">${iconHtml('target', 'icon-sm')}${esc(t('body.hint'))}</span>` : ''}
+          <div class="body-tip" role="presentation"></div>
+        </div>`;
+    } else {
+      host.innerHTML = `${toolbar}
+        <div class="body-map dual${interactive ? ' is-interactive' : ''}">
+          <figure class="body-figure" data-view="front">${figure('front', interactive)}<figcaption>${esc(t('body.front'))}</figcaption></figure>
+          <figure class="body-figure" data-view="back">${figure('back', interactive)}<figcaption>${esc(t('body.back'))}</figcaption></figure>
+          <div class="body-tip" role="presentation"></div>
+        </div>`;
+    }
+    applyState();
+    void attachAura();
+  };
 
-  let scene: BodyScene | null = null;
-  let pending: { selected?: Muscle | null; levels?: Partial<Record<Muscle, number>> } = {};
-  let disposed = false;
+  const groups = () => host.querySelectorAll<SVGGElement>('.body-figure .mg, .body-thumb .mg');
 
-  const sync = (attr: string, value: string) =>
-    host.querySelectorAll<HTMLButtonElement>(`[data-${attr}]`).forEach((b) => {
-      b.setAttribute('aria-pressed', String(b.dataset[attr] === value));
+  const applyState = () => {
+    groups().forEach((g) => {
+      const m = g.dataset.muscle as Muscle;
+      const on = m === selected;
+      g.classList.toggle('is-selected', on);
+      if (g.hasAttribute('aria-pressed')) g.setAttribute('aria-pressed', String(on));
+      const lvl = levels[m];
+      if (lvl !== undefined && lvl > 0) {
+        g.classList.add('has-level');
+        g.style.setProperty('--lvl', String(Math.min(1, lvl)));
+      } else {
+        g.classList.remove('has-level');
+        g.style.removeProperty('--lvl');
+      }
     });
+    updateAuraFocus();
+  };
 
-  const onClick = (e: Event) => {
-    const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('button[data-view], button[data-body]');
-    if (!btn) return;
-    if (btn.dataset.view) {
-      view = btn.dataset.view as 'front' | 'back';
-      scene?.setView(view);
-      sync('view', view);
-    } else if (btn.dataset.body) {
-      body = btn.dataset.body as BodyType;
-      preferredBody = body;
-      scene?.setBody(body);
-      sync('body', body);
+  // ---- GLSL light field (single layout) -----------------------------------
+  // The canvas lives in one persistent element that is re-inserted after
+  // every re-render, so flipping or switching body never rebuilds WebGL.
+  let auraEl: HTMLDivElement | null = null;
+  let auraLoading = false;
+
+  const attachAura = async () => {
+    const map = host.querySelector<HTMLElement>('.body-map.single');
+    if (!map || disposed) return;
+    if (!auraEl) {
+      auraEl = document.createElement('div');
+      auraEl.className = 'body-aura';
+      auraEl.setAttribute('aria-hidden', 'true');
+    }
+    map.prepend(auraEl);
+    if (aura || auraLoading) {
+      updateAuraFocus();
+      return;
+    }
+    auraLoading = true;
+    try {
+      const mod = await import('../three/AuraBackdrop');
+      if (disposed || !mod.webglAvailable()) return;
+      aura = new mod.AuraBackdrop(auraEl, getTheme());
+      updateAuraFocus();
+    } catch {
+      /* the static CSS glow remains */
     }
   };
-  host.addEventListener('click', onClick);
-  const offTheme = onThemeChange((th) => scene?.setTheme(th));
 
-  try {
-    const mod = await import('../three/BodyScene');
-    if (!mod.webglAvailable()) throw new Error('no-webgl');
-    if (!disposed) {
-      scene = new mod.BodyScene(canvasHost, {
-        theme: getTheme(),
-        body,
-        interactive: opts.interactive !== false,
-        autoRotate: opts.autoRotate,
-        labelFor: (m) => t(`muscle.${m}`),
-        onSelect: (m) => m && opts.onSelect?.(m),
-      });
-      if (view === 'back') scene.setView('back');
-      if (pending.selected !== undefined) scene.setSelected(pending.selected);
-      if (pending.levels) scene.setLevels(pending.levels);
+  const updateAuraFocus = () => {
+    if (!aura || !auraEl) return;
+    const fig = host.querySelector<HTMLElement>('.body-figure');
+    const g = selected ? fig?.querySelector<SVGGElement>(`.mg[data-muscle="${selected}"]`) : null;
+    if (!g) {
+      aura.setFocus(null);
+      return;
     }
-  } catch {
-    canvasHost.innerHTML = `<div class="body-fallback">${iconHtml('body', 'icon-lg')}<p>${esc(t('body.noWebgl'))}</p></div>`;
-  }
+    const r = g.getBoundingClientRect();
+    const a = auraEl.getBoundingClientRect();
+    if (!a.width || !a.height) return;
+    aura.setFocus({ x: (r.left + r.width / 2 - a.left) / a.width, y: (r.top + r.height / 2 - a.top) / a.height });
+  };
+
+  // ---- interaction -------------------------------------------------------
+  const tip = () => host.querySelector<HTMLElement>('.body-tip');
+
+  const showTip = (g: SVGGElement, x?: number, y?: number) => {
+    const el = tip();
+    const map = host.querySelector<HTMLElement>('.body-map');
+    if (!el || !map) return;
+    const m = map.getBoundingClientRect();
+    let px = x;
+    let py = y;
+    if (px === undefined || py === undefined) {
+      const r = g.getBoundingClientRect();
+      px = r.left + r.width / 2;
+      py = r.top;
+    }
+    el.textContent = label(g.dataset.muscle as Muscle);
+    el.style.left = `${px - m.left}px`;
+    el.style.top = `${py - m.top}px`;
+    el.classList.add('is-visible');
+  };
+  const hideTip = () => tip()?.classList.remove('is-visible');
+
+  const flip = (to: View) => {
+    if (to === view) return;
+    const fig = host.querySelector<HTMLElement>('.body-figure');
+    view = to;
+    if (!fig || prefersReducedMotion()) {
+      render();
+      return;
+    }
+    fig.classList.add('is-flipping');
+    window.setTimeout(() => {
+      if (disposed) return;
+      render();
+      const next = host.querySelector<HTMLElement>('.body-figure');
+      next?.classList.add('is-flipped-in');
+      window.setTimeout(() => next?.classList.remove('is-flipped-in'), 260);
+    }, 170);
+  };
+
+  const choose = (m: Muscle) => {
+    selected = m;
+    applyState();
+    opts.onSelect?.(m);
+  };
+
+  const onClick = (e: Event) => {
+    const target = e.target as Element;
+    const btn = target.closest<HTMLButtonElement>('button[data-view], button[data-body], button[data-flip]');
+    if (btn) {
+      if (btn.dataset.view) flip(btn.dataset.view as View);
+      else if (btn.dataset.body) {
+        body = btn.dataset.body as BodyType;
+        preferredBody = body;
+        render();
+      } else flip(view === 'front' ? 'back' : 'front');
+      return;
+    }
+    if (!interactive) return;
+    const g = target.closest<SVGGElement>('.body-figure .mg');
+    if (g) choose(g.dataset.muscle as Muscle);
+  };
+  const onKey = (e: KeyboardEvent) => {
+    const g = (e.target as Element).closest?.<SVGGElement>('.body-figure .mg');
+    if (!g || !interactive || (e.key !== 'Enter' && e.key !== ' ')) return;
+    e.preventDefault();
+    choose(g.dataset.muscle as Muscle);
+  };
+  const onOver = (e: PointerEvent) => {
+    const g = (e.target as Element).closest?.<SVGGElement>('.body-figure .mg');
+    if (g && e.pointerType === 'mouse') showTip(g, e.clientX, e.clientY);
+    else if (!g) hideTip();
+  };
+  const onMove = (e: PointerEvent) => {
+    const g = (e.target as Element).closest?.<SVGGElement>('.body-figure .mg');
+    if (g && e.pointerType === 'mouse') showTip(g, e.clientX, e.clientY);
+  };
+  const onFocus = (e: FocusEvent) => {
+    const g = (e.target as Element).closest?.<SVGGElement>('.body-figure .mg');
+    if (g) showTip(g);
+  };
+
+  host.addEventListener('click', onClick);
+  host.addEventListener('keydown', onKey);
+  host.addEventListener('pointerover', onOver);
+  host.addEventListener('pointermove', onMove);
+  host.addEventListener('pointerleave', hideTip);
+  host.addEventListener('focusin', onFocus);
+  host.addEventListener('focusout', hideTip);
+  const offTheme = onThemeChange((th) => aura?.setTheme(th));
+  const onResize = () => updateAuraFocus();
+  window.addEventListener('resize', onResize);
+
+  render();
 
   return {
     setSelected(m) {
-      if (scene) scene.setSelected(m);
-      else pending.selected = m;
+      selected = m;
+      if (m && layout === 'single' && bestView(m) !== view) flip(bestView(m));
+      else applyState();
     },
-    setLevels(levels) {
-      if (scene) scene.setLevels(levels);
-      else pending.levels = levels;
+    setLevels(next) {
+      levels = next;
+      applyState();
     },
     setView(v) {
-      view = v;
-      scene?.setView(v);
-      sync('view', v);
+      if (layout === 'single') flip(v);
     },
     dispose() {
       disposed = true;
       host.removeEventListener('click', onClick);
+      host.removeEventListener('keydown', onKey);
+      host.removeEventListener('pointerover', onOver);
+      host.removeEventListener('pointermove', onMove);
+      host.removeEventListener('pointerleave', hideTip);
+      host.removeEventListener('focusin', onFocus);
+      host.removeEventListener('focusout', hideTip);
+      window.removeEventListener('resize', onResize);
       offTheme();
-      scene?.dispose();
-      scene = null;
-      pending = {};
+      aura?.dispose();
+      aura = null;
     },
   };
 }
