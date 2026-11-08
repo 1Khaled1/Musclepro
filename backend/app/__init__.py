@@ -16,7 +16,9 @@ from .users import ensure_admin
 CSP = "; ".join(
     [
         "default-src 'self'",
-        "script-src 'self'",
+        # wasm-unsafe-eval lets the 3D model's meshopt decoder (WebAssembly)
+        # compile; it does not allow eval() or inline scripts.
+        "script-src 'self' 'wasm-unsafe-eval'",
         # Inline style attributes carry CSS custom properties (--mx, --delay…).
         "style-src 'self' 'unsafe-inline'",
         "img-src 'self' data: blob:",
@@ -123,6 +125,8 @@ def _register_spa(app: Flask) -> None:
             resp = send_from_directory(static_dir, path)
             if path.startswith("assets/"):
                 resp.headers["Cache-Control"] = "public, max-age=31536000, immutable"
+            elif path.startswith(("anatomy/", "models/")):
+                resp.headers["Cache-Control"] = "public, max-age=604800"
             return resp
         resp = send_from_directory(static_dir, "index.html")
         resp.headers["Cache-Control"] = "no-cache"

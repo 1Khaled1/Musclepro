@@ -1,0 +1,20 @@
+musclepro-anatomy.glb — 3D human muscle and skeleton model
+
+Derived from the asset pack of BodyExplorer (https://github.com/JohanBellander/BodyExplorer),
+which combines two open anatomical datasets:
+
+  BodyParts3D, (c) The Database Center for Life Science,
+  licensed under CC Attribution-Share Alike 2.1 Japan
+  https://creativecommons.org/licenses/by-sa/2.1/jp/deed.en
+  Mitsuhashi N, et al. BodyParts3D: 3D structure database for anatomical concepts.
+  Nucleic Acids Res. 2009;37:D782-5. https://doi.org/10.1093/nar/gkn613
+
+  Z-Anatomy by Gauthier Kervyn, licensed under CC BY-SA 4.0
+  https://creativecommons.org/licenses/by-sa/4.0/
+
+Changes made for MusclePro: muscles grouped into 14 training muscle groups (one
+material each), meshes simplified with meshoptimizer, merged per group, quantized
+and compressed with EXT_meshopt_compression (scripts/build-anatomy-model.mjs).
+
+This model file is distributed under CC BY-SA 4.0 (the compatible ShareAlike
+licence), with the attributions above. The rest of MusclePro is not affected.

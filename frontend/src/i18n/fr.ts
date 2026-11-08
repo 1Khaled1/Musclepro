@@ -93,6 +93,12 @@ export const fr: Record<MessageKey, string> = {
   'body.hint': 'Touchez un muscle pour voir ses exercices',
   'body.showBack': 'Afficher le dos',
   'body.showFront': 'Afficher la face',
+  'body.mode': 'Affichage',
+  'body.hint3d': 'Glissez pour pivoter · pincez pour zoomer · touchez un muscle',
+  'body.loading3d': 'Chargement de l’anatomie 3D…',
+  'body.error3d': 'La vue 3D n’est pas disponible sur cet appareil. Revenez en 2D.',
+  'body.maleModel': 'Modèle 3D de référence : anatomie masculine',
+  'body.credit3d': 'Anatomie 3D : BodyParts3D (DBCLS) et Z-Anatomy —',
   'body.view': 'Vue',
   'body.model': 'Modèle',
 

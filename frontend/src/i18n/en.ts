@@ -91,6 +91,12 @@ export const en = {
   'body.hint': 'Tap a muscle to see its exercises',
   'body.showBack': 'Show the back of the body',
   'body.showFront': 'Show the front of the body',
+  'body.mode': 'Display',
+  'body.hint3d': 'Drag to rotate · pinch to zoom · tap a muscle',
+  'body.loading3d': 'Loading 3D anatomy…',
+  'body.error3d': '3D view is unavailable on this device. Switch back to 2D.',
+  'body.maleModel': '3D reference model: male anatomy',
+  'body.credit3d': '3D anatomy: BodyParts3D (DBCLS) & Z-Anatomy —',
   'body.view': 'View',
   'body.model': 'Body model',
 

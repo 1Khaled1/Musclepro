@@ -12,7 +12,8 @@
   "dependencies": {
     "@fontsource-variable/manrope": "^5.2.8",
     "@fontsource/jetbrains-mono": "^5.2.8",
-    "three": "^0.180.0"
+    "three": "^0.180.0",
+    "three-mesh-bvh": "^0.9.17"
   },
   "devDependencies": {
     "@types/three": "^0.180.0",

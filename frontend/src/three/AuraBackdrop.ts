@@ -3,7 +3,7 @@
  *  when off-screen or in a background tab, static under reduced motion. */
 import {
   Color,
-  ColorManagement,
+  LinearSRGBColorSpace,
   Mesh,
   NoBlending,
   OrthographicCamera,
@@ -16,7 +16,10 @@ import {
 import fragmentShader from './shaders/aura.frag.glsl?raw';
 import vertexShader from './shaders/aura.vert.glsl?raw';
 
-ColorManagement.enabled = false;
+// Shader colours are authored in display space: tag them "linear" so three
+// passes the hex values through untouched (no global colour-management switch,
+// which would wash out the 3D anatomy's lit materials).
+const raw = (hex: string) => new Color().setStyle(hex, LinearSRGBColorSpace);
 
 export type AuraTheme = 'dark' | 'light';
 
@@ -75,8 +78,8 @@ export class AuraBackdrop {
         uRes: { value: new Vector2(1, 1) },
         uTime: { value: 0 },
         uMotion: { value: this.motion },
-        uField: { value: new Color(t.field) },
-        uFocusColor: { value: new Color(t.focus) },
+        uField: { value: raw(t.field) },
+        uFocusColor: { value: raw(t.focus) },
         uFocus: { value: this.focus },
         uFocusAmt: { value: 0 },
         uStrength: { value: t.strength },
@@ -110,8 +113,8 @@ export class AuraBackdrop {
 
   setTheme(theme: AuraTheme): void {
     const t = THEMES[theme];
-    this.material.uniforms.uField.value.set(t.field);
-    this.material.uniforms.uFocusColor.value.set(t.focus);
+    this.material.uniforms.uField.value.copy(raw(t.field));
+    this.material.uniforms.uFocusColor.value.copy(raw(t.focus));
     this.material.uniforms.uStrength.value = t.strength;
     this.kick();
   }

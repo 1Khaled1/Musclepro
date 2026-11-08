@@ -96,43 +96,71 @@
   color: var(--muted);
 }
 
-/* The drawing: tokens per theme */
-.anatomy {
-  --mp-fill: #676f81;
-  --mp-fill-hover: #858ea4;
-  --mp-stroke: #e9edf6;
-  --mp-skin: #0a0e18;
-  --mp-minor: #565d6e;
-  overflow: visible;
+/* Professional artwork + blended muscle highlights. The masks sit on the
+   illustration's own coordinates; colour blends into its shading. */
+.anatomy { overflow: visible; isolation: isolate; }
+.anatomy .mg path {
+  fill: var(--accent);
+  opacity: 0;
+  mix-blend-mode: multiply;
+  transition: opacity 0.2s var(--ease-out);
 }
-[data-theme='light'] .anatomy {
-  --mp-fill: #b3bccb;
-  --mp-fill-hover: #949fb5;
-  --mp-stroke: #1b2235;
-  --mp-skin: #f6f8fc;
-  --mp-minor: #dde2eb;
-}
-.anatomy path { stroke: var(--mp-stroke); stroke-width: 3.6; stroke-linejoin: round; stroke-linecap: round; }
-.anatomy .mp-skin { fill: var(--mp-skin); }
-.anatomy .mp-back { fill: var(--mp-skin); stroke: none; }
-.anatomy .mp-minor { fill: var(--mp-minor); }
-.anatomy .mp-line { fill: none; stroke-width: 3; }
-.anatomy .mp-m { fill: var(--mp-fill); transition: fill 0.2s var(--ease-out); }
+[data-theme='dark'] .anatomy .mg path { mix-blend-mode: color; }
 .anatomy .mg { outline: none; }
-.anatomy .mg.has-level .mp-m {
-  fill: color-mix(in srgb, var(--accent) calc(var(--lvl, 0) * 100%), var(--mp-fill));
-}
-.anatomy .mg.is-selected .mp-m { fill: var(--accent); }
-.anatomy .mg.is-selected,
-.anatomy .mg.has-level { filter: drop-shadow(0 0 6px rgb(var(--accent-rgb) / 0.55)); }
-
+.anatomy .mg.has-level path { opacity: calc(0.15 + var(--lvl, 0) * 0.8); }
+.anatomy .mg.is-selected path { opacity: 0.95; }
 .body-map.is-interactive .body-figure .mg { cursor: pointer; }
 @media (hover: hover) and (pointer: fine) {
-  .body-map.is-interactive .body-figure .mg:hover .mp-m { fill: var(--mp-fill-hover); }
-  .body-map.is-interactive .body-figure .mg.is-selected:hover .mp-m { fill: var(--accent-2); }
+  .body-map.is-interactive .body-figure .mg:hover path { opacity: 0.38; }
+  .body-map.is-interactive .body-figure .mg.is-selected:hover path { opacity: 1; }
 }
-.body-map.is-interactive .body-figure .mg:focus-visible .mp-m { fill: var(--mp-fill-hover); }
-.body-map.is-interactive .body-figure .mg:focus-visible { filter: drop-shadow(0 0 4px rgb(var(--accent-rgb) / 0.9)); }
+.body-map.is-interactive .body-figure .mg:focus-visible path { opacity: 0.55; }
+
+/* 3D mode */
+.body-map.is-3d { padding: 0; }
+.body-3d { position: absolute; inset: 0; cursor: grab; touch-action: none; }
+.body-3d:active { cursor: grabbing; }
+.body-3d canvas { width: 100% !important; height: 100% !important; display: block; }
+.body-loading {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 12px;
+  color: var(--text-2);
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 24px;
+}
+.spinner {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 3px solid color-mix(in srgb, currentColor 18%, transparent);
+  border-top-color: var(--accent);
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.body-note {
+  position: absolute;
+  z-index: 2;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--text-2);
+  background: color-mix(in srgb, var(--bg) 60%, transparent);
+  border: 1px solid var(--line);
+  white-space: nowrap;
+}
+.body-credit { margin: 8px 4px 0; font-size: 0.72rem; color: var(--muted); }
+@media (prefers-reduced-motion: reduce) { .spinner { animation-duration: 3s; } }
 
 /* Flip thumbnail (the other side of the body) */
 .body-thumb {
@@ -156,7 +184,6 @@
   transition: transform 0.2s var(--ease-out), border-color 0.2s;
 }
 .body-thumb .anatomy { width: 100%; height: auto; pointer-events: none; }
-.body-thumb .anatomy path { stroke-width: 7; }
 .body-thumb:hover { border-color: rgb(var(--accent-rgb) / 0.6); transform: translateY(-2px); }
 .body-thumb:focus-visible { outline: none; box-shadow: 0 0 0 3px rgb(var(--accent-rgb) / 0.45); }
 
