@@ -17,7 +17,7 @@ export function mountShell(app: HTMLElement): HTMLElement {
     <a class="skip-link" href="#main" data-skip></a>
     <header class="topbar" id="topbar"></header>
     <div class="scrim" id="scrim" aria-hidden="true"></div>
-    <nav class="drawer" id="drawer" role="dialog" aria-modal="true" aria-hidden="true" tabindex="-1"></nav>
+    <div class="drawer" id="drawer" role="dialog" aria-modal="true" aria-hidden="true" tabindex="-1"></div>
     <main id="main" tabindex="-1"></main>
     <footer class="site-foot" id="foot"></footer>`;
 
@@ -112,6 +112,7 @@ function renderDrawer(): void {
             <span class="row"><a class="btn btn-sm btn-primary" href="/login">${t('nav.login')}</a><a class="btn btn-sm" href="/register">${t('nav.register')}</a></span>
           </div>`)}
 
+      <nav class="drawer-nav" aria-label="${t('nav.main')}">
       <div class="nav-group">
         <h4>${t('nav.group.train')}</h4>
         ${raw(link('/', 'body', t('nav.home')))}
@@ -133,6 +134,7 @@ function renderDrawer(): void {
             <button class="nav-link" type="button" data-action="logout">${icon('logout')}<span>${t('nav.logout')}</span></button>
           </div>`)
         : ''}
+      </nav>
 
       ${canInstall()
         ? raw(html`<button class="nav-link" type="button" data-action="install">${icon('download')}<span>${t('nav.install')}</span></button>`)
@@ -177,7 +179,12 @@ function closeDrawer(restoreFocus = true): void {
   drawerOpen = false;
   setBackgroundInert(false);
   renderAll();
-  if (restoreFocus) (lastFocus ?? qs<HTMLElement>('#topbar [data-action="menu"]')).focus();
+  if (restoreFocus) {
+    // The top bar re-renders on open/close, so the button that opened the
+    // menu may have been replaced: fall back to its fresh copy.
+    const back = lastFocus?.isConnected ? lastFocus : qs<HTMLElement>('#topbar [data-action="menu"]');
+    back.focus();
+  }
 }
 
 function trapFocus(e: KeyboardEvent): void {

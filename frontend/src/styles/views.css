@@ -114,7 +114,10 @@
   .body-map.is-interactive .body-figure .mg:hover path { opacity: 0.38; }
   .body-map.is-interactive .body-figure .mg.is-selected:hover path { opacity: 1; }
 }
-.body-map.is-interactive .body-figure .mg:focus-visible path { opacity: 0.55; }
+/* Keyboard focus: tint + a ring around the group, so focus stays visible
+   even on the already-selected muscle (WCAG 2.4.7). */
+.body-map.is-interactive .body-figure .mg:focus-visible { outline: 2px solid rgb(var(--accent-rgb) / 0.9); outline-offset: 4px; }
+.body-map.is-interactive .body-figure .mg:focus-visible:not(.is-selected) path { opacity: 0.55; }
 
 /* 3D mode */
 .body-map.is-3d { padding: 0; }

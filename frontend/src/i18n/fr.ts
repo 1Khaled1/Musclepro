@@ -20,6 +20,7 @@ export const fr: Record<MessageKey, string> = {
   'nav.language': 'Langue',
   'nav.theme': 'Mode sombre',
   'nav.open': 'Ouvrir le menu',
+  'nav.main': 'Navigation principale',
   'nav.close': 'Fermer le menu',
   'nav.skip': 'Aller au contenu',
   'nav.guest': 'Athlète invité',

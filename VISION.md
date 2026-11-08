@@ -95,8 +95,9 @@ Shipped and running:
   variations.
 - ~~**Installable app (PWA)**~~ — **shipped**: home-screen install, offline
   library, programs and logging; workouts sync when back online.
-- **Accessibility pass** — WCAG 2.2 AA across the app, screen-reader friendly
-  muscle selection.
+- ~~**Accessibility pass**~~ — **shipped**: WCAG 2.2 AA audit with no axe
+  violations, keyboard-operable muscle map, reflow at 320 px
+  ([statement](docs/ACCESSIBILITY.md)). Next: testing with real screen readers.
 
 ### Next — make it smart (3–9 months)
 

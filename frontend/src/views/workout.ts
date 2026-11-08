@@ -31,7 +31,7 @@ export const workoutView: View = async (root) => {
   if (!draft) {
     root.innerHTML = glass(
       html`<div class="empty" style="padding:48px 16px">
-        ${icon('timer')}<h2>${t('wo.none')}</h2><p>${t('wo.noneLead')}</p>
+        ${icon('timer')}<h1 class="h2">${t('wo.none')}</h1><p>${t('wo.noneLead')}</p>
         <div class="row" style="justify-content:center">
           <a class="btn btn-primary" href="/programs">${icon('calendar')} ${t('nav.programs')}</a>
           <a class="btn" href="/generator">${icon('spark')} ${t('nav.generator')}</a>
@@ -64,7 +64,7 @@ export const workoutView: View = async (root) => {
       html`
         <div class="row between" style="align-items:flex-start">
           <div>
-            <h3><a href="/exercises/${item.id}">${ex ? loc(ex.name) : item.id}</a></h3>
+            <h2 class="h3"><a href="/exercises/${item.id}">${ex ? loc(ex.name) : item.id}</a></h2>
             ${item.target ? raw(html`<span class="muted" style="font-size:.82rem">${t('wo.target', { ...item.target, reps: fmtReps(item.target.reps) })}</span>`) : ''}
           </div>
           <button class="btn btn-ghost btn-icon btn-sm" type="button" data-act="remove-ex" data-ei="${ei}" aria-label="${t('wo.removeExercise')}">${icon('trash', 'icon-sm')}</button>
@@ -84,6 +84,7 @@ export const workoutView: View = async (root) => {
   const render = () => {
     if (!draft) return;
     root.innerHTML = html`
+      <h1 class="visually-hidden">${t('nav.workout')} — ${draft.title}</h1>
       ${raw(glass(html`
         <div>
           <span class="muted" style="font-size:.78rem;font-weight:700">${t('wo.elapsed')}</span>

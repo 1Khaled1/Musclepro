@@ -33,6 +33,7 @@ body {
 .wallpaper {
   position: fixed;
   inset: 0;
+  overflow: hidden;
   z-index: -2;
   pointer-events: none;
   background:
@@ -70,8 +71,9 @@ h1, h2, h3, h4 {
   font-weight: 800;
 }
 h1 { font-size: clamp(2rem, 4.6vw, 3.3rem); letter-spacing: -0.035em; }
-h2 { font-size: clamp(1.25rem, 2.2vw, 1.55rem); }
-h3 { font-size: 1.06rem; font-weight: 700; letter-spacing: -0.01em; }
+h2, .h2 { font-size: clamp(1.25rem, 2.2vw, 1.55rem); }
+/* .h2 / .h3 keep the outline correct while matching the visual size. */
+h3, .h3 { font-size: 1.06rem; font-weight: 700; letter-spacing: -0.01em; }
 p { margin: 0; }
 
 a {

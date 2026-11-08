@@ -52,7 +52,7 @@ export const exercisesView: View = async (root, ctx) => {
         <div class="chip-scroller" role="group" aria-label="${t('ex.targets')}" id="ex-muscles"></div>
       </form>`))}
     <div class="section-title" style="margin-top:22px">
-      <strong id="ex-count" aria-live="polite"></strong>
+      <h2 class="h3" id="ex-count" aria-live="polite"></h2>
       <span class="row">
         ${store.user ? raw(html`<button class="chip" type="button" id="fav-toggle" aria-pressed="${String(state.fav)}">${icon('heart', 'icon-sm')} ${t('ex.favoritesOnly')}</button>`) : ''}
         <button class="btn btn-sm btn-ghost" type="button" id="ex-clear">${t('ex.clear')}</button>

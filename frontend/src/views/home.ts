@@ -49,7 +49,7 @@ export const homeView: View = async (root, ctx) => {
         </div>`, { cls: 'hero-stage body-stage', delay: 80 }))}
       ${raw(glass(html`
         <div class="section-title" style="margin-bottom:12px">
-          <h3>${t('home.pickMuscle')}</h3>
+          <h2 class="h3">${t('home.pickMuscle')}</h2>
           <label class="equip-select">
             <span class="visually-hidden">${t('ex.equipment')}</span>
             ${icon('dumbbell', 'icon-sm')}

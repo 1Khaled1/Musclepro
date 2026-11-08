@@ -167,6 +167,8 @@
 /* -------------------------------------------------------------- segmented */
 .segmented {
   display: inline-flex;
+  flex-wrap: wrap; /* long option sets reflow on narrow phones (WCAG 1.4.10) */
+  max-width: 100%;
   padding: 4px;
   gap: 2px;
   border-radius: 14px;

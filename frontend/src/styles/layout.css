@@ -119,6 +119,7 @@
 .drawer-user .avatar { width: 44px; height: 44px; border-radius: 14px; font-size: 1.05rem; }
 .drawer-user strong { display: block; font-size: 0.98rem; }
 
+.drawer-nav { display: flex; flex-direction: column; gap: 14px; }
 .nav-group { display: grid; gap: 2px; }
 .nav-group h4 {
   padding: 8px 12px 4px;

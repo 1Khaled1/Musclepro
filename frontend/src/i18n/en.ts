@@ -18,6 +18,7 @@ export const en = {
   'nav.language': 'Language',
   'nav.theme': 'Dark mode',
   'nav.open': 'Open menu',
+  'nav.main': 'Main navigation',
   'nav.close': 'Close menu',
   'nav.skip': 'Skip to content',
   'nav.guest': 'Guest athlete',

@@ -128,9 +128,10 @@
   --on-accent: #ffffff;
   --holo: #0a7fb5;
   --holo-rgb: 10 127 181;
-  --ok: #0c8c58;
-  --warn: #a86a00;
-  --danger: #cf2334;
+  /* ≥ 4.7:1 for small badge text even on tinted glass panels (WCAG AA) */
+  --ok: #05663f;
+  --warn: #7f4e00;
+  --danger: #ad1b2a;
   --viz-bar: #dc4710; /* validated vs light surface */
 
   --wp-base: #edf1f7;
