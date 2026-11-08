@@ -23,7 +23,7 @@
 ## Features
 
 **Train**
-- **Muscle map**: an original hand-drawn anatomy chart with bodybuilder proportions — front and back, male and female — with 14 tappable muscle groups (mouse, touch or keyboard) and a thumbnail to flip the body. Next to it: an equipment filter for the suggested exercises, a quick exercise search and a shortcut to the workout generator. Muscles light up by role: primary, secondary, or how much you trained them this week. A **Three.js + GLSL** light field glows behind the figure and travels to the muscle you pick.
+- **Muscle map**: an original hand-drawn anatomy chart — large, smooth muscle forms with bold outlines and bodybuilder proportions — front and back, male and female — with 14 tappable muscle groups (mouse, touch or keyboard) and a thumbnail to flip the body. Next to it: an equipment filter for the suggested exercises, a quick exercise search and a shortcut to the workout generator. Muscles light up by role: primary, secondary, or how much you trained them this week. A **Three.js + GLSL** light field glows behind the figure and travels to the muscle you pick.
 - **Exercise library**: 67 exercises, each with numbered steps and a coach tip in EN/FR, filters for muscle, equipment, level and search (accent-insensitive: “squat bulgare” works).
 - **Programs for every level**: Foundation Full Body, Home Bodyweight Starter, Upper/Lower Strength, Push·Pull·Legs, Athlete Power & Speed, Peak Strength Block — weekly schedule, progression rules, completion tracking.
 - **Workout generator**: goal × level × time × equipment × target muscles → a balanced session ordered like a coach would (power first, compounds, isolation, core last).

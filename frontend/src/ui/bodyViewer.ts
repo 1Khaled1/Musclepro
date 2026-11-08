@@ -52,8 +52,8 @@ export async function mountBody(host: HTMLElement, opts: BodyViewerOptions = {})
       .map(([v, l]) => `<button type="button" data-${attr}="${v}" aria-pressed="${v === current}">${esc(l)}</button>`)
       .join('')}</div>`;
 
-  const figure = (v: View, isInteractive: boolean) =>
-    renderAnatomy(v, body, { label, interactive: isInteractive });
+  const figure = (v: View, isInteractive: boolean, frame: 'full' | 'focus' = 'full') =>
+    renderAnatomy(v, body, { label, interactive: isInteractive, frame });
 
   const render = () => {
     const toolbar = `<div class="body-toolbar">
@@ -64,7 +64,7 @@ export async function mountBody(host: HTMLElement, opts: BodyViewerOptions = {})
       const other: View = view === 'front' ? 'back' : 'front';
       host.innerHTML = `${toolbar}
         <div class="body-map single${interactive ? ' is-interactive' : ''}">
-          <div class="body-figure" data-view="${view}">${figure(view, interactive)}</div>
+          <div class="body-figure" data-view="${view}">${figure(view, interactive, 'focus')}</div>
           <button class="body-thumb" type="button" data-flip aria-label="${esc(t(other === 'back' ? 'body.showBack' : 'body.showFront'))}">
             ${figure(other, false)}<span>${esc(t(other === 'back' ? 'body.back' : 'body.front'))}</span>
           </button>
