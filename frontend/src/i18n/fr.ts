@@ -109,6 +109,7 @@ export const fr: Record<MessageKey, string> = {
   'home.selectedTitle': '{muscle} : meilleurs exercices',
   'home.selectPrompt': 'Touchez un muscle sur le corps, ou choisissez-le ci-dessus, pour voir les meilleurs exercices.',
   'home.seeAllFor': 'Tous les exercices — {muscle}',
+  'home.noneForEquipment': 'Pas encore d’exercice {muscle} avec ce matériel ({equipment}) — essayez un autre.',
   'home.programsTitle': 'Des programmes pour chaque niveau',
   'home.programsLead': "D'un premier mois en douceur à un bloc de puissance pour athlètes — chaque plan vous dit exactement quoi faire et comment progresser.",
   'home.genTitle': 'Une séance de coach en quelques secondes',

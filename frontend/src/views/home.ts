@@ -1,8 +1,8 @@
 import { api } from '../api';
 import { formatNumber, t } from '../i18n';
-import type { View } from '../router';
+import { navigate, type View } from '../router';
 import { store } from '../store';
-import { MUSCLES, type Exercise, type Muscle, type Program, type Stats } from '../types';
+import { EQUIPMENT, MUSCLES, type Equipment, type Exercise, type Muscle, type Program, type Stats } from '../types';
 import { bestView, mountBody, type BodyViewer } from '../ui/bodyViewer';
 import { bindFavorites, exerciseTile, programCard } from '../ui/components';
 import { glass, html, qs, raw } from '../ui/dom';
@@ -10,12 +10,24 @@ import { scanBeams } from '../ui/effects';
 import { icon } from '../ui/icons';
 import { toast, toastError } from '../ui/toast';
 
+const EQUIP_KEY = 'mp-equipment';
+
+function savedEquipment(): Equipment | '' {
+  try {
+    const v = localStorage.getItem(EQUIP_KEY) as Equipment | null;
+    return v && EQUIPMENT.includes(v) ? v : '';
+  } catch {
+    return '';
+  }
+}
+
 export const homeView: View = async (root, ctx) => {
   const initial = MUSCLES.includes(ctx.query.get('muscle') as Muscle) ? (ctx.query.get('muscle') as Muscle) : null;
   let selected: Muscle | null = initial;
   let exercises: Exercise[] = [];
   let programs: Program[] = [];
   let stats: Stats | null = null;
+  let equipment: Equipment | '' = savedEquipment();
 
   root.innerHTML = html`
     <section class="hero" aria-labelledby="hero-title">
@@ -25,9 +37,28 @@ export const homeView: View = async (root, ctx) => {
         <p class="lead">${t('home.lead')}</p>
         <div class="hero-stats" id="hero-stats"></div>
       </div>
-      ${raw(glass('<div id="body-host"></div>', { cls: 'hero-stage body-stage', delay: 80 }))}
       ${raw(glass(html`
-        <h3 style="margin-bottom:12px">${t('home.pickMuscle')}</h3>
+        <div id="body-host"></div>
+        <div class="body-actions">
+          <form class="search" role="search" id="home-search">
+            ${icon('search')}
+            <label class="visually-hidden" for="home-q">${t('ex.search')}</label>
+            <input class="input" id="home-q" type="search" name="q" placeholder="${t('ex.search')}" autocomplete="off" />
+          </form>
+          <a class="btn" href="/generator">${icon('spark')} ${t('nav.generator')}</a>
+        </div>`, { cls: 'hero-stage body-stage', delay: 80 }))}
+      ${raw(glass(html`
+        <div class="section-title" style="margin-bottom:12px">
+          <h3>${t('home.pickMuscle')}</h3>
+          <label class="equip-select">
+            <span class="visually-hidden">${t('ex.equipment')}</span>
+            ${icon('dumbbell', 'icon-sm')}
+            <select class="select" id="home-equipment">
+              <option value="">${t('ex.allEquipment')}</option>
+              ${raw(EQUIPMENT.map((e) => html`<option value="${e}" ${raw(equipment === e ? 'selected' : '')}>${t(`equip.${e}`)}</option>`).join(''))}
+            </select>
+          </label>
+        </div>
         <div class="chips" id="muscle-chips" role="group" aria-label="${t('home.pickMuscle')}"></div>`,
         { cls: 'hero-picker muscle-picker', delay: 140 }))}
       ${raw(glass('<div id="muscle-panel" aria-live="polite"></div>', { cls: 'hero-panel muscle-panel', delay: 200 }))}
@@ -62,16 +93,22 @@ export const homeView: View = async (root, ctx) => {
     }
     const name = t(`muscle.${selected}`);
     const top = exercises
-      .filter((e) => e.primary.includes(selected!))
+      .filter((e) => e.primary.includes(selected!) && (!equipment || e.equipment === equipment))
       .sort((a, b) => a.primary.length - b.primary.length)
       .slice(0, 6);
+    const allHref = `/exercises?muscle=${selected}${equipment ? `&equipment=${equipment}` : ''}`;
     panelEl.innerHTML = html`
       <div class="section-title">
         <h2>${t('home.selectedTitle', { muscle: name })}</h2>
       </div>
-      <div class="tiles">${raw(top.map(exerciseTile).join(''))}</div>
+      ${top.length
+        ? raw(`<div class="tiles">${top.map(exerciseTile).join('')}</div>`)
+        : raw(html`<div class="empty" style="padding:18px 8px">${icon('dumbbell')}<p>${t('home.noneForEquipment', {
+            muscle: name,
+            equipment: equipment ? t(`equip.${equipment}`) : '',
+          })}</p></div>`)}
       <div style="margin-top:14px">
-        <a class="btn btn-sm" href="/exercises?muscle=${selected}">${t('home.seeAllFor', { muscle: name })} ${icon('arrow', 'icon-sm')}</a>
+        <a class="btn btn-sm" href="${allHref}">${t('home.seeAllFor', { muscle: name })} ${icon('arrow', 'icon-sm')}</a>
       </div>`;
   };
 
@@ -93,6 +130,22 @@ export const homeView: View = async (root, ctx) => {
     if (btn) select(btn.dataset.muscle as Muscle);
   });
   bindFavorites(root, (m) => toast(m), toastError);
+
+  qs<HTMLSelectElement>('#home-equipment', root).addEventListener('change', (e) => {
+    equipment = (e.target as HTMLSelectElement).value as Equipment | '';
+    try {
+      if (equipment) localStorage.setItem(EQUIP_KEY, equipment);
+      else localStorage.removeItem(EQUIP_KEY);
+    } catch {
+      /* preference lasts for this visit only */
+    }
+    renderPanel();
+  });
+  qs<HTMLFormElement>('#home-search', root).addEventListener('submit', (e) => {
+    e.preventDefault();
+    const q = (qs<HTMLInputElement>('#home-q', root).value || '').trim();
+    navigate(`/exercises${q ? `?q=${encodeURIComponent(q)}` : ''}`);
+  });
 
   renderChips();
   renderPanel();

@@ -107,6 +107,7 @@ export const en = {
   'home.selectedTitle': '{muscle}: best exercises',
   'home.selectPrompt': 'Tap a muscle on the body, or pick one above, to see the best exercises for it.',
   'home.seeAllFor': 'All {muscle} exercises',
+  'home.noneForEquipment': 'No {muscle} exercise with {equipment} yet — try other equipment.',
   'home.programsTitle': 'Programs for every level',
   'home.programsLead': 'From a gentle first month to an athlete power block — each plan tells you exactly what to do and how to progress.',
   'home.genTitle': 'A coach-built session in seconds',

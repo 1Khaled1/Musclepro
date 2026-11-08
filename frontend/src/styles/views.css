@@ -112,10 +112,11 @@
   --mp-skin: #f6f8fc;
   --mp-minor: #dde2eb;
 }
-.anatomy path { stroke: var(--mp-stroke); stroke-width: 2.2; stroke-linejoin: round; stroke-linecap: round; }
+.anatomy path { stroke: var(--mp-stroke); stroke-width: 2.6; stroke-linejoin: round; stroke-linecap: round; }
 .anatomy .mp-skin { fill: var(--mp-skin); }
+.anatomy .mp-back { fill: var(--mp-skin); stroke: none; }
 .anatomy .mp-minor { fill: var(--mp-minor); }
-.anatomy .mp-line { fill: none; stroke-width: 1.5; opacity: 0.8; }
+.anatomy .mp-line { fill: none; stroke-width: 1.7; opacity: 0.8; }
 .anatomy .mp-m { fill: var(--mp-fill); transition: fill 0.2s var(--ease-out); }
 .anatomy .mg { outline: none; }
 .anatomy .mg.has-level .mp-m {
@@ -155,7 +156,7 @@
   transition: transform 0.2s var(--ease-out), border-color 0.2s;
 }
 .body-thumb .anatomy { width: 100%; height: auto; pointer-events: none; }
-.body-thumb .anatomy path { stroke-width: 4; }
+.body-thumb .anatomy path { stroke-width: 5; }
 .body-thumb:hover { border-color: rgb(var(--accent-rgb) / 0.6); transform: translateY(-2px); }
 .body-thumb:focus-visible { outline: none; box-shadow: 0 0 0 3px rgb(var(--accent-rgb) / 0.45); }
 
@@ -216,6 +217,16 @@
 .legend .l-heat-hi { background: var(--accent); }
 
 .muscle-picker .chips { gap: 7px; }
+.equip-select { position: relative; display: inline-flex; align-items: center; }
+.equip-select .icon { position: absolute; left: 12px; color: var(--muted); pointer-events: none; }
+.equip-select .select { min-height: 38px; padding: 6px 36px 6px 34px; font-size: 0.85rem; width: auto; }
+.body-actions {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  margin-top: 12px;
+}
+@media (max-width: 420px) { .body-actions { grid-template-columns: 1fr; } }
 
 /* selected muscle panel */
 .muscle-panel h2 { display: flex; align-items: center; gap: 10px; }
