@@ -1,5 +1,5 @@
 import { api } from '../api';
-import { t } from '../i18n';
+import { t, tn } from '../i18n';
 import type { View } from '../router';
 import { store } from '../store';
 import { EQUIPMENT, MUSCLES, type Exercise } from '../types';
@@ -99,7 +99,7 @@ export const exercisesView: View = async (root, ctx) => {
     if (state.muscle) {
       items = [...items].sort((a, b) => Number(!a.primary.includes(state.muscle as never)) - Number(!b.primary.includes(state.muscle as never)));
     }
-    qs('#ex-count', root).textContent = t('ex.results', { n: items.length });
+    qs('#ex-count', root).textContent = tn('ex.results', items.length);
     qs('#ex-results', root).innerHTML = items.length
       ? `<div class="tiles">${items.map(exerciseTile).join('')}</div>`
       : glass(html`<div class="empty">${icon('search')}<p>${t('ex.empty')}</p></div>`);

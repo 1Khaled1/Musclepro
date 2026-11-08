@@ -1,5 +1,5 @@
 import { api } from '../api';
-import { formatNumber, t } from '../i18n';
+import { formatNumber, t, tn } from '../i18n';
 import { navigate, type View } from '../router';
 import { store } from '../store';
 import { EQUIPMENT, MUSCLES, type Equipment, type Exercise, type Muscle, type ProgramSummary, type Stats } from '../types';
@@ -193,7 +193,7 @@ export const homeView: View = async (root, ctx) => {
     ? glass(
         html`<div class="stack" style="gap:14px">
           <span class="eyebrow">${icon('activity', 'icon-sm')} ${t('home.weekTitle')}</span>
-          <h2>${t('home.weekLead', { n: stats.this_week, streak: stats.streak_weeks })}</h2>
+          <h2>${tn('home.weekSessions', stats.this_week)} · ${tn('home.weekStreak', stats.streak_weeks)}</h2>
           <div class="stat-tiles" style="grid-template-columns:repeat(2,minmax(0,1fr))">
             <div class="panel stat"><span>${t('hist.sessions')}</span><strong>${formatNumber(stats.sessions)}</strong></div>
             <div class="panel stat"><span>${t('hist.volume')}</span><strong>${formatNumber(stats.total_volume_kg)}</strong><small>kg</small></div>

@@ -25,7 +25,7 @@
 
 @media (max-width: 980px) {
   .hero {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     grid-template-areas: 'copy' 'stage' 'picker' 'panel';
     grid-template-rows: auto;
   }
@@ -64,7 +64,7 @@
 }
 .body-map.dual {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 4px;
   padding: 14px 10px 8px;
 }
@@ -210,7 +210,7 @@
   gap: 10px;
   margin-top: 12px;
 }
-@media (max-width: 420px) { .body-actions { grid-template-columns: 1fr; } }
+@media (max-width: 420px) { .body-actions { grid-template-columns: minmax(0, 1fr); } }
 
 /* selected muscle panel */
 .muscle-panel h2 { display: flex; align-items: center; gap: 10px; }
@@ -223,7 +223,7 @@
 }
 .tile {
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   gap: 12px;
   align-items: start;
   padding: 14px;
@@ -264,7 +264,7 @@
   grid-template-columns: minmax(0, 2fr) repeat(2, minmax(0, 1fr));
 }
 @media (max-width: 760px) {
-  .filters .row-fields { grid-template-columns: 1fr 1fr; }
+  .filters .row-fields { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
   .filters .row-fields .search { grid-column: 1 / -1; }
 }
 .chip-scroller {
@@ -283,7 +283,7 @@
   gap: 20px;
   align-items: start;
 }
-@media (max-width: 920px) { .detail-grid { grid-template-columns: 1fr; } }
+@media (max-width: 920px) { .detail-grid { grid-template-columns: minmax(0, 1fr); } }
 .steps {
   counter-reset: step;
   list-style: none;
@@ -295,7 +295,7 @@
 .steps li {
   counter-increment: step;
   display: grid;
-  grid-template-columns: 40px 1fr;
+  grid-template-columns: 40px minmax(0, 1fr);
   gap: 14px;
   align-items: start;
   font-size: 0.98rem;
@@ -322,7 +322,7 @@
   color: var(--text-2);
 }
 .tip .icon { color: var(--warn); margin-top: 2px; }
-.kv { display: grid; grid-template-columns: auto 1fr; gap: 8px 16px; font-size: 0.9rem; }
+.kv { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 8px 16px; font-size: 0.9rem; }
 .kv dt { color: var(--muted); font-weight: 600; }
 .kv dd { margin: 0; font-weight: 600; }
 
@@ -338,6 +338,41 @@
 .level-bar i.on { background: var(--accent); }
 
 .day-card .table td:first-child { font-weight: 650; }
+/* Phones: one block per exercise (name on its own line, then sets ×
+   reps / effort / rest with small labels) instead of a cramped 4-column
+   table. Explicit ARIA roles keep the table semantics for screen readers. */
+@media (max-width: 560px) {
+  .rx-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .rx-table, .rx-table tbody { display: block; }
+  .rx-table tr {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 4px 12px;
+    padding: 12px 4px;
+    border-top: 1px solid color-mix(in srgb, currentColor 10%, transparent);
+  }
+  .rx-table tr:first-child { border-top: 0; }
+  .rx-table td { display: block; padding: 0; border: 0; }
+  .rx-table td:first-child { grid-column: 1 / -1; font-size: 0.96rem; }
+  .rx-table td[data-label]::before {
+    content: attr(data-label);
+    display: block;
+    margin-bottom: 2px;
+    font-family: var(--font);
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+}
 .week-dots { display: flex; flex-wrap: wrap; gap: 6px; }
 .week-dots .chip.is-deload:not(.is-active) { border-style: dashed; }
 .phase-panel { display: grid; gap: 6px; padding: 16px 18px; }
@@ -399,12 +434,14 @@
   gap: 20px;
   align-items: start;
 }
-@media (max-width: 920px) { .gen-grid { grid-template-columns: 1fr; } }
+@media (max-width: 920px) { .gen-grid { grid-template-columns: minmax(0, 1fr); } }
+/* Scrolled into view on phones: keep the header clear of the floating top bar. */
+#gen-result { scroll-margin-top: 96px; }
 .range { width: 100%; accent-color: var(--accent); }
 .plan-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
 .plan-item {
   display: grid;
-  grid-template-columns: 34px 1fr auto;
+  grid-template-columns: 34px minmax(0, 1fr) auto;
   gap: 12px;
   align-items: center;
   padding: 12px 14px;
@@ -533,7 +570,15 @@
 }
 .workout-item summary::-webkit-details-marker { display: none; }
 .workout-item summary .grow { flex: 1; min-width: 0; }
-.workout-item summary strong { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* Titles carry program, week and day: allow two lines before truncating. */
+.workout-item summary strong {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
 .workout-item[open] summary .chev { transform: rotate(90deg); }
 .workout-item .chev { transition: transform 0.2s var(--ease-out); color: var(--muted); }
 .workout-item .body { padding: 0 14px 14px; }

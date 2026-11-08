@@ -96,5 +96,11 @@ export type { MessageKey };
 /** Prescriptions like "10/side" or "8/leg" are stored in English. */
 export function fmtReps(reps: string): string {
   if (current !== 'fr') return reps;
-  return reps.replace('/side', '/côté').replace('/leg', '/jambe');
+  // French spaces a number and its unit: "30 s/côté", "40 m".
+  return reps.replace('/side', '/côté').replace('/leg', '/jambe').replace(/(\d)(s|m)\b/g, '$1 $2');
+}
+
+/** Rest time: "90s" in English, "90 s" in French. */
+export function fmtSec(seconds: number): string {
+  return current === 'fr' ? `${seconds} s` : `${seconds}s`;
 }

@@ -1,5 +1,5 @@
 import { api } from '../api';
-import { effortLabel, fmtReps, loc, t } from '../i18n';
+import { effortLabel, fmtReps, fmtSec, loc, t } from '../i18n';
 import { navigate, type View } from '../router';
 import { loadDraft, startDraft, store } from '../store';
 import type { Enrollment, Exercise, Program, ProgramDay } from '../types';
@@ -91,17 +91,17 @@ export const programView: View = async (root, ctx) => {
           ${done ? raw(html`<span class="badge accent">${icon('check', 'icon-sm')} ${t('wo.done')}</span>`) : ''}
         </div>
         <div class="table-wrap" tabindex="0" role="region" aria-label="${loc(day.name)}">
-          <table class="table">
-            <thead><tr><th scope="col">${t('prog.exercise')}</th><th scope="col">${t('prog.setsReps')}</th><th scope="col">${t('prog.effort')}</th><th scope="col">${t('prog.rest')}</th></tr></thead>
-            <tbody>${raw(
+          <table class="table rx-table" role="table">
+            <thead role="rowgroup"><tr role="row"><th role="columnheader" scope="col">${t('prog.exercise')}</th><th role="columnheader" scope="col">${t('prog.setsReps')}</th><th role="columnheader" scope="col">${t('prog.effort')}</th><th role="columnheader" scope="col">${t('prog.rest')}</th></tr></thead>
+            <tbody role="rowgroup">${raw(
               day.exercises
                 .map((x) => {
                   const ex = byId.get(x.id);
                   const effort = effortLabel(x);
-                  return html`<tr><td><a class="link" href="/exercises/${x.id}">${ex ? loc(ex.name) : x.id}</a></td>
-                    <td class="num">${x.sets} × ${fmtReps(x.reps)}</td>
-                    <td class="num">${effort || raw('<span aria-hidden="true">—</span>')}</td>
-                    <td class="num">${x.rest}s</td></tr>`;
+                  return html`<tr role="row"><td role="cell"><a class="link" href="/exercises/${x.id}">${ex ? loc(ex.name) : x.id}</a></td>
+                    <td role="cell" class="num" data-label="${t('prog.setsReps')}">${x.sets} × ${fmtReps(x.reps)}</td>
+                    <td role="cell" class="num" data-label="${t('prog.effort')}">${effort || raw('<span aria-hidden="true">—</span>')}</td>
+                    <td role="cell" class="num" data-label="${t('prog.rest')}">${fmtSec(x.rest)}</td></tr>`;
                 })
                 .join(''),
             )}</tbody>

@@ -217,13 +217,13 @@
 }
 .back-link:hover { color: var(--text); }
 
-.stack { display: grid; gap: 18px; }
+.stack { display: grid; gap: 18px; grid-template-columns: minmax(0, 1fr); } /* never wider than its container */
 .row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .row.between { justify-content: space-between; }
 .grid-2 { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .grid-3 { display: grid; gap: 18px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
 @media (max-width: 900px) {
-  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  .grid-2, .grid-3 { grid-template-columns: minmax(0, 1fr); }
 }
 .section-title {
   display: flex;

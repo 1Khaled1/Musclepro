@@ -1,5 +1,5 @@
 import { api } from '../api';
-import { fmtReps, loc, t } from '../i18n';
+import { fmtReps, fmtSec, loc, t } from '../i18n';
 import { navigate, type View } from '../router';
 import { loadDraft, startDraft, store } from '../store';
 import { EQUIPMENT, GOALS, LEVELS, MUSCLES, type Exercise, type GeneratedWorkout, type Goal } from '../types';
@@ -94,7 +94,7 @@ export const generatorView: View = async (root) => {
                 <span class="n">${String(i + 1).padStart(2, '0')}</span>
                 <span><a class="link" style="color:inherit" href="/exercises/${x.id}">${ex ? loc(ex.name) : x.id}</a>
                   <span class="muted" style="display:block;font-size:.8rem">${ex ? ex.primary.map((m) => t(`muscle.${m}`)).join(' · ') : ''}</span></span>
-                <span class="rx">${x.sets} × ${fmtReps(x.reps)}<br />${x.rest}s</span>
+                <span class="rx">${x.sets} × ${fmtReps(x.reps)}<br />${fmtSec(x.rest)}</span>
               </li>`;
             })
             .join(''),

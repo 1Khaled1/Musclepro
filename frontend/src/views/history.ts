@@ -128,7 +128,7 @@ export const historyView: View = async (root, ctx) => {
       <summary>
         <span class="eq" style="display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:rgb(var(--accent-rgb)/.12);color:var(--accent)">${icon(w.program_id ? 'calendar' : 'dumbbell')}</span>
         <span class="grow"><strong>${w.title}</strong>
-          <span class="muted" style="font-size:.82rem">${formatDate(w.finished_at, { weekday: 'short', day: 'numeric', month: 'short' })} · ${t('hist.setsCount', { n: sets })} · ${w.duration_min} ${t('common.min')}</span></span>
+          <span class="muted" style="font-size:.82rem">${formatDate(w.finished_at, { weekday: 'short', day: 'numeric', month: 'short' })} · ${tn('hist.setsCount', sets)} · ${w.duration_min} ${t('common.min')}</span></span>
         <span class="chev">${icon('right')}</span>
       </summary>
       <div class="body">

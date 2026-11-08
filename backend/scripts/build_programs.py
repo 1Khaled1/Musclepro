@@ -25,7 +25,8 @@ OUT = DATA / "programs.json"
 
 
 def T(en: str, fr: str) -> dict:
-    return {"en": en, "fr": fr}
+    # French typography: typographic apostrophe everywhere.
+    return {"en": en, "fr": fr.replace("'", "\u2019")}
 
 
 def P(sets, reps=None, rest=60, rpe=None, pct=None, hold=None, dist=None) -> dict:
