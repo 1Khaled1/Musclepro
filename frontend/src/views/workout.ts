@@ -3,7 +3,7 @@
 import { api, ApiError } from '../api';
 import { effortLabel, fmtReps, loc, t } from '../i18n';
 import { navigate, type View } from '../router';
-import { loadDraft, saveDraft, store } from '../store';
+import { DEFAULT_REPS, loadDraft, saveDraft, setsFor, store } from '../store';
 import type { DraftWorkout, Exercise, LoggedSet } from '../types';
 import { glass, html, raw } from '../ui/dom';
 import { icon } from '../ui/icons';
@@ -151,7 +151,7 @@ export const workoutView: View = async (root) => {
     if (el.dataset.act !== 'add-ex' || !el.value || !draft) return;
     draft.items.push({
       id: el.value,
-      sets: Array.from({ length: 3 }, () => ({ reps: 10, weight: 0, unit: store.unit, done: false })),
+      sets: setsFor(undefined, store.unit),
     });
     persist();
     render();
@@ -190,7 +190,7 @@ export const workoutView: View = async (root) => {
       case 'add-set': {
         const sets = draft.items[ei].sets;
         const last = sets[sets.length - 1];
-        sets.push({ reps: last?.reps ?? 10, weight: last?.weight ?? 0, unit: last?.unit ?? store.unit, done: false });
+        sets.push({ reps: last?.reps ?? DEFAULT_REPS, weight: last?.weight ?? 0, unit: last?.unit ?? store.unit, done: false });
         break;
       }
       case 'remove-set':

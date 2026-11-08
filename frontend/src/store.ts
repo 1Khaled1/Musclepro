@@ -139,11 +139,15 @@ export function saveDraft(draft: DraftWorkout | null): void {
   if (existed !== !!draft) store.emit();
 }
 
-function setsFor(target: Prescription | undefined, unit: Unit) {
-  const count = target?.sets ?? 3;
-  const reps = parseInt(target?.reps ?? '10', 10);
+/** Defaults for an exercise logged without a plan (programs set their own). */
+export const DEFAULT_SETS = 3;
+export const DEFAULT_REPS = 4;
+
+export function setsFor(target: Prescription | undefined, unit: Unit) {
+  const count = target?.sets ?? DEFAULT_SETS;
+  const reps = parseInt(target?.reps ?? String(DEFAULT_REPS), 10);
   return Array.from({ length: count }, () => ({
-    reps: Number.isFinite(reps) ? reps : 10,
+    reps: Number.isFinite(reps) ? reps : DEFAULT_REPS,
     weight: 0,
     unit,
     done: false,
