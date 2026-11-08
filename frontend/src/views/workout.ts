@@ -1,6 +1,6 @@
 /** Live workout logger: per-set weight + unit (kg/lbs) + reps, rest timer,
  *  autosaved draft (survives reloads), save to Firebase via the API. */
-import { api } from '../api';
+import { api, ApiError } from '../api';
 import { fmtReps, loc, t } from '../i18n';
 import { navigate, type View } from '../router';
 import { loadDraft, saveDraft, store } from '../store';
@@ -8,6 +8,7 @@ import type { DraftWorkout, Exercise, LoggedSet } from '../types';
 import { glass, html, raw } from '../ui/dom';
 import { icon } from '../ui/icons';
 import { toast, toastError } from '../ui/toast';
+import { queueWorkout } from '../offline';
 
 function clock(seconds: number): string {
   const s = Math.max(0, Math.floor(seconds));
@@ -227,20 +228,36 @@ export const workoutView: View = async (root) => {
       return;
     }
     saving = true;
+    if (!draft.client_id) {
+      draft.client_id = Array.from(crypto.getRandomValues(new Uint8Array(16)), (b) => b.toString(16).padStart(2, '0')).join('');
+      persist();
+    }
+    const payload = {
+      client_id: draft.client_id,
+      title: draft.title.trim() || t('wo.custom'),
+      notes: draft.notes,
+      duration_min: Math.min(600, Math.round((Date.now() - draft.started_at) / 60000)),
+      finished_at: new Date().toISOString(),
+      entries,
+      ...(draft.program_id ? { program_id: draft.program_id, day_id: draft.day_id, week: draft.week } : {}),
+    };
     try {
-      await api.saveWorkout({
-        title: draft.title.trim() || t('wo.custom'),
-        notes: draft.notes,
-        duration_min: Math.min(600, Math.round((Date.now() - draft.started_at) / 60000)),
-        entries,
-        ...(draft.program_id ? { program_id: draft.program_id, day_id: draft.day_id, week: draft.week } : {}),
-      });
+      await api.saveWorkout(payload);
       draft = null;
       saveDraft(null);
       toast(t('wo.saved'));
       navigate('/history');
     } catch (err) {
-      toastError(err);
+      if (err instanceof ApiError && err.code === 'network') {
+        // No connection (gym basement…): keep it on the device, sync later.
+        queueWorkout(payload);
+        draft = null;
+        saveDraft(null);
+        toast(t('wo.savedOffline'), 'info');
+        navigate('/');
+      } else {
+        toastError(err);
+      }
     } finally {
       saving = false;
     }

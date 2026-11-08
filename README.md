@@ -36,6 +36,7 @@
 - **Live workout logger**: per-set weight with **per-set kg/lbs**, reps, done check, automatic rest timer, autosaved draft (survives reloads).
 - **Progress**: sessions, week streak, total volume, 8-week volume chart, estimated 1RM records (Epley), “muscles trained this week” heat map on the body, **CSV export**.
 - **Favorites** on any exercise.
+- **Installable, works offline**: add MusclePro to your home screen; the exercise library, programs and workout logger keep working without signal (gym basement), and workouts finished offline are saved on the device and synced automatically when you're back online, keeping their real finish time.
 
 **Accounts**
 - Email + password sign-up/sign-in, profile (level, goal, unit, body model, language), password change (signs out other devices), sign out everywhere, self-service account deletion.

@@ -93,8 +93,8 @@ Shipped and running:
   every exercise, starting with the 20 most used.
 - **150+ exercises**, including mobility, stretching and rehab-friendly
   variations.
-- **Installable app (PWA)** — home-screen install and offline logging that
-  syncs when back online.
+- ~~**Installable app (PWA)**~~ — **shipped**: home-screen install, offline
+  library, programs and logging; workouts sync when back online.
 - **Accessibility pass** — WCAG 2.2 AA across the app, screen-reader friendly
   muscle selection.
 

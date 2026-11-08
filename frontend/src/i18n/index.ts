@@ -43,6 +43,13 @@ export function t(key: MessageKey, vars?: Record<string, string | number>): stri
   return msg;
 }
 
+/** Count-aware message: picks `${base}.one` or `${base}.other` with the
+ *  language's plural rules (French treats 0 as singular, English doesn't). */
+export function tn(base: string, n: number): string {
+  const form = new Intl.PluralRules(current).select(n) === 'one' ? 'one' : 'other';
+  return t(`${base}.${form}` as MessageKey, { n: formatNumber(n) });
+}
+
 /** Translate a dynamic key (API error codes, enum values). */
 export function tk(prefix: string, value: string, fallback?: MessageKey): string {
   const key = `${prefix}.${value}` as MessageKey;

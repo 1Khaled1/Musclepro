@@ -27,7 +27,8 @@ export function toast(message: string, kind: 'ok' | 'error' | 'info' = 'ok'): vo
 const INVALID = new Set([
   'bad_request', 'entries_invalid', 'set_invalid', 'unit_invalid', 'title_invalid', 'notes_invalid',
   'duration_invalid', 'program_invalid', 'level_invalid', 'goal_invalid', 'muscles_invalid',
-  'equipment_invalid', 'minutes_invalid', 'role_invalid', 'lang_invalid', 'body_invalid',
+  'equipment_invalid', 'minutes_invalid', 'role_invalid', 'lang_invalid', 'body_invalid', 'finished_invalid',
+  'client_id_invalid',
 ]);
 
 /** Translate an API error code into a user-facing message. */

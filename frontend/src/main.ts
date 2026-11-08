@@ -9,7 +9,11 @@ import './styles/views.css';
 
 import { fallback, route, startRouter } from './router';
 import { store } from './store';
+import { flushOutbox } from './offline';
+import { initPwa } from './pwa';
+import { t, tn } from './i18n';
 import { initSpotlight } from './ui/effects';
+import { toast } from './ui/toast';
 import { mountShell } from './ui/shell';
 
 // Views are code-split: each page (and Three.js) loads on first visit.
@@ -31,11 +35,24 @@ document.addEventListener('click', (e) => {
   if ((e.target as Element | null)?.closest?.('[data-reload]')) location.reload();
 });
 
+async function syncOutbox(): Promise<void> {
+  const { saved, dropped } = await flushOutbox();
+  if (saved) toast(tn('net.synced', saved));
+  if (dropped) toast(tn('net.dropped', dropped), 'error');
+}
+
 async function boot(): Promise<void> {
+  initPwa();
   await store.init(); // resolve the session before the first render
   const main = mountShell(document.getElementById('app')!);
   initSpotlight();
   startRouter(main);
+  void syncOutbox();
+  window.addEventListener('offline', () => toast(t('net.offline'), 'info'));
+  window.addEventListener('online', () => {
+    toast(t('net.online'), 'info');
+    void syncOutbox();
+  });
 }
 
 void boot();

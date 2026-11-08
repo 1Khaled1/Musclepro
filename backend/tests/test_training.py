@@ -150,3 +150,40 @@ def test_stats_streak():
     s = compute_stats(items, now)
     assert s["streak_weeks"] == 2
     assert s["this_week"] == 1
+
+
+def test_offline_workout_keeps_finish_time(api):
+    from datetime import datetime, timedelta, timezone
+
+    register(api)
+    earlier = (datetime.now(timezone.utc) - timedelta(hours=3)).isoformat(timespec="seconds")
+    r = api.post("/api/workouts", json=_workout(title="Offline", finished_at=earlier))
+    assert r.status_code == 201
+    assert r.json["workout"]["finished_at"] == earlier
+    api.post("/api/workouts", json=_workout(title="Online"))
+    # History is ordered by finish time, not by when the server received it.
+    titles = [w["title"] for w in api.get("/api/workouts").json["workouts"]]
+    assert titles == ["Online", "Offline"]
+
+    future = (datetime.now(timezone.utc) + timedelta(days=1)).isoformat()
+    assert api.post("/api/workouts", json=_workout(finished_at=future)).json["error"] == "finished_invalid"
+    too_old = (datetime.now(timezone.utc) - timedelta(days=90)).isoformat()
+    assert api.post("/api/workouts", json=_workout(finished_at=too_old)).json["error"] == "finished_invalid"
+    assert api.post("/api/workouts", json=_workout(finished_at="yesterday")).json["error"] == "finished_invalid"
+
+
+def test_replayed_workout_is_saved_once(api):
+    """A workout synced again after a lost response must not be duplicated."""
+    register(api)
+    key = "0f" * 16
+    first = api.post("/api/workouts", json=_workout(title="Once", client_id=key))
+    assert first.status_code == 201
+    again = api.post("/api/workouts", json=_workout(title="Once", client_id=key))
+    assert again.status_code == 200
+    assert again.json["workout"]["id"] == first.json["workout"]["id"]
+    assert api.get("/api/workouts").json["total"] == 1
+    # A different key is a different workout.
+    assert api.post("/api/workouts", json=_workout(client_id="1a" * 16)).status_code == 201
+    assert api.get("/api/workouts").json["total"] == 2
+    for bad in ("short", "Z" * 32, 42, "../" + "a" * 29):
+        assert api.post("/api/workouts", json=_workout(client_id=bad)).json["error"] == "client_id_invalid"

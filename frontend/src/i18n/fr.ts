@@ -25,6 +25,7 @@ export const fr: Record<MessageKey, string> = {
   'nav.guest': 'Athlète invité',
   'nav.guestHint': 'Connectez-vous pour enregistrer vos séances et suivre vos progrès.',
   'nav.live': 'En cours',
+  'nav.install': 'Installer l’application',
 
   // common
   'common.loading': 'Chargement…',
@@ -228,6 +229,7 @@ export const fr: Record<MessageKey, string> = {
   'wo.custom': 'Séance libre',
   'wo.nothingDone': 'Validez au moins une série avant d’enregistrer.',
   'wo.pickExercise': 'Choisir un exercice…',
+  'wo.savedOffline': 'Enregistrée sur cet appareil — elle sera synchronisée dès votre retour en ligne.',
   'wo.toggleUnit': "Changer l'unité de cette série",
   'wo.markDone': 'Valider la série',
 
@@ -256,6 +258,9 @@ export const fr: Record<MessageKey, string> = {
   'hist.setsCount': '{n} séries',
   'hist.noPrs': 'Enregistrez des séries avec charge pour voir vos records ici.',
   'hist.weekOf': 'Semaine du {date}',
+  'hist.pending.one': '{n} séance enregistrée hors ligne, en attente de synchronisation.',
+  'hist.pending.other': '{n} séances enregistrées hors ligne, en attente de synchronisation.',
+  'hist.syncNow': 'Synchroniser',
   'hist.table': 'Afficher en tableau',
 
   // auth
@@ -345,6 +350,12 @@ export const fr: Record<MessageKey, string> = {
   'err.generic': 'Une erreur est survenue. Veuillez réessayer.',
 
   // misc
+  'net.offline': 'Vous êtes hors ligne. La bibliothèque et les programmes restent disponibles, et les séances sont enregistrées sur cet appareil.',
+  'net.online': 'De retour en ligne.',
+  'net.synced.one': 'Votre séance hors ligne est synchronisée.',
+  'net.synced.other': '{n} séances hors ligne synchronisées.',
+  'net.dropped.one': 'Une séance hors ligne n’a pas pu être enregistrée.',
+  'net.dropped.other': '{n} séances hors ligne n’ont pas pu être enregistrées.',
   'nf.title': 'Cette page a sauté la séance jambes.',
   'nf.lead': "Nous n'avons pas trouvé ce que vous cherchiez.",
   'nf.home': 'Retour à la carte du corps',

@@ -20,6 +20,8 @@ bp = Blueprint("workouts", __name__, url_prefix="/api/workouts")
 
 LBS_TO_KG = 0.45359237
 DAY_ID_RE = re.compile(r"^[a-z0-9-]{1,32}$")
+# Random 128-bit key the app attaches to each workout so retries are idempotent.
+CLIENT_ID_RE = re.compile(r"[0-9a-f]{32}")
 
 
 def _store():
@@ -56,6 +58,15 @@ def validate_workout(data: dict) -> dict:
         "notes": _text(data.get("notes"), 1000, "notes_invalid"),
         "duration_min": _num(data.get("duration_min", 0), 0, 600, "duration_invalid", True),
     }
+    # Workouts logged offline sync later: keep when they were really finished
+    # (bounded so a client cannot back- or future-date arbitrarily).
+    finished = data.get("finished_at")
+    if finished is not None:
+        when = _parse_dt(finished) if isinstance(finished, str) else None
+        now = datetime.now(timezone.utc)
+        if not when or when > now + timedelta(minutes=5) or when < now - timedelta(days=30):
+            raise ApiError("finished_invalid")
+        out["finished_at"] = when.astimezone(timezone.utc).isoformat(timespec="seconds")
     program_id = data.get("program_id")
     if program_id:
         program = get_program(program_id) if isinstance(program_id, str) else None
@@ -110,7 +121,7 @@ def _workouts_for(uid: str) -> list[dict]:
         w["entries"] = as_list(w.get("entries"))
         for e in w["entries"]:
             e["sets"] = as_list(e.get("sets"))
-    items.sort(key=lambda w: w.get("id", ""), reverse=True)
+    items.sort(key=lambda w: (w.get("finished_at") or "", w.get("id", "")), reverse=True)
     return items
 
 
@@ -120,10 +131,28 @@ def create():
     data = request.get_json(silent=True)
     if not isinstance(data, dict):
         raise ApiError("bad_request")
+    client_id = data.get("client_id")
+    if client_id is not None and not (isinstance(client_id, str) and CLIENT_ID_RE.fullmatch(client_id)):
+        raise ApiError("client_id_invalid")
     workout = validate_workout(data)
     uid = g.user["id"]
     workout["id"] = _new_workout_id()
-    workout["finished_at"] = now_iso()
+    status = 201
+    if client_id:
+        # A workout synced from the offline queue can be sent again when the
+        # first response was lost: claim the key once, so a replay maps back
+        # to the same workout instead of creating a duplicate.
+        claimed = _store().transaction(f"workout_keys/{uid}/{client_id}", lambda cur: cur or workout["id"])
+        if claimed != workout["id"]:
+            existing = _store().get(f"workouts/{uid}/{claimed}")
+            if existing:
+                existing["entries"] = as_list(existing.get("entries"))
+                for e in existing["entries"]:
+                    e["sets"] = as_list(e.get("sets"))
+                return {"workout": existing}, 200
+            # The first attempt claimed the key but never stored the workout.
+            workout["id"], status = claimed, 200
+    workout["finished_at"] = workout.get("finished_at") or now_iso()
     _store().set(f"workouts/{uid}/{workout['id']}", workout)
 
     if workout.get("program_id"):
@@ -131,7 +160,7 @@ def create():
         if _store().get(enrollment):
             key = f"w{workout['week']}-{workout['day_id']}"
             _store().set(f"{enrollment}/completed/{key}", workout["id"])
-    return {"workout": workout}, 201
+    return {"workout": workout}, status
 
 
 @bp.get("")

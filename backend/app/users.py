@@ -112,6 +112,7 @@ def delete_user_data(store, user: dict) -> None:
             f"users/{uid}": None,
             f"user_emails/{email_key(user['email'])}": None,
             f"workouts/{uid}": None,
+            f"workout_keys/{uid}": None,
             f"favorites/{uid}": None,
             f"enrollments/{uid}": None,
         },

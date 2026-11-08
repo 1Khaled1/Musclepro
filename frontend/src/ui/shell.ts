@@ -3,6 +3,7 @@ import { api } from '../api';
 import { getLang, onLangChange, setLang, t, type Lang } from '../i18n';
 import { navigate, onNavigate, refresh } from '../router';
 import { getTheme, loadDraft, onThemeChange, setTheme, store } from '../store';
+import { canInstall, onInstallChange, promptInstall } from '../pwa';
 import { esc, glass, html, initials, qs, raw } from './dom';
 import { icon } from './icons';
 import { toast, toastError } from './toast';
@@ -27,6 +28,7 @@ export function mountShell(app: HTMLElement): HTMLElement {
     refresh();
   });
   onThemeChange(renderAll);
+  onInstallChange(renderAll);
   onNavigate((path) => {
     currentPath = path;
     closeDrawer(false);
@@ -132,6 +134,9 @@ function renderDrawer(): void {
           </div>`)
         : ''}
 
+      ${canInstall()
+        ? raw(html`<button class="nav-link" type="button" data-action="install">${icon('download')}<span>${t('nav.install')}</span></button>`)
+        : ''}
       <div class="drawer-foot">
         <div class="row"><span>${icon('globe', 'icon-sm')} ${t('nav.language')}</span>${raw(langSwitch())}</div>
         <label class="row switch">
@@ -215,6 +220,9 @@ async function onShellClick(e: Event): Promise<void> {
       break;
     case 'theme':
       setTheme(getTheme() === 'dark' ? 'light' : 'dark');
+      break;
+    case 'install':
+      await promptInstall();
       break;
     case 'theme-switch':
       setTheme((actionEl as HTMLInputElement).checked ? 'dark' : 'light');

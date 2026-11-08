@@ -1,6 +1,7 @@
 import { api } from '../api';
-import { formatDate, formatNumber, getLang, loc, t } from '../i18n';
-import type { View } from '../router';
+import { formatDate, formatNumber, getLang, loc, t, tn } from '../i18n';
+import { refresh, type View } from '../router';
+import { flushOutbox, pendingCount } from '../offline';
 import type { Exercise, Muscle, Stats, Workout } from '../types';
 import { mountBody } from '../ui/bodyViewer';
 import { errorBlock, loadingBlock, requireUser } from '../ui/components';
@@ -89,8 +90,22 @@ function bindChart(root: HTMLElement, weekly: Stats['weekly']): void {
   });
 }
 
+function pendingBanner(): string {
+  const n = pendingCount();
+  if (!n) return '';
+  return html`<div class="panel tip" style="margin-bottom:18px;align-items:center">${icon('clock')}
+    <p style="flex:1">${tn('hist.pending', n)}</p>
+    <button class="btn btn-sm" type="button" data-sync>${icon('repeat', 'icon-sm')} ${t('hist.syncNow')}</button></div>`;
+}
+
 export const historyView: View = async (root, ctx) => {
   if (!requireUser(ctx.path)) return;
+  const onSync = async (e: Event) => {
+    if (!(e.target as HTMLElement).closest('[data-sync]')) return;
+    await flushOutbox();
+    refresh();
+  };
+  root.addEventListener('click', onSync);
   root.innerHTML = loadingBlock(3);
   let stats: Stats;
   let workouts: Workout[];
@@ -98,7 +113,7 @@ export const historyView: View = async (root, ctx) => {
   try {
     [stats, { workouts }, exercises] = await Promise.all([api.stats(), api.workouts(30), api.exercises()]);
   } catch (err) {
-    root.innerHTML = errorBlock(errorMessage(err));
+    root.innerHTML = pendingBanner() + errorBlock(errorMessage(err));
     return;
   }
   const byId = new Map(exercises.map((e) => [e.id, e]));
@@ -137,6 +152,7 @@ export const historyView: View = async (root, ctx) => {
       </div>
       <a class="btn" href="/api/workouts/export.csv?lang=${getLang()}" download>${icon('download')} ${t('hist.export')}</a>
     </div>
+    ${raw(pendingBanner())}
 
     <div class="stat-tiles">
       ${raw(stat(t('hist.sessions'), formatNumber(stats.sessions)))}

@@ -128,6 +128,8 @@ export interface GeneratedWorkout {
 /** Workout being logged, kept in localStorage so a reload loses nothing. */
 export interface DraftWorkout {
   title: string;
+  /** Idempotency key: every save attempt of this session sends the same one. */
+  client_id?: string;
   started_at: number;
   program_id?: string;
   day_id?: string;

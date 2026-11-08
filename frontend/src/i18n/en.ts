@@ -23,6 +23,7 @@ export const en = {
   'nav.guest': 'Guest athlete',
   'nav.guestHint': 'Sign in to save workouts and track progress.',
   'nav.live': 'Live',
+  'nav.install': 'Install app',
 
   // common
   'common.loading': 'Loading…',
@@ -226,6 +227,7 @@ export const en = {
   'wo.custom': 'Custom workout',
   'wo.nothingDone': 'Mark at least one set as done before saving.',
   'wo.pickExercise': 'Choose an exercise…',
+  'wo.savedOffline': 'Saved on this device — it will sync when you are back online.',
   'wo.toggleUnit': 'Switch unit for this set',
   'wo.markDone': 'Mark set as done',
 
@@ -254,6 +256,9 @@ export const en = {
   'hist.setsCount': '{n} sets',
   'hist.noPrs': 'Log weighted sets to see records here.',
   'hist.weekOf': 'Week of {date}',
+  'hist.pending.one': '1 workout saved offline, waiting to sync.',
+  'hist.pending.other': '{n} workouts saved offline, waiting to sync.',
+  'hist.syncNow': 'Sync now',
   'hist.table': 'Show as table',
 
   // auth
@@ -343,6 +348,12 @@ export const en = {
   'err.generic': 'Something went wrong. Please try again.',
 
   // misc
+  'net.offline': 'You are offline. The exercise library and programs still work, and workouts are saved on this device.',
+  'net.online': 'Back online.',
+  'net.synced.one': 'Your offline workout is synced.',
+  'net.synced.other': '{n} offline workouts synced.',
+  'net.dropped.one': 'An offline workout could not be saved.',
+  'net.dropped.other': '{n} offline workouts could not be saved.',
   'nf.title': 'This page skipped leg day.',
   'nf.lead': 'We could not find what you were looking for.',
   'nf.home': 'Back to the body map',

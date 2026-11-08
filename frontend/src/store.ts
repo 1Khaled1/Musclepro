@@ -1,9 +1,29 @@
 /** App state: signed-in user, favorites, theme, and the workout draft. */
-import { api } from './api';
+import { api, ApiError } from './api';
 import { setLang } from './i18n';
 import type { DraftWorkout, Exercise, Prescription, Unit, User } from './types';
 
 type Listener = () => void;
+
+const USER_KEY = 'mp-user';
+
+function readUserCache(): User | null {
+  try {
+    const raw = localStorage.getItem(USER_KEY);
+    return raw ? (JSON.parse(raw) as User) : null;
+  } catch {
+    return null;
+  }
+}
+
+function writeUserCache(user: User | null): void {
+  try {
+    if (user) localStorage.setItem(USER_KEY, JSON.stringify(user));
+    else localStorage.removeItem(USER_KEY);
+  } catch {
+    /* storage unavailable */
+  }
+}
 
 class Store {
   user: User | null = null;
@@ -23,13 +43,17 @@ class Store {
     try {
       const { user } = await api.me();
       await this.setUser(user, false);
-    } catch {
-      this.user = null;
+    } catch (err) {
+      // Offline: keep showing the last signed-in profile (public fields only,
+      // no credentials — the session cookie stays HttpOnly) so logging works.
+      this.user = err instanceof ApiError && err.code === 'network' ? readUserCache() : null;
+      if (this.user) setLang(this.user.lang);
     }
   }
 
   async setUser(user: User | null, emit = true): Promise<void> {
     this.user = user;
+    writeUserCache(user);
     this.favorites.clear();
     if (user) {
       setLang(user.lang);

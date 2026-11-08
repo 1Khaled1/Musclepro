@@ -127,6 +127,10 @@ def _register_spa(app: Flask) -> None:
                 resp.headers["Cache-Control"] = "public, max-age=31536000, immutable"
             elif path.startswith(("anatomy/", "models/")):
                 resp.headers["Cache-Control"] = "public, max-age=604800"
+            elif path == "sw.js":
+                # The service worker must be revalidated on every load, or
+                # browsers keep running an old version of the app.
+                resp.headers["Cache-Control"] = "no-cache"
             return resp
         resp = send_from_directory(static_dir, "index.html")
         resp.headers["Cache-Control"] = "no-cache"
