@@ -22,6 +22,8 @@ let notFound: (() => Promise<View>) | null = null;
 let outlet: HTMLElement;
 let cleanup: (() => void) | null = null;
 let renderToken = 0;
+/** Path + query of the page on screen: a change of #hash alone is not a navigation. */
+let shownKey = '';
 const navListeners = new Set<(path: string, name: string) => void>();
 
 export function route(path: string, name: string, load: () => Promise<View>): void {
@@ -64,6 +66,7 @@ export function refresh(): void {
 
 async function render(opts: { keepScroll?: boolean } = {}): Promise<void> {
   const token = ++renderToken;
+  shownKey = location.pathname + location.search;
   const path = decodeURI(location.pathname);
   const query = new URLSearchParams(location.search);
   let matched: Route | undefined;
@@ -100,7 +103,11 @@ async function render(opts: { keepScroll?: boolean } = {}): Promise<void> {
 
 export function startRouter(root: HTMLElement): void {
   outlet = root;
-  window.addEventListener('popstate', () => void render());
+  window.addEventListener('popstate', () => {
+    // In-page anchors (the skip link, #sections) fire popstate too: only a
+    // change of path or query is a new page.
+    if (location.pathname + location.search !== shownKey) void render();
+  });
   // Intercept same-origin <a> clicks for client-side navigation.
   document.addEventListener('click', (e) => {
     if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;

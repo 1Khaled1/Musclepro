@@ -64,7 +64,9 @@ def create_app(config_overrides: dict | None = None) -> Flask:
 
     @app.get("/api/health")
     def health():
-        return {"status": "ok", "storage": store.kind}
+        # `persistent: false` = demo mode (data is lost on restart); the app
+        # tells people before they create an account.
+        return {"status": "ok", "storage": store.kind, "persistent": store.persistent}
 
     @app.errorhandler(ApiError)
     def api_error(err: ApiError):

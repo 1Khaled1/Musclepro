@@ -213,6 +213,14 @@ function trapFocus(e: KeyboardEvent): void {
 
 async function onShellClick(e: Event): Promise<void> {
   const target = e.target as HTMLElement;
+  if (target.closest('[data-skip]')) {
+    // Move focus to the content without adding #main to the address.
+    e.preventDefault();
+    const main = qs<HTMLElement>('#main');
+    main.focus();
+    main.scrollIntoView({ block: 'start' });
+    return;
+  }
   const langBtn = target.closest<HTMLElement>('[data-lang]');
   if (langBtn && target.closest('#topbar, #drawer')) {
     const lang = langBtn.dataset.lang as Lang;

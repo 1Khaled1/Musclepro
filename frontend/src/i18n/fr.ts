@@ -283,6 +283,8 @@ export const fr: Record<MessageKey, string> = {
   'auth.submitRegister': 'Créer le compte',
   'auth.noAccount': 'Nouveau sur MusclePro ?',
   'auth.haveAccount': 'Déjà un compte ?',
+  'auth.demoTitle': 'Mode démo',
+  'auth.demoBody': 'Ce serveur n’enregistre pas encore les données durablement : les comptes et les séances sont effacés à chaque redémarrage (après environ 15 minutes sans visite).',
   'auth.pwHint': 'Au moins 8 caractères, avec des lettres et des chiffres.',
   'auth.show': 'Afficher le mot de passe',
   'auth.welcome': 'Bienvenue, {name} !',
@@ -359,6 +361,7 @@ export const fr: Record<MessageKey, string> = {
   // misc
   'net.offline': 'Vous êtes hors ligne. La bibliothèque et les programmes restent disponibles, et les séances sont enregistrées sur cet appareil.',
   'net.online': 'De retour en ligne.',
+  'net.waking': 'Réveil du serveur — l’hébergement gratuit se met en veille, cela peut prendre jusqu’à une minute…',
   'net.synced.one': 'Votre séance hors ligne est synchronisée.',
   'net.synced.other': '{n} séances hors ligne synchronisées.',
   'net.dropped.one': 'Une séance hors ligne n’a pas pu être enregistrée.',

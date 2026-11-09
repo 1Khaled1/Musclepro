@@ -66,6 +66,20 @@ function authPage(mode: 'login' | 'register'): View {
       ),
     )}</div>`;
 
+    // Demo mode: tell people before they create an account that this server
+    // does not keep data yet (no database configured).
+    api
+      .health()
+      .then((h) => {
+        if (h.persistent || !root.isConnected) return;
+        root.querySelector('#auth-form')?.insertAdjacentHTML(
+          'beforebegin',
+          html`<div class="panel tip demo-note" role="note">${icon('info')}<div><strong>${t('auth.demoTitle')}</strong>
+            <p>${t('auth.demoBody')}</p></div></div>`,
+        );
+      })
+      .catch(() => undefined);
+
     const form = qs<HTMLFormElement>('#auth-form', root);
     const errorEl = qs('#auth-error', root);
     const pw = form.elements.namedItem('password') as HTMLInputElement;

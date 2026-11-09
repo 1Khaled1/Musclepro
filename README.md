@@ -117,9 +117,12 @@ cd frontend && npm run build             # tsc --noEmit + vite build
 
 Alternatively upload the key as a Render **Secret File** named `firebase-service-account.json` (read from `/etc/secrets/`) and leave `FIREBASE_SERVICE_ACCOUNT` empty.
 
-4. Deploy. `/api/health` reports `"storage": "firebase"` when the database is connected (the admin page shows it too).
+4. Deploy. `/api/health` reports `"storage": "firebase", "persistent": true` when the database is connected (the admin page shows it too).
 
-Free-plan notes: the service sleeps after ~15 min idle and takes a few seconds to wake. Without Firebase, data lives in memory and is lost on every restart — fine for a demo, not for users. Keep `WEB_CONCURRENCY` at 1 unless Firebase is configured.
+Free-plan notes:
+- The service sleeps after ~15 min idle and needs up to a minute to wake. Returning visitors don't wait for it: the installed app opens from its cache after 3.5 s, keeps them signed in, and shows "Waking up the server…" until it answers. A first-time visitor still waits for the wake-up.
+- Without Firebase, data lives in memory and is lost on every restart. The app then runs in **demo mode** (`"persistent": false`) and says so on the sign-in and register pages. Fine for a demo, not for real users.
+- Keep `WEB_CONCURRENCY` at 1 unless Firebase is configured.
 
 ## Configuration
 

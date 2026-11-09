@@ -19,7 +19,35 @@ export class ApiError extends Error {
   }
 }
 
+// Requests still waiting after SLOW_MS: on Render's free plan the server
+// sleeps when idle and takes up to a minute to wake. The UI explains it.
+const SLOW_MS = 2500;
+let slowCount = 0;
+const slowListeners = new Set<(pending: number) => void>();
+export function onSlowRequests(fn: (pending: number) => void): () => void {
+  slowListeners.add(fn);
+  return () => slowListeners.delete(fn);
+}
+const setSlow = (delta: number) => {
+  slowCount += delta;
+  slowListeners.forEach((fn) => fn(slowCount));
+};
+
 async function request<T>(method: string, path: string, body?: unknown): Promise<T> {
+  let counted = false;
+  const timer = window.setTimeout(() => {
+    counted = true;
+    setSlow(1);
+  }, SLOW_MS);
+  try {
+    return await send<T>(method, path, body);
+  } finally {
+    window.clearTimeout(timer);
+    if (counted) setSlow(-1);
+  }
+}
+
+async function send<T>(method: string, path: string, body?: unknown): Promise<T> {
   let res: Response;
   try {
     res = await fetch(path, {
@@ -62,6 +90,7 @@ function cached<T>(key: string, load: () => Promise<T>): Promise<T> {
 
 export const api = {
   // auth
+  health: () => get<{ status: string; storage: string; persistent: boolean }>('/api/health'),
   me: () => get<{ user: User | null }>('/api/auth/me'),
   login: (email: string, password: string) => post<{ user: User }>('/api/auth/login', { email, password }),
   register: (data: Record<string, string>) => post<{ user: User }>('/api/auth/register', data),

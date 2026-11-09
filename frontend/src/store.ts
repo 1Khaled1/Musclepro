@@ -40,9 +40,24 @@ class Store {
   }
 
   async init(): Promise<void> {
+    const me = api.me();
+    const waking = new Promise<'waking'>((resolve) => window.setTimeout(() => resolve('waking'), 4000));
     try {
-      const { user } = await api.me();
-      await this.setUser(user, false);
+      const first = await Promise.race([me, waking]);
+      if (first === 'waking') {
+        // The server is waking up (free hosting sleeps when idle). Open the
+        // app now with the last known profile and correct it when it answers.
+        this.user = readUserCache();
+        if (this.user) setLang(this.user.lang);
+        me.then(
+          ({ user }) => this.setUser(user),
+          (err) => {
+            if (!(err instanceof ApiError && err.code === 'network')) void this.setUser(null);
+          },
+        );
+        return;
+      }
+      await this.setUser(first.user, false);
     } catch (err) {
       // Offline: keep showing the last signed-in profile (public fields only,
       // no credentials — the session cookie stays HttpOnly) so logging works.

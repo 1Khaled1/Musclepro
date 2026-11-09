@@ -49,6 +49,8 @@ class MemoryStore:
     def __init__(self, file: str | None = None) -> None:
         self._lock = threading.RLock()
         self._file = Path(file) if file else None
+        # Without a file, everything is lost when the process restarts.
+        self.persistent = self._file is not None
         self._root: dict = {}
         if self._file and self._file.exists():
             try:
@@ -134,6 +136,7 @@ class MemoryStore:
 
 class FirebaseStore:
     kind = "firebase"
+    persistent = True
 
     def __init__(self, credentials: dict, database_url: str) -> None:
         import firebase_admin

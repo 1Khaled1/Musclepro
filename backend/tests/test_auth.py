@@ -5,6 +5,15 @@ def test_health(api):
     r = api.get("/api/health")
     assert r.status_code == 200
     assert r.json["storage"] == "memory"
+    # Tests run on a pure in-memory store: the app must say data is not kept.
+    assert r.json["persistent"] is False
+
+
+def test_store_persistence_flag(tmp_path):
+    from app.store import MemoryStore
+
+    assert MemoryStore().persistent is False
+    assert MemoryStore(str(tmp_path / "db.json")).persistent is True
 
 
 def test_register_login_logout_flow(api):

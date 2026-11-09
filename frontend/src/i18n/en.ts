@@ -281,6 +281,8 @@ export const en = {
   'auth.submitRegister': 'Create account',
   'auth.noAccount': 'New to MusclePro?',
   'auth.haveAccount': 'Already have an account?',
+  'auth.demoTitle': 'Demo mode',
+  'auth.demoBody': 'This server does not save data permanently yet: accounts and workouts are erased when it restarts (after about 15 minutes without visitors).',
   'auth.pwHint': 'At least 8 characters, with letters and numbers.',
   'auth.show': 'Show password',
   'auth.welcome': 'Welcome, {name}!',
@@ -357,6 +359,7 @@ export const en = {
   // misc
   'net.offline': 'You are offline. The exercise library and programs still work, and workouts are saved on this device.',
   'net.online': 'Back online.',
+  'net.waking': 'Waking up the server — free hosting sleeps when idle, this can take up to a minute…',
   'net.synced.one': 'Your offline workout is synced.',
   'net.synced.other': '{n} offline workouts synced.',
   'net.dropped.one': 'An offline workout could not be saved.',
