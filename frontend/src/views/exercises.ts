@@ -9,6 +9,7 @@ import { icon } from '../ui/icons';
 import { errorMessage, toast, toastError } from '../ui/toast';
 
 const DIFFICULTIES = ['beginner', 'intermediate', 'advanced'] as const;
+const TYPES = ['strength', 'power', 'mobility'] as const;
 
 function normalize(s: string): string {
   return s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
@@ -20,6 +21,7 @@ export const exercisesView: View = async (root, ctx) => {
     muscle: ctx.query.get('muscle') ?? '',
     equipment: ctx.query.get('equipment') ?? '',
     difficulty: ctx.query.get('difficulty') ?? '',
+    type: ctx.query.get('type') ?? '',
     fav: ctx.query.get('fav') === '1' && !!store.user,
   };
 
@@ -47,6 +49,11 @@ export const exercisesView: View = async (root, ctx) => {
             <select class="select" name="difficulty">
               <option value="">${t('ex.allLevels')}</option>
               ${raw(DIFFICULTIES.map((d) => html`<option value="${d}" ${raw(state.difficulty === d ? 'selected' : '')}>${t(`level.${d}`)}</option>`).join(''))}
+            </select></label>
+          <label><span class="visually-hidden">${t('ex.type')}</span>
+            <select class="select" name="type">
+              <option value="">${t('ex.allTypes')}</option>
+              ${raw(TYPES.map((k) => html`<option value="${k}" ${raw(state.type === k ? 'selected' : '')}>${t(`type.${k}`)}</option>`).join(''))}
             </select></label>
         </div>
         <div class="chip-scroller" role="group" aria-label="${t('ex.targets')}" id="ex-muscles"></div>
@@ -80,7 +87,7 @@ export const exercisesView: View = async (root, ctx) => {
 
   const syncUrl = () => {
     const params = new URLSearchParams();
-    (['q', 'muscle', 'equipment', 'difficulty'] as const).forEach((k) => state[k] && params.set(k, state[k]));
+    (['q', 'muscle', 'equipment', 'difficulty', 'type'] as const).forEach((k) => state[k] && params.set(k, state[k]));
     if (state.fav) params.set('fav', '1');
     const qs2 = params.toString();
     history.replaceState({}, '', `/exercises${qs2 ? `?${qs2}` : ''}`);
@@ -92,6 +99,7 @@ export const exercisesView: View = async (root, ctx) => {
       if (state.muscle && !e.primary.includes(state.muscle as never) && !e.secondary.includes(state.muscle as never)) return false;
       if (state.equipment && e.equipment !== state.equipment) return false;
       if (state.difficulty && e.difficulty !== state.difficulty) return false;
+      if (state.type && e.type !== state.type) return false;
       if (state.fav && !store.favorites.has(e.id)) return false;
       if (q && !normalize(e.name.en).includes(q) && !normalize(e.name.fr).includes(q)) return false;
       return true;
@@ -129,7 +137,7 @@ export const exercisesView: View = async (root, ctx) => {
     render();
   });
   qs('#ex-clear', root).addEventListener('click', () => {
-    Object.assign(state, { q: '', muscle: '', equipment: '', difficulty: '', fav: false });
+    Object.assign(state, { q: '', muscle: '', equipment: '', difficulty: '', type: '', fav: false });
     form.reset();
     (form.elements.namedItem('q') as HTMLInputElement).value = '';
     root.querySelector('#fav-toggle')?.setAttribute('aria-pressed', 'false');

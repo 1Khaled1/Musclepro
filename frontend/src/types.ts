@@ -44,6 +44,10 @@ export interface Exercise {
   mechanic: 'compound' | 'isolation';
   force: 'push' | 'pull' | 'static';
   type: 'strength' | 'power' | 'mobility';
+  /** Mobility drills: suggested amount per set, e.g. "30s/side". */
+  dose?: string;
+  /** Dynamic drill that works as a warm-up before training. */
+  warmup?: boolean;
   steps: { en: string[]; fr: string[] };
   tips: { en: string[]; fr: string[] };
 }
@@ -146,6 +150,8 @@ export interface GeneratedWorkout {
   goal: Goal;
   level: Level;
   muscles: Muscle[];
+  /** Two dynamic mobility drills matched to the session. */
+  warmup: Prescription[];
   exercises: Prescription[];
   estimated_minutes: number;
 }

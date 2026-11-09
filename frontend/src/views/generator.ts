@@ -86,6 +86,23 @@ export const generatorView: View = async (root) => {
             <span class="muted" style="font-size:.85rem">${t(`goal.${result.goal}`)} · ${t('gen.estimate', { n: result.estimated_minutes })}</span></div>
           <button class="btn btn-sm" type="button" data-act="shuffle">${icon('repeat', 'icon-sm')} ${t('gen.regenerate')}</button>
         </div>
+        ${result.warmup?.length
+          ? raw(html`<h3 class="plan-heading">${icon('flame', 'icon-sm')} ${t('gen.warmup')}</h3>
+            <ul class="plan-list">${raw(
+              result.warmup
+                .map((x) => {
+                  const ex = byId.get(x.id);
+                  return html`<li class="panel plan-item is-warmup">
+                    <span class="n" aria-hidden="true">${icon('rotate', 'icon-sm')}</span>
+                    <span><a class="link" style="color:inherit" href="/exercises/${x.id}">${ex ? loc(ex.name) : x.id}</a>
+                      <span class="muted" style="display:block;font-size:.8rem">${t('type.mobility')}</span></span>
+                    <span class="rx">${x.sets} × ${fmtReps(x.reps)}</span>
+                  </li>`;
+                })
+                .join(''),
+            )}</ul>
+            <h3 class="plan-heading">${icon('dumbbell', 'icon-sm')} ${t('gen.main')}</h3>`)
+          : ''}
         <ol class="plan-list">${raw(
           result.exercises
             .map((x, i) => {
@@ -156,7 +173,7 @@ export const generatorView: View = async (root) => {
     if (act === 'start' && result) {
       if (loadDraft() && !confirm(t('wo.discardConfirm'))) return;
       const focus = state.muscles.size ? [...state.muscles].map((m) => t(`muscle.${m}` as 'muscle.chest')).join(', ') : t('gen.fullBody');
-      startDraft(`${t(`goal.${result.goal}`)} · ${focus}`, result.exercises);
+      startDraft(`${t(`goal.${result.goal}`)} · ${focus}`, [...(result.warmup ?? []), ...result.exercises]);
       navigate('/workout');
     }
   });

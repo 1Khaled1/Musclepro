@@ -1,5 +1,5 @@
 import { api } from '../api';
-import { loc, locList, t } from '../i18n';
+import { fmtReps, loc, locList, t } from '../i18n';
 import type { View } from '../router';
 import { addToDraft, store } from '../store';
 import type { Muscle } from '../types';
@@ -35,6 +35,8 @@ export const exerciseView: View = async (root, ctx) => {
           <span class="badge">${t(`mechanic.${ex.mechanic}`)}</span>
           <span class="badge">${t(`force.${ex.force}`)}</span>
           ${ex.type === 'power' ? raw(html`<span class="badge accent">${icon('bolt', 'icon-sm')} ${t('type.power')}</span>`) : ''}
+          ${ex.type === 'mobility' ? raw(html`<span class="badge holo">${icon('rotate', 'icon-sm')} ${t('type.mobility')}</span>`) : ''}
+          ${ex.warmup ? raw(html`<span class="badge">${icon('flame', 'icon-sm')} ${t('ex.goodWarmup')}</span>`) : ''}
         </div>
       </div>
       <div class="row">
@@ -69,6 +71,7 @@ export const exerciseView: View = async (root, ctx) => {
             ${ex.secondary.length ? raw(html`<dt>${t('ex.secondary')}</dt><dd>${ex.secondary.map((m) => t(`muscle.${m}`)).join(', ')}</dd>`) : ''}
             <dt>${t('ex.equipment')}</dt><dd>${t(`equip.${ex.equipment}`)}</dd>
             <dt>${t('ex.level')}</dt><dd>${t(`level.${ex.difficulty}`)}</dd>
+            ${ex.dose ? raw(html`<dt>${t('ex.dose')}</dt><dd>${t('ex.doseValue', { dose: fmtReps(ex.dose) })}</dd>`) : ''}
           </dl>`, { cls: 'body-stage', delay: 80 }))}
       </div>
     </div>

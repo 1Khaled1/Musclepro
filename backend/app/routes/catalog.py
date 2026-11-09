@@ -44,9 +44,9 @@ def exercise_detail(exercise_id: str):
     ex = get_exercise(exercise_id)
     if not ex:
         raise ApiError("not_found", 404)
-    related = [
-        e for e in filter_exercises(muscle=ex["primary"][0]) if e["id"] != ex["id"]
-    ][:4]
+    # Same muscle, same kind first: stretches next to stretches, lifts next to lifts.
+    same_muscle = [e for e in filter_exercises(muscle=ex["primary"][0]) if e["id"] != ex["id"]]
+    related = sorted(same_muscle, key=lambda e: e["type"] != ex["type"])[:4]
     used_in = [
         {"id": p["id"], "name": p["name"], "level": p["level"]}
         for p in programs()

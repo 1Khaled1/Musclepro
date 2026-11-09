@@ -261,11 +261,17 @@
 .filters .row-fields {
   display: grid;
   gap: 12px;
-  grid-template-columns: minmax(0, 2fr) repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 2fr) repeat(3, minmax(0, 1fr));
 }
 @media (max-width: 760px) {
   .filters .row-fields { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-  .filters .row-fields .search { grid-column: 1 / -1; }
+  .filters .row-fields .search,
+  .filters .row-fields label:has(select[name='type']) { grid-column: 1 / -1; }
+  /* Narrow dropdowns: a little less padding so labels are not cut off. */
+  .filters .select { padding-left: 12px; padding-right: 32px; background-position: right 10px center; font-size: 0.92rem; }
+}
+@media (max-width: 400px) {
+  .filters .row-fields { grid-template-columns: minmax(0, 1fr); }
 }
 .chip-scroller {
   display: flex;
@@ -452,6 +458,9 @@
   color: var(--accent);
 }
 .plan-item .rx { font-family: var(--mono); font-size: 0.86rem; text-align: right; color: var(--text-2); }
+.plan-item.is-warmup .n { color: var(--holo); display: grid; place-items: center; }
+.plan-heading { display: flex; align-items: center; gap: 8px; margin: 14px 0 10px; font-size: 0.95rem; color: var(--text-2); }
+.plan-heading:first-of-type { margin-top: 4px; }
 
 /* ---------------------------------------------------------------- workout */
 .session-bar {

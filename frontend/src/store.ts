@@ -197,6 +197,8 @@ export function addToDraft(exercise: Exercise, customTitle: string): void {
     notes: '',
     items: [],
   };
-  draft.items.push({ id: exercise.id, sets: setsFor(undefined, store.unit) });
+  // Mobility drills start at their suggested dose (2 × 30 s…), lifts at the default.
+  const target = exercise.dose ? { sets: 2, reps: exercise.dose, rest: 15 } : undefined;
+  draft.items.push({ id: exercise.id, target, sets: setsFor(target && { id: exercise.id, ...target }, store.unit) });
   saveDraft(draft);
 }

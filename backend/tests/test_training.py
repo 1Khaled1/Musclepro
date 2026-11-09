@@ -59,6 +59,48 @@ def test_generator_power_puts_explosive_first():
     assert first["type"] == "power"
 
 
+def test_generator_never_uses_stretches_as_work_and_adds_a_warmup():
+    index = exercise_index()
+    for seed in range(30):
+        for goal in ("general", "strength", "hypertrophy", "endurance", "power"):
+            w = generate_workout(
+                {"muscles": ["hamstrings", "glutes", "chest"], "equipment": ["band"], "level": "beginner",
+                 "goal": goal, "minutes": 45},
+                seed=seed,
+            )
+            assert all(index[x["id"]]["type"] != "mobility" for x in w["exercises"]), goal
+            warm = w["warmup"]
+            assert len(warm) == 2 and len({x["id"] for x in warm}) == 2
+            for x in warm:
+                e = index[x["id"]]
+                assert e["type"] == "mobility" and e.get("warmup") and x["reps"] == e["dose"]
+                assert e["equipment"] in ("bodyweight", "band")
+    # The warm-up follows the session: a leg day warms up the legs.
+    w = generate_workout({"muscles": ["quads", "glutes"], "equipment": [], "level": "beginner", "goal": "general"}, seed=1)
+    for x in w["warmup"]:
+        e = index[x["id"]]
+        assert set(e["primary"] + e["secondary"]) & {"quads", "glutes", "hamstrings", "calves"}
+
+
+def test_catalog_has_150_plus_exercises_with_doses_for_mobility():
+    index = exercise_index()
+    assert len(index) >= 150
+    mobility = [e for e in index.values() if e["type"] == "mobility"]
+    assert len(mobility) >= 30 and all(e.get("dose") for e in mobility)
+    assert sum(1 for e in mobility if e.get("warmup")) >= 12
+
+
+def test_related_exercises_prefer_the_same_type(api):
+    rel = api.get("/api/exercises/standing-quad-stretch").json["related"]
+    assert rel and index_type(rel[0]) == "mobility"
+    rel = api.get("/api/exercises/back-squat").json["related"]
+    assert rel and all(index_type(e) != "mobility" for e in rel)
+
+
+def index_type(e):
+    return exercise_index()[e["id"]]["type"]
+
+
 def test_generator_api_validation(api):
     assert api.post("/api/generate", json={"goal": "fly"}).json["error"] == "goal_invalid"
     assert api.post("/api/generate", json={"minutes": 5}).json["error"] == "minutes_invalid"

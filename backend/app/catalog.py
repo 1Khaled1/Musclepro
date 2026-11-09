@@ -133,6 +133,24 @@ def _str_list(value: Any, allowed, code: str) -> list[str]:
     return list(dict.fromkeys(value))
 
 
+def _warmup(available: list[dict], chosen: list[dict], muscles: list[str], rng: random.Random) -> list[dict]:
+    """Two dynamic mobility drills that prepare what the session trains."""
+    target = set(muscles) | {m for e in chosen for m in e["primary"]}
+    drills = [e for e in available if e["type"] == "mobility" and e.get("warmup")]
+    picked: list[dict] = []
+    for _ in range(2):
+        def fit(e: dict) -> float:
+            hits = len(target & set(e["primary"])) * 2 + len(target & set(e["secondary"]))
+            # A second drill for different muscles beats two drills for the same.
+            overlap = any(set(p["primary"]) & set(e["primary"]) for p in picked)
+            return hits - (1.5 if overlap else 0) + rng.random() * 0.8
+        options = [e for e in drills if e not in picked]
+        if not options:
+            break
+        picked.append(max(options, key=fit))
+    return [{"id": e["id"], "sets": 1, "reps": e["dose"], "rest": 15} for e in picked]
+
+
 def generate_workout(params: dict, seed: int | None = None) -> dict:
     """Build a session from the catalog.
 
@@ -162,11 +180,14 @@ def generate_workout(params: dict, seed: int | None = None) -> dict:
         scheme["sets"] = max(2, scheme["sets"] - 1)
     max_diff = LEVEL_MAX_DIFFICULTY[level]
 
-    pool = [
+    available = [
         e
         for e in exercises()
         if e["equipment"] in equipment and DIFFICULTY_ORDER[e["difficulty"]] <= max_diff
     ]
+    # Stretches and mobility drills never count as working sets; the best
+    # dynamic ones open the session as a warm-up instead (see below).
+    pool = [e for e in available if e["type"] != "mobility"]
 
     per_exercise = scheme["sets"] * (scheme["work"] + scheme["rest"]) / 60
     target = max(3, min(9, round((minutes - 5) / per_exercise)))
@@ -182,8 +203,6 @@ def generate_workout(params: dict, seed: int | None = None) -> dict:
                 s += 0.8
             else:
                 s -= 1.5
-        elif e["type"] == "mobility":
-            s -= 1
         if e["mechanic"] == "compound":
             s += 1.5 if goal in ("strength", "power") else 1
         # Loadable movements progress better for strength and size.
@@ -239,11 +258,14 @@ def generate_workout(params: dict, seed: int | None = None) -> dict:
             sets, reps, rest = 3, "5", 90
         items.append({"id": e["id"], "sets": sets, "reps": reps, "rest": rest})
 
+    warmup = _warmup(available, chosen, muscles, rng)
+
     total = 5 + sum(i["sets"] * (scheme["work"] + i["rest"]) for i in items) / 60
     return {
         "goal": goal,
         "level": level,
         "muscles": muscles,
+        "warmup": warmup,
         "exercises": items,
         "estimated_minutes": round(total),
     }

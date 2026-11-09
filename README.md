@@ -6,7 +6,7 @@
 
 <p align="center">
   <b>Pick a muscle. Master the move.</b><br />
-  Interactive muscle map · 67 exercises with step-by-step form · programs from beginner to pro athlete · workout tracker<br />
+  Interactive muscle map · 155 exercises with step-by-step form · programs from beginner to pro athlete · workout tracker<br />
   <sub>English &amp; Français · Liquid Glass UI · runs on Render's free plan with Firebase</sub><br />
   <a href="VISION.md"><b>Product vision →</b></a><br />
   <sub>Developed by <b>Khaled Bel Hedi</b> &amp; <b>Coach Khalil Haded</b></sub>
@@ -28,9 +28,9 @@
 - **Muscle map**:
   - Professional écorché illustrations (male & female, front & back, dark & light artwork) with 14 tappable muscle groups (mouse, touch or keyboard); the highlight colour blends into the illustration's shading, and a thumbnail flips the body. A **Three.js + GLSL** light field glows behind the figure and travels to the muscle you pick.
   - Next to the body: an equipment filter for the suggested exercises, a quick exercise search and a shortcut to the workout generator. Muscles light up by role: primary, secondary, or how much you trained them this week.
-- **Exercise library**: 67 exercises, each with numbered steps and a coach tip in EN/FR, filters for muscle, equipment, level and search (accent-insensitive: “squat bulgare” works).
+- **Exercise library**: 155 exercises — strength, power and conditioning, plus 33 mobility and stretching drills and rehab-friendly work — each with numbered steps and a coach tip in EN/FR. Filters for muscle, equipment, level, type and search (accent-insensitive: “squat bulgare” works). Stretches show a suggested dose.
 - **Periodized programs for every level**: Foundation Full Body, Home Bodyweight Starter, Upper/Lower Strength, Push·Pull·Legs (6 days, heavy A + volume B), Athlete Power & Speed, Peak Strength Block. Each one is written week by week like a coach would: **phases** that change the exercise variations, a different **sets × reps × effort** every week (RPE, or % of 1RM for strength and power lifts), **deload/taper weeks**, a coach note per week and completion tracking. Programs are generated and validated by `backend/scripts/build_programs.py`.
-- **Workout generator**: goal × level × time × equipment × target muscles → a balanced session ordered like a coach would (power first, compounds, isolation, core last).
+- **Workout generator**: goal × level × time × equipment × target muscles → a 2-drill warm-up matched to the session, then a balanced session ordered like a coach would (power first, compounds, isolation, core last). Stretches are never used as working sets.
 
 **Track**
 - **Live workout logger**: per-set weight with **per-set kg/lbs**, reps, done check, automatic rest timer, autosaved draft (survives reloads).
@@ -200,6 +200,6 @@ Dockerfile · render.yaml · database.rules.json
 
 ### En français
 
-MusclePro est une application d'entraînement : carte musculaire interactive (illustrations anatomiques professionnelles), face/dos, homme/femme, 67 exercices détaillés étape par étape, programmes périodisés semaine par semaine (phases, séries × répétitions × effort, semaines de décharge) du débutant à l'athlète pro, générateur de séances et suivi des performances (kg/lb par série, records, export CSV). Interface « Liquid Glass » en mode sombre/clair, menu hamburger, comptes utilisateurs et gestion des utilisateurs pour les administrateurs, entièrement bilingue anglais/français. Déploiement gratuit sur Render avec Firebase Realtime Database : suivez les sections *Firebase setup* et *Deploy on Render* ci-dessus.
+MusclePro est une application d'entraînement : carte musculaire interactive (illustrations anatomiques professionnelles), face/dos, homme/femme, 155 exercices détaillés étape par étape (dont 33 de mobilité et d’étirement), programmes périodisés semaine par semaine (phases, séries × répétitions × effort, semaines de décharge) du débutant à l'athlète pro, générateur de séances et suivi des performances (kg/lb par série, records, export CSV). Interface « Liquid Glass » en mode sombre/clair, menu hamburger, comptes utilisateurs et gestion des utilisateurs pour les administrateurs, entièrement bilingue anglais/français. Déploiement gratuit sur Render avec Firebase Realtime Database : suivez les sections *Firebase setup* et *Deploy on Render* ci-dessus.
 
 > Health disclaimer: MusclePro provides general training information, not medical advice. Check with a health professional before starting a new program.

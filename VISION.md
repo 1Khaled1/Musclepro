@@ -72,7 +72,8 @@ Shipped and running:
 
 - **Muscle map** — professional anatomy illustrations (male/female,
   front/back, dark/light) mapped to 14 training groups.
-- **67 exercises** with step-by-step form and coach tips, in EN/FR.
+- **155 exercises** with step-by-step form and coach tips, in EN/FR, including
+  33 mobility and stretching drills and rehab-friendly work.
 - **6 programs** from beginner to pro: Foundation Full Body, Home Bodyweight
   Starter, Upper/Lower Strength, Push·Pull·Legs, Athlete Power & Speed, Peak
   Strength Block — periodized week by week: phases, weekly
@@ -93,8 +94,9 @@ Shipped and running:
 - **Go live** on Render with Firebase, monitoring and backups.
 - **Exercise media** — short looping form clips for every exercise, starting
   with the 20 most used.
-- **150+ exercises**, including mobility, stretching and rehab-friendly
-  variations.
+- ~~**150+ exercises**~~ — **shipped**: 155 exercises including 33 mobility and
+  stretching drills and rehab-friendly work; generated sessions open with a
+  matched warm-up.
 - ~~**Installable app (PWA)**~~ — **shipped**: home-screen install, offline
   library, programs and logging; workouts sync when back online.
 - ~~**Accessibility pass**~~ — **shipped**: WCAG 2.2 AA audit with no axe
