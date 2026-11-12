@@ -110,8 +110,10 @@ Shipped and running:
 
 ### Next — make it smart (3–9 months)
 
-- **Smart progression** — suggest next session's loads and reps from what was
-  actually logged (RPE, missed reps, deloads).
+- ~~**Smart progression**~~ — **shipped**: each session suggests the load and
+  reps for every exercise from what was actually logged (double progression,
+  missed reps, % of 1RM, deloads, returns after a break), and explains why.
+  Next: let athletes log RPE so the suggestions can use it.
 - **Recovery map** — the body map shows which muscles are fresh or fatigued based
   on recent training, and the generator respects it.
 - **Coach mode** — coaches assign programs, athletes train, coaches review logs
@@ -199,5 +201,5 @@ l'athlète de haut niveau : exercices détaillés étape par étape, programmes
 périodisés semaine par semaine, générateur de séances et suivi des progrès, en français et
 en anglais. Nos principes : l'anatomie d'abord, la technique avant la charge,
 un design premium sans publicité pendant l'entraînement, et le respect de la
-vie privée. Chaque exercice a sa démonstration animée. Prochaines étapes : mise en production, validation des démonstrations par un coach, progression intelligente, carte de récupération musculaire
+vie privée. Chaque exercice a sa démonstration animée. Prochaines étapes : mise en production, validation des démonstrations par un coach, progression intelligente (livrée), carte de récupération musculaire
 et mode coach.

@@ -685,3 +685,26 @@
 @media (prefers-reduced-motion: reduce) {
   .demo-canvas, .demo-hint { transition: none; }
 }
+
+/* ------------------------------------------------------------ smart progression */
+.suggest {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 10px 12px;
+  border-radius: var(--sg-radius-sm);
+  background: rgb(var(--accent-rgb) / 0.08);
+  border: 1px solid rgb(var(--accent-rgb) / 0.28);
+  font-size: 0.86rem;
+  line-height: 1.45;
+}
+.suggest > .icon { flex: none; margin-top: 2px; color: var(--accent-ink); }
+.suggest p { margin: 0; }
+.suggest strong { color: var(--text); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.suggest span { color: var(--text-2); }
+.suggest .muted { margin-top: 2px; font-size: 0.8rem; }
+.suggest[data-reason='deload'], .suggest[data-reason='return'], .suggest[data-reason='reset'] {
+  background: rgb(var(--holo-rgb) / 0.08);
+  border-color: rgb(var(--holo-rgb) / 0.3);
+}
+.suggest[data-reason='deload'] > .icon, .suggest[data-reason='return'] > .icon, .suggest[data-reason='reset'] > .icon { color: var(--holo); }

@@ -35,6 +35,7 @@
 
 **Track**
 - **Live workout logger**: per-set weight with **per-set kg/lbs**, reps, done check, automatic rest timer, autosaved draft (survives reloads).
+- **Smart progression**: when a session starts, each exercise shows what to aim for today and why, worked out from what you actually logged (“Today: 105 kg × 5 — every set reached the target last time: weight up”). The weights are filled in for you and stay editable. The rules are a coach's double progression: add the smallest sensible step when every set reached the top of the target, one more rep inside the range, repeat after missed reps and go 10 % lighter after two misses, % of 1RM from your best recent estimate, lighter on deload weeks and after three weeks off. Bodyweight work progresses in reps; stretches and jumps are left alone.
 - **Progress**: sessions, week streak, total volume, 8-week volume chart, estimated 1RM records (Epley), “muscles trained this week” heat map on the body, **CSV export**.
 - **Favorites** on any exercise.
 - **Accessible**: WCAG 2.2 AA audit with no axe violations, a keyboard-operable muscle map, and correct contrast in both themes ([accessibility statement](docs/ACCESSIBILITY.md)).
@@ -178,6 +179,7 @@ backend/
   app/store.py           Firebase / in-memory store behind one API
   app/security.py        hashing, JWT cookie, CSRF, rate limit
   app/catalog.py         catalog loader + workout generator
+  app/progression.py     smart progression: next load and reps from the logs
   app/routes/            auth, me, catalog, workouts, admin
   app/data/              exercises.json, programs.json (EN/FR, generated)
   scripts/build_programs.py  periodized programs: edit, run, validated output
@@ -209,12 +211,13 @@ Dockerfile · render.yaml · database.rules.json
 | `GET /api/programs`, `GET /api/programs/<id>` | – | programs |
 | `POST /api/generate` | – | workout generator |
 | `POST/GET /api/workouts`, `DELETE /api/workouts/<id>`, `GET /api/workouts/stats`, `GET /api/workouts/export.csv` | user | workout log |
+| `POST /api/workouts/suggest` | user | next load and reps per exercise (smart progression) |
 | `GET /api/admin/users`, `GET /api/admin/stats`, `PATCH/DELETE /api/admin/users/<id>` | admin | user management |
 
 ---
 
 ### En français
 
-MusclePro est une application d'entraînement : carte musculaire interactive (illustrations anatomiques professionnelles), face/dos, homme/femme, 155 exercices détaillés étape par étape (dont 33 de mobilité et d’étirement), chacun avec une démonstration animée (lecture, ralenti, angle de vue au choix), programmes périodisés semaine par semaine (phases, séries × répétitions × effort, semaines de décharge) du débutant à l'athlète pro, générateur de séances et suivi des performances (kg/lb par série, records, export CSV). Interface « Liquid Glass » en mode sombre/clair, menu hamburger, comptes utilisateurs et gestion des utilisateurs pour les administrateurs, entièrement bilingue anglais/français. Déploiement gratuit sur Render avec Firebase Realtime Database : suivez les sections *Firebase setup* et *Deploy on Render* ci-dessus.
+MusclePro est une application d'entraînement : carte musculaire interactive (illustrations anatomiques professionnelles), face/dos, homme/femme, 155 exercices détaillés étape par étape (dont 33 de mobilité et d’étirement), chacun avec une démonstration animée (lecture, ralenti, angle de vue au choix), programmes périodisés semaine par semaine (phases, séries × répétitions × effort, semaines de décharge) du débutant à l'athlète pro, générateur de séances, progression intelligente (charge et répétitions conseillées à chaque séance d’après vos séances précédentes) et suivi des performances (kg/lb par série, records, export CSV). Interface « Liquid Glass » en mode sombre/clair, menu hamburger, comptes utilisateurs et gestion des utilisateurs pour les administrateurs, entièrement bilingue anglais/français. Déploiement gratuit sur Render avec Firebase Realtime Database : suivez les sections *Firebase setup* et *Deploy on Render* ci-dessus.
 
 > Health disclaimer: MusclePro provides general training information, not medical advice. Check with a health professional before starting a new program.

@@ -1,15 +1,48 @@
 /** Live workout logger: per-set weight + unit (kg/lbs) + reps, rest timer,
  *  autosaved draft (survives reloads), save to Firebase via the API. */
 import { api, ApiError } from '../api';
-import { effortLabel, fmtReps, loc, t } from '../i18n';
+import { effortLabel, fmtReps, formatNumber, getLang, loc, t, tn } from '../i18n';
 import { navigate, type View } from '../router';
 import { DEFAULT_REPS, loadDraft, saveDraft, setsFor, store } from '../store';
 import type { DemoPlayer } from '../motion/player';
-import type { DraftWorkout, Exercise, LoggedSet, Muscle } from '../types';
+import type { DraftWorkout, Exercise, LoggedSet, Muscle, Suggestion, Unit } from '../types';
 import { glass, html, raw } from '../ui/dom';
 import { icon } from '../ui/icons';
 import { toast, toastError } from '../ui/toast';
 import { queueWorkout } from '../offline';
+
+const kgOrLb = (w: number, unit: Unit) => `${formatNumber(w, 2)} ${t(`common.${unit}`)}`;
+
+function ago(iso: string | null): string {
+  if (!iso) return '';
+  const days = Math.round((Date.now() - new Date(iso).getTime()) / 86400000);
+  if (!Number.isFinite(days)) return '';
+  return new Intl.RelativeTimeFormat(getLang(), { numeric: 'auto' }).format(-Math.max(0, days), 'day');
+}
+
+/** "Today: 62.5 kg × 8" and why, then what was done last time. */
+function suggestionBlock(s: Suggestion, item: DraftWorkout['items'][number]): string {
+  const what = [s.weight !== null ? kgOrLb(s.weight, s.unit) : '', s.reps !== null ? (s.weight !== null ? `× ${formatNumber(s.reps)}` : tn('sug.reps', s.reps)) : '']
+    .filter(Boolean)
+    .join(' ');
+  const bw = s.weight === null;
+  const why =
+    s.reason === 'pct'
+      ? t('sug.pct', { pct: effortLabel({ pct: item.target?.pct }).replace(' 1RM', ''), e1rm: kgOrLb(s.e1rm ?? 0, s.unit) })
+      : s.reason === 'return'
+        ? t('sug.return', { days: formatNumber(s.days ?? 21) })
+        : t(bw && (s.reason === 'progress' || s.reason === 'reps') ? (s.reason === 'progress' ? 'sug.progressBw' : 'sug.repsBw') : `sug.${s.reason}`);
+  const last = s.last
+    ? t('sug.last', {
+        sets: `${s.last.weight > 0 ? `${kgOrLb(s.last.weight, s.last.unit)} × ` : ''}${s.last.reps.map((r) => formatNumber(r)).join(', ')}`,
+        when: ago(s.last.date),
+      })
+    : '';
+  return html`<div class="suggest" data-reason="${s.reason}">
+      ${icon('spark', 'icon-sm')}
+      <div><p><strong>${t('sug.next', { what })}</strong> <span>${why}</span></p>${last ? raw(html`<p class="muted">${last}</p>`) : ''}</div>
+    </div>`;
+}
 
 function clock(seconds: number): string {
   const s = Math.max(0, Math.floor(seconds));
@@ -46,6 +79,45 @@ export const workoutView: View = async (root) => {
   let restEnd = 0;
   let saving = false;
   const persist = () => saveDraft(draft);
+
+  // ---- smart progression: ask the server once per exercise, fill untouched sets
+  let asking = false;
+  const fetchSuggestions = async () => {
+    if (!draft || !store.user || asking) return;
+    const pending = draft.items.filter((it) => it.suggest === undefined && byId.has(it.id));
+    if (!pending.length) return;
+    asking = true;
+    try {
+      const { suggestions } = await api.suggest({
+        unit: store.unit,
+        ...(draft.program_id ? { program_id: draft.program_id, week: draft.week ?? 1 } : {}),
+        items: pending.map((it) => ({ id: it.id, sets: it.sets.length || 1, reps: it.target?.reps ?? null, ...(it.target?.pct !== undefined ? { pct: it.target.pct } : {}) })),
+      });
+      if (!draft) return;
+      let changed = false;
+      for (const it of draft.items) {
+        if (it.suggest !== undefined || !(it.id in suggestions)) continue;
+        const s = suggestions[it.id];
+        it.suggest = s;
+        changed = true;
+        if (!s) continue;
+        // Only sets the athlete has not touched yet: never overwrite what they typed.
+        for (const set of it.sets) {
+          if (set.done || set.weight !== 0) continue;
+          if (s.weight !== null && set.unit === s.unit) set.weight = s.weight;
+          if (s.reps !== null) set.reps = s.reps;
+        }
+      }
+      if (changed) {
+        persist();
+        render();
+      }
+    } catch {
+      /* offline or server asleep: the logger works without suggestions; we ask again next time */
+    } finally {
+      asking = false;
+    }
+  };
 
   // One demonstration open at a time, under the exercise it belongs to.
   let demoAt: number | null = null;
@@ -100,8 +172,9 @@ export const workoutView: View = async (root) => {
           </div>
           <button class="btn btn-ghost btn-icon btn-sm" type="button" data-act="remove-ex" data-ei="${ei}" aria-label="${t('wo.removeExercise')}">${icon('trash', 'icon-sm')}</button>
         </div>
+        ${item.suggest ? raw(suggestionBlock(item.suggest, item)) : ''}
         <div class="set-grid">
-          <div class="set-row head" aria-hidden="true"><span>${t('wo.set')}</span><span>${t('wo.weight')}</span><span>${t('wo.unit')}</span><span>${t('wo.reps')}</span><span>${t('wo.done')}</span><span></span></div>
+          <div class="set-row head" aria-hidden="true"><span>#</span><span>${t('wo.weight')}</span><span>${t('wo.unit')}</span><span>${t('wo.reps')}</span><span>${t('wo.done')}</span><span></span></div>
           ${raw(item.sets.map((s, si) => setRow(ei, si, s)).join(''))}
         </div>
         <div class="row">
@@ -144,6 +217,7 @@ export const workoutView: View = async (root) => {
       </div>`;
     tick();
     syncDemo();
+    void fetchSuggestions();
   };
 
   const tick = () => {

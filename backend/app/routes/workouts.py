@@ -12,6 +12,7 @@ from datetime import datetime, timedelta, timezone
 from flask import Blueprint, Response, current_app, g, request
 
 from ..catalog import get_exercise, get_program, program_day
+from ..progression import suggest
 from ..security import ApiError, login_required
 from ..store import as_list
 from ..users import now_iso
@@ -173,6 +174,46 @@ def history():
         limit = 30
     items = _workouts_for(g.user["id"])
     return {"workouts": items[:limit], "total": len(items)}
+
+
+@bp.post("/suggest")
+@login_required
+def suggestions():
+    """Next load and reps for the exercises of the session about to start."""
+    data = request.get_json(silent=True)
+    if not isinstance(data, dict):
+        raise ApiError("bad_request")
+    unit = data.get("unit", g.user.get("unit", "kg"))
+    if unit not in ("kg", "lbs"):
+        raise ApiError("unit_invalid")
+    deload = False
+    program_id = data.get("program_id")
+    if program_id is not None:
+        program = get_program(program_id) if isinstance(program_id, str) else None
+        week = data.get("week", 1)
+        if not program or isinstance(week, bool) or not isinstance(week, int) or not 1 <= week <= len(program["plan"]):
+            raise ApiError("program_invalid")
+        deload = bool(program["plan"][week - 1].get("deload"))
+    items = data.get("items")
+    if not isinstance(items, list) or not 1 <= len(items) <= 30:
+        raise ApiError("items_invalid")
+    workouts = _workouts_for(g.user["id"])
+    out: dict[str, dict | None] = {}
+    for item in items:
+        if not isinstance(item, dict):
+            raise ApiError("items_invalid")
+        ex = get_exercise(item.get("id", "")) if isinstance(item.get("id"), str) else None
+        reps = item.get("reps")
+        pct = item.get("pct")
+        if not ex or (reps is not None and not (isinstance(reps, str) and len(reps) <= 16)):
+            raise ApiError("items_invalid")
+        sets = _num(item.get("sets", 3), 1, 20, "items_invalid", True)
+        if pct is not None:
+            values = pct if isinstance(pct, list) and len(pct) == 2 else [pct]
+            for v in values:
+                _num(v, 1, 120, "items_invalid")
+        out[ex["id"]] = suggest(ex, workouts, reps=reps, sets=sets, unit=unit, pct=pct, deload=deload)
+    return {"suggestions": out}
 
 
 @bp.get("/<workout_id>")

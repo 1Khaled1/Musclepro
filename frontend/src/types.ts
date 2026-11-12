@@ -156,6 +156,21 @@ export interface GeneratedWorkout {
   estimated_minutes: number;
 }
 
+/** What to aim for next on one exercise, worked out from the logs (smart progression). */
+export interface Suggestion {
+  reason: 'progress' | 'reps' | 'repeat' | 'reset' | 'adjust' | 'pct' | 'deload' | 'return';
+  /** Load per set, in `unit`; null for bodyweight work. */
+  weight: number | null;
+  unit: Unit;
+  /** Reps per set; null for timed or distance targets. */
+  reps: number | null;
+  /** Estimated 1-rep max, for % of 1RM prescriptions. */
+  e1rm?: number;
+  /** Days since the exercise was last trained (return after a break). */
+  days?: number;
+  last: { date: string | null; weight: number; unit: Unit; reps: number[] } | null;
+}
+
 /** Workout being logged, kept in localStorage so a reload loses nothing. */
 export interface DraftWorkout {
   title: string;
@@ -169,6 +184,8 @@ export interface DraftWorkout {
   items: {
     id: string;
     target?: { sets: number; reps: string; rest: number; rpe?: number; pct?: Percent };
+    /** undefined: not asked yet · null: nothing to suggest (first time, stretch…). */
+    suggest?: Suggestion | null;
     sets: LoggedSet[];
   }[];
 }

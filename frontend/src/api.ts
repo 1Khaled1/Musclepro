@@ -1,14 +1,5 @@
 /** Typed client for the Flask API. Same origin, cookie session, CSRF header. */
-import type {
-  Enrollment,
-  Exercise,
-  GeneratedWorkout,
-  Program,
-  ProgramSummary,
-  Stats,
-  User,
-  Workout,
-} from './types';
+import type { Enrollment, Exercise, GeneratedWorkout, Percent, Program, ProgramSummary, Stats, Suggestion, Unit, User, Workout } from './types';
 
 export class ApiError extends Error {
   constructor(
@@ -129,6 +120,8 @@ export const api = {
   workouts: (limit = 30) => get<{ workouts: Workout[]; total: number }>(`/api/workouts?limit=${limit}`),
   deleteWorkout: (id: string) => del<{ ok: true }>(`/api/workouts/${encodeURIComponent(id)}`),
   stats: () => get<Stats>('/api/workouts/stats'),
+  suggest: (data: { unit: Unit; program_id?: string; week?: number; items: { id: string; sets: number; reps: string | null; pct?: Percent }[] }) =>
+    post<{ suggestions: Record<string, Suggestion | null> }>('/api/workouts/suggest', data),
 
   // admin
   adminUsers: (q = '') => get<{ users: User[] }>(`/api/admin/users?q=${encodeURIComponent(q)}`),
