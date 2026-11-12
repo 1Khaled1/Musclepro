@@ -6,7 +6,7 @@
 
 <p align="center">
   <b>Pick a muscle. Master the move.</b><br />
-  Interactive muscle map · 155 exercises with step-by-step form · programs from beginner to pro athlete · workout tracker<br />
+  Interactive muscle map · 155 exercises with animated demonstrations and step-by-step form · programs from beginner to pro athlete · workout tracker<br />
   <sub>English &amp; Français · Liquid Glass UI · runs on Render's free plan with Firebase</sub><br />
   <a href="VISION.md"><b>Product vision →</b></a><br />
   <sub>Developed by <b>Khaled Bel Hedi</b> &amp; <b>Coach Khalil Haded</b></sub>
@@ -16,9 +16,9 @@
   <img src="docs/screenshots/home-dark.jpg" alt="MusclePro home: muscle map with the chest selected" width="860" />
 </p>
 
-| Program, week by week | Exercise detail | Light theme · Français | Mobile |
+| Program, week by week | Animated demonstration | Light theme · Français | Mobile |
 | --- | --- | --- | --- |
-| <img src="docs/screenshots/program-weeks.jpg" width="260" alt="Upper/Lower Strength, week 5: strength block with RPE per exercise" /> | <img src="docs/screenshots/exercise-dark.jpg" width="260" alt="Exercise page with front and back muscle map" /> | <img src="docs/screenshots/home-light-fr.jpg" width="260" alt="Light theme in French" /> | <img src="docs/screenshots/mobile-map.jpg" width="130" alt="Muscle map on mobile" /> |
+| <img src="docs/screenshots/program-weeks.jpg" width="260" alt="Upper/Lower Strength, week 5: strength block with RPE per exercise" /> | <img src="docs/screenshots/demo-dark.jpg" width="260" alt="Back squat page: the animated athlete at the bottom of the squat, quads and glutes highlighted, next to the muscle map" /> | <img src="docs/screenshots/home-light-fr.jpg" width="260" alt="Light theme in French" /> | <img src="docs/screenshots/mobile-map.jpg" width="130" alt="Muscle map on mobile" /> |
 
 ---
 
@@ -29,6 +29,7 @@
   - Professional écorché illustrations (male & female, front & back, dark & light artwork) with 14 tappable muscle groups (mouse, touch or keyboard); the highlight colour blends into the illustration's shading, and a thumbnail flips the body. A **Three.js + GLSL** light field glows behind the figure and travels to the muscle you pick.
   - Next to the body: an equipment filter for the suggested exercises, a quick exercise search and a shortcut to the workout generator. Muscles light up by role: primary, secondary, or how much you trained them this week.
 - **Exercise library**: 155 exercises — strength, power and conditioning, plus 33 mobility and stretching drills and rehab-friendly work — each with numbered steps and a coach tip in EN/FR. Filters for muscle, equipment, level, type and search (accent-insensitive: “squat bulgare” works). Stretches show a suggested dose.
+- **Animated demonstration of every exercise**: an athlete performs each of the 155 movements in a loop, with the working muscles lit up. Play / pause, slow motion, four camera angles, or drag to turn the athlete. The animation is computed in the browser by a small movement engine (no video files): it adds about 28 kB to the app, works offline, follows the theme, and waits for you to press play if your device asks for reduced motion. Also available under each exercise while you log a workout.
 - **Periodized programs for every level**: Foundation Full Body, Home Bodyweight Starter, Upper/Lower Strength, Push·Pull·Legs (6 days, heavy A + volume B), Athlete Power & Speed, Peak Strength Block. Each one is written week by week like a coach would: **phases** that change the exercise variations, a different **sets × reps × effort** every week (RPE, or % of 1RM for strength and power lifts), **deload/taper weeks**, a coach note per week and completion tracking. Programs are generated and validated by `backend/scripts/build_programs.py`.
 - **Workout generator**: goal × level × time × equipment × target muscles → a 2-drill warm-up matched to the session, then a balanced session ordered like a coach would (power first, compounds, isolation, core last). Stretches are never used as working sets.
 
@@ -157,6 +158,18 @@ Developed by **Khaled Bel Hedi** & **Coach Khalil Haded**.
 - Strict **Content-Security-Policy** (`script-src 'self'`, no inline scripts), `frame-ancestors 'none'`, `nosniff`, HSTS in production.
 - Rate limiting on sign-in/sign-up, server-side validation of every field, CSV export guarded against formula injection, open-redirect-safe `?next=` handling, Firebase rules deny direct client access.
 
+## How the demonstrations work
+
+`frontend/src/motion/` holds a small movement engine written for this app:
+
+- **`rig.ts`** — a 3D skeleton in metres. A pose says where the hips are, how the trunk leans and where the hands and feet must be; elbows and knees are solved by inverse kinematics, so hands stay on the bar and feet stay on the floor through the whole movement.
+- **`moves.ts`** — movement patterns with parameters (`squat`, `hangHinge`, `pushup`, `pullup`, `curl`, `walk`…). One pattern serves many exercises: the back squat, the goblet squat and the wall sit share the same code.
+- **`demos.ts`** — one entry per exercise id: which pattern, which tempo (lower first, lift first, hold, or continuous loop) and the best viewing angle. A backend test fails if an exercise has no demonstration.
+- **`render.ts`** — draws the athlete on a 2D canvas in the style of the muscle map: grey anatomical body, working muscles in the accent colour, equipment, floor shadow.
+- **`player.ts`** — the player: timeline, controls, drag to rotate, pause when off screen, lower resolution on slow devices.
+
+The demonstrations are schematic: they show the path of the movement and the position of the body, not a filmed athlete. They were checked frame by frame (hands and feet reach their supports, nothing goes through the floor), and a qualified coach should still review them before they are used to teach.
+
 ## Project structure
 
 ```
@@ -173,6 +186,8 @@ frontend/
   src/ui/anatomy.ts      2D muscle map (illustrations + traced masks)
   src/ui/bodyViewer.ts   muscle map viewer component
   src/three/             AuraBackdrop + GLSL light-field shader
+  src/motion/            movement engine: rig + IK, renderer, movement patterns,
+                         one demonstration per exercise, player
   public/anatomy/        body illustrations (MIT)
   scripts/               extract-muscle-masks.py
   src/views/             one module per page (code-split)
@@ -200,6 +215,6 @@ Dockerfile · render.yaml · database.rules.json
 
 ### En français
 
-MusclePro est une application d'entraînement : carte musculaire interactive (illustrations anatomiques professionnelles), face/dos, homme/femme, 155 exercices détaillés étape par étape (dont 33 de mobilité et d’étirement), programmes périodisés semaine par semaine (phases, séries × répétitions × effort, semaines de décharge) du débutant à l'athlète pro, générateur de séances et suivi des performances (kg/lb par série, records, export CSV). Interface « Liquid Glass » en mode sombre/clair, menu hamburger, comptes utilisateurs et gestion des utilisateurs pour les administrateurs, entièrement bilingue anglais/français. Déploiement gratuit sur Render avec Firebase Realtime Database : suivez les sections *Firebase setup* et *Deploy on Render* ci-dessus.
+MusclePro est une application d'entraînement : carte musculaire interactive (illustrations anatomiques professionnelles), face/dos, homme/femme, 155 exercices détaillés étape par étape (dont 33 de mobilité et d’étirement), chacun avec une démonstration animée (lecture, ralenti, angle de vue au choix), programmes périodisés semaine par semaine (phases, séries × répétitions × effort, semaines de décharge) du débutant à l'athlète pro, générateur de séances et suivi des performances (kg/lb par série, records, export CSV). Interface « Liquid Glass » en mode sombre/clair, menu hamburger, comptes utilisateurs et gestion des utilisateurs pour les administrateurs, entièrement bilingue anglais/français. Déploiement gratuit sur Render avec Firebase Realtime Database : suivez les sections *Firebase setup* et *Deploy on Render* ci-dessus.
 
 > Health disclaimer: MusclePro provides general training information, not medical advice. Check with a health professional before starting a new program.

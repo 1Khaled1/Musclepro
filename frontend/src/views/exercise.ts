@@ -50,6 +50,9 @@ export const exerciseView: View = async (root, ctx) => {
     <div class="detail-grid">
       <div class="stack">
         ${raw(glass(html`
+          <div class="section-title"><h2>${t('demo.title')}</h2><span class="muted demo-lead">${t('demo.lead')}</span></div>
+          <div id="ex-demo" class="demo-slot"></div>`, { cls: 'demo-card' }))}
+        ${raw(glass(html`
           <h2 style="margin-bottom:18px">${t('ex.howTo')}</h2>
           <ol class="steps">${raw(locList(ex.steps).map((s) => html`<li><span>${s}</span></li>`).join(''))}</ol>
           ${raw(locList(ex.tips).map((tip) => html`<div class="panel tip" style="margin-top:18px">${icon('bulb')}<div><strong>${t('ex.tip')}</strong><p>${tip}</p></div></div>`).join(''))}
@@ -90,6 +93,18 @@ export const exerciseView: View = async (root, ctx) => {
     v.setLevels(levels);
     return v;
   });
+  // The movement engine is a separate chunk: the page is readable before it arrives.
+  const demoPromise = import('../motion/player')
+    .then(({ mountDemo }) => {
+      const slot = root.querySelector<HTMLElement>('#ex-demo');
+      const player = slot ? mountDemo(slot, { id: ex.id, name, levels }) : null;
+      if (!player) root.querySelector('.demo-card')?.remove();
+      return player;
+    })
+    .catch(() => {
+      root.querySelector('.demo-card')?.remove();
+      return null;
+    });
 
   bindFavorites(root, (m) => {
     toast(m);
@@ -106,5 +121,6 @@ export const exerciseView: View = async (root, ctx) => {
   return () => {
     document.title = 'MusclePro — Train every muscle right';
     void viewerPromise.then((v) => v.dispose());
+    void demoPromise.then((p) => p?.dispose());
   };
 };

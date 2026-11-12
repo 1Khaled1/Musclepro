@@ -267,3 +267,17 @@ def test_workout_day_must_exist_in_that_week(api):
     assert ok.status_code == 201
     bad_week = api.post("/api/workouts", json=_workout(program_id="peak-strength-block", day_id="squat", week=9))
     assert bad_week.json["error"] == "program_invalid"
+
+
+def test_every_exercise_has_an_animated_demonstration():
+    """The demonstration player looks movements up by exercise id (frontend/src/motion/demos.ts)."""
+    import re
+    from pathlib import Path
+
+    source = (Path(__file__).resolve().parents[2] / "frontend" / "src" / "motion" / "demos.ts").read_text(encoding="utf-8")
+    table = source[source.index("export const DEMOS") :]
+    table = table[: table.index("\n};")]
+    demos = set(re.findall(r"^  '?([a-z0-9-]+)'?: ", table, flags=re.MULTILINE))
+    ids = set(exercise_index())
+    assert ids - demos == set(), "exercises without a demonstration"
+    assert demos - ids == set(), "demonstrations for unknown exercises"

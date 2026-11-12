@@ -9,7 +9,9 @@ and what is still open.
 `wcag21aa`, `wcag22aa` and `best-practice`). It ran on every page, signed out
 and signed in as admin, in dark/English and light/French, with the menu
 closed and open. That is 38 page states, plus a phone viewport
-(iPhone 13). **Result: no violations.**
+(iPhone 13), plus the exercise page and the workout logger with a
+demonstration playing, at 1280 and 360 px in both themes.
+**Result: no violations.**
 
 **Scripted checks with Playwright:**
 
@@ -21,7 +23,10 @@ closed and open. That is 38 page states, plus a phone viewport
 | The menu is a modal dialog: focus moves into it, Tab stays inside, Escape closes it and returns focus to the menu button | ✅ |
 | The muscle chips next to the body select muscles from the keyboard too | ✅ |
 | At 320 CSS px wide (WCAG 1.4.10, Reflow), no page scrolls sideways | ✅ |
-| Text contrast is at least 4.5:1 in both themes, including the small level badges | ✅ |
+| Text contrast is at least 4.5:1 in both themes, including the small level badges and orange links on light surfaces | ✅ |
+| Demonstration player: Tab reaches Pause, Slow motion and the four viewing angles in order; Space and Enter operate them; each state is exposed (`aria-pressed`, the Play / Pause name) | ✅ |
+| Demonstration player: every control is at least 34 px high (WCAG 2.5.8, Target Size) | ✅ |
+| With "reduce motion" on, a demonstration starts paused on a still frame and plays only when asked | ✅ |
 
 ## Design rules we keep
 
@@ -31,7 +36,14 @@ closed and open. That is 38 page states, plus a phone viewport
 - Colour never carries meaning alone: levels are also written ("Beginner"),
   and muscle roles are listed in text next to the body map.
 - Motion respects `prefers-reduced-motion`: the GLSL light field and the
-  transitions stop.
+  transitions stop, and demonstrations do not start by themselves.
+- Anything that moves can be paused (WCAG 2.2.2): every demonstration has a
+  Pause button, and it stops by itself when it is off screen.
+- Dragging is never the only way (WCAG 2.5.7): the athlete can be turned by
+  dragging, and the same views are available as buttons.
+- A demonstration is a picture of the written steps, not a replacement: the
+  canvas is named ("Animated demonstration: Back Squat") and the numbered
+  steps next to it carry the same instructions as text.
 - Each page has one `h1` and heading levels in order. `.h2` and `.h3`
   classes change how a heading looks without changing its level.
 - Both languages are fully translated, and `lang` is set on `<html>` so

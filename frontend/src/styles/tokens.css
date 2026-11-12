@@ -18,6 +18,7 @@
   /* Brand */
   --accent: #ff6a2b;
   --accent-rgb: 255 106 43;
+  --accent-ink: #ff6a2b; /* accent used for small text, and under small text */
   --accent-2: #ff8a52;
   --on-accent: #1a0a03;
   --holo: #5ad7ff; /* 3D hologram rim */
@@ -124,6 +125,7 @@
 
   --accent: #dc4710;
   --accent-rgb: 220 71 16;
+  --accent-ink: #c23d0c; /* 4.9:1 on the light surface, 5.3:1 under white text (WCAG AA) */
   --accent-2: #f2602a;
   --on-accent: #ffffff;
   --holo: #0a7fb5;

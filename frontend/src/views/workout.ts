@@ -4,7 +4,8 @@ import { api, ApiError } from '../api';
 import { effortLabel, fmtReps, loc, t } from '../i18n';
 import { navigate, type View } from '../router';
 import { DEFAULT_REPS, loadDraft, saveDraft, setsFor, store } from '../store';
-import type { DraftWorkout, Exercise, LoggedSet } from '../types';
+import type { DemoPlayer } from '../motion/player';
+import type { DraftWorkout, Exercise, LoggedSet, Muscle } from '../types';
 import { glass, html, raw } from '../ui/dom';
 import { icon } from '../ui/icons';
 import { toast, toastError } from '../ui/toast';
@@ -46,6 +47,36 @@ export const workoutView: View = async (root) => {
   let saving = false;
   const persist = () => saveDraft(draft);
 
+  // One demonstration open at a time, under the exercise it belongs to.
+  let demoAt: number | null = null;
+  let demoPlayer: DemoPlayer | null = null;
+  let demoRun = 0;
+  const syncDemo = () => {
+    demoPlayer?.dispose();
+    demoPlayer = null;
+    const run = ++demoRun;
+    root.querySelectorAll<HTMLButtonElement>('[data-act="demo"]').forEach((btn) => {
+      const open = Number(btn.dataset.ei) === demoAt;
+      btn.setAttribute('aria-expanded', String(open));
+      btn.querySelector('span')!.textContent = t(open ? 'demo.hide' : 'demo.show');
+    });
+    root.querySelectorAll<HTMLElement>('.demo-slot').forEach((slot) => {
+      slot.hidden = Number(slot.dataset.ei) !== demoAt;
+    });
+    if (demoAt === null || !draft) return;
+    const at = demoAt;
+    const ex = byId.get(draft.items[at]?.id ?? '');
+    const slot = root.querySelector<HTMLElement>(`.demo-slot[data-ei="${at}"]`);
+    if (!ex || !slot) return;
+    const levels: Partial<Record<Muscle, number>> = {};
+    ex.secondary.forEach((m) => (levels[m] = 0.42));
+    ex.primary.forEach((m) => (levels[m] = 1));
+    void import('../motion/player').then(({ mountDemo }) => {
+      if (run !== demoRun) return; // closed or re-rendered meanwhile
+      demoPlayer = mountDemo(slot, { id: ex.id, name: loc(ex.name), levels });
+    });
+  };
+
   const setRow = (ei: number, si: number, s: LoggedSet) => html`
     <div class="set-row${s.done ? ' is-done' : ''}" data-ei="${ei}" data-si="${si}">
       <span class="set-n">${si + 1}</span>
@@ -76,7 +107,9 @@ export const workoutView: View = async (root) => {
         <div class="row">
           <button class="btn btn-sm" type="button" data-act="add-set" data-ei="${ei}">${icon('plus', 'icon-sm')} ${t('wo.addSet')}</button>
           ${item.sets.length > 1 ? raw(html`<button class="btn btn-sm btn-ghost" type="button" data-act="remove-set" data-ei="${ei}">${icon('minus', 'icon-sm')} ${t('wo.removeSet')}</button>`) : ''}
-        </div>`,
+          ${ex ? raw(html`<button class="btn btn-sm btn-ghost" type="button" data-act="demo" data-ei="${ei}" aria-expanded="false" aria-controls="demo-${ei}">${icon('play', 'icon-sm')} <span>${t('demo.show')}</span></button>`) : ''}
+        </div>
+        <div class="demo-slot" id="demo-${ei}" data-ei="${ei}" hidden></div>`,
       { cls: 'ex-log', delay: Math.min(ei, 6) * 40 },
     );
   };
@@ -110,6 +143,7 @@ export const workoutView: View = async (root) => {
         ${store.user ? '' : raw(html`<div class="panel tip">${icon('lock')}<div><p>${t('wo.loginToSave')}</p><a class="link" href="/login?next=/workout">${t('nav.login')}</a></div></div>`)}
       </div>`;
     tick();
+    syncDemo();
   };
 
   const tick = () => {
@@ -187,6 +221,10 @@ export const workoutView: View = async (root) => {
         restEnd = 0;
         tick();
         return;
+      case 'demo':
+        demoAt = demoAt === ei ? null : ei;
+        syncDemo();
+        return;
       case 'add-set': {
         const sets = draft.items[ei].sets;
         const last = sets[sets.length - 1];
@@ -198,6 +236,7 @@ export const workoutView: View = async (root) => {
         break;
       case 'remove-ex':
         draft.items.splice(ei, 1);
+        if (demoAt !== null) demoAt = demoAt === ei ? null : demoAt > ei ? demoAt - 1 : demoAt;
         break;
       case 'discard':
         if (!confirm(t('wo.discardConfirm'))) return;
@@ -265,5 +304,9 @@ export const workoutView: View = async (root) => {
   }
 
   render();
-  return () => window.clearInterval(timer);
+  return () => {
+    window.clearInterval(timer);
+    demoRun++;
+    demoPlayer?.dispose();
+  };
 };
