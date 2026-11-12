@@ -201,5 +201,5 @@ l'athlète de haut niveau : exercices détaillés étape par étape, programmes
 périodisés semaine par semaine, générateur de séances et suivi des progrès, en français et
 en anglais. Nos principes : l'anatomie d'abord, la technique avant la charge,
 un design premium sans publicité pendant l'entraînement, et le respect de la
-vie privée. Chaque exercice a sa démonstration animée. Prochaines étapes : mise en production, validation des démonstrations par un coach, progression intelligente (livrée), carte de récupération musculaire
+vie privée. Chaque exercice a sa démonstration animée, et chaque séance propose la charge et les répétitions à viser. Prochaines étapes : mise en production, validation des démonstrations par un coach, carte de récupération musculaire
 et mode coach.
