@@ -204,6 +204,8 @@ interface Group {
   patches: Patch[];
   centre: V3;
   limb: boolean;
+  /** Muscles that stay visible through the clothes of this group when they are trained. */
+  through: Muscle[];
 }
 
 const ball = (c: V3, r: number): Ball => ({ c, r });
@@ -218,7 +220,13 @@ function facing(root: V3, mid: V3, end: V3, pole: V3, upper: boolean): V3 {
   return norm(lerp(straight, mul(norm(fold, straight), -1), w), straight);
 }
 
-function bodyGroups(s: Skel, breath: number): Group[] {
+/** Body shape drawn on the skeleton. Both share the same joints, so every movement fits both. */
+export type Build = 'male' | 'female';
+
+function bodyGroups(s: Skel, breath: number, build: Build): Group[] {
+  const fem = build === 'female';
+  /** Pick the measurement for the current build. */
+  const q = (male: number, female: number): number => (fem ? female : male);
   const Pf = (x: number, y: number, z: number): V3 => place(s.P.o, s.P.m, [x, y, z]);
   const Cf = (x: number, y: number, z: number): V3 => place(s.C.o, s.C.m, [x, y, z]);
   const pair = (f: (x: number, y: number, z: number) => V3, x: number, y: number, z: number, r: number): Ball[] => [ball(f(x, y, z), r), ball(f(-x, y, z), r)];
@@ -236,53 +244,68 @@ function bodyGroups(s: Skel, breath: number): Group[] {
   const patches: Patch[] = [];
   for (const sd of [1, -1]) {
     patches.push(
-      { muscle: 'chest', n: Cfw, balls: [ball(Cf(0.05 * sd, 0.252, 0.062), 0.044), ball(Cf(0.122 * sd, 0.25, 0.04), 0.05), ball(Cf(0.082 * sd, 0.19, 0.062), 0.052)] },
-      { muscle: 'obliques', n: norm(madd(mul(Cside, 0.8 * sd), Cfw, 0.5)), balls: [ball(Cf(0.126 * sd, 0.09, 0.03), 0.05), ball(Pf(0.11 * sd, 0.13, 0.026), 0.046)] },
-      { muscle: 'lats', n: norm(madd(mul(Cfw, -0.8), Cside, 0.55 * sd)), balls: [ball(Cf(0.13 * sd, 0.235, -0.04), 0.056), ball(Cf(0.108 * sd, 0.11, -0.03), 0.054), ball(Cf(0.062 * sd, 0.16, -0.064), 0.05)] },
-      { muscle: 'glutes', n: norm(madd(mul(Pfw, -0.9), Pside, 0.25 * sd)), balls: [ball(Pf(0.078 * sd, -0.014, -0.064), 0.086)] },
+      { muscle: 'chest', n: Cfw, balls: [ball(Cf(q(0.05, 0.046) * sd, 0.252, 0.062), q(0.044, 0.04)), ball(Cf(q(0.122, 0.108) * sd, 0.25, 0.04), q(0.05, 0.044)), ball(Cf(q(0.082, 0.074) * sd, 0.19, 0.062), q(0.052, 0.05))] },
+      { muscle: 'obliques', n: norm(madd(mul(Cside, 0.8 * sd), Cfw, 0.5)), balls: [ball(Cf(q(0.126, 0.106) * sd, 0.09, 0.03), q(0.05, 0.043)), ball(Pf(q(0.11, 0.094) * sd, 0.13, 0.026), q(0.046, 0.04))] },
+      { muscle: 'lats', n: norm(madd(mul(Cfw, -0.8), Cside, 0.55 * sd)), balls: [ball(Cf(q(0.13, 0.114) * sd, 0.235, -0.04), q(0.056, 0.05)), ball(Cf(q(0.108, 0.092) * sd, 0.11, -0.03), q(0.054, 0.045)), ball(Cf(q(0.062, 0.056) * sd, 0.16, -0.064), q(0.05, 0.044))] },
+      { muscle: 'glutes', n: norm(madd(mul(Pfw, -0.9), Pside, 0.25 * sd)), balls: [ball(Pf(q(0.078, 0.082) * sd, -0.014, q(-0.064, -0.068)), q(0.086, 0.088))] },
     );
     // Six-pack: three rows per side.
+    const ax = q(0.034, 0.03) * sd;
+    const ar = q(0.031, 0.027);
     patches.push(
-      { muscle: 'abs', n: trunkFw, balls: [ball(Cf(0.034 * sd, 0.128, 0.064), 0.031)] },
-      { muscle: 'abs', n: trunkFw, balls: [ball(lerp(Cf(0.034 * sd, 0.06, 0.066), Pf(0.034 * sd, 0.27, 0.06), 0.5), 0.031)] },
-      { muscle: 'abs', n: trunkFw, balls: [ball(Pf(0.033 * sd, 0.2, 0.058), 0.03), ball(Pf(0.03 * sd, 0.13, 0.058), 0.027)] },
+      { muscle: 'abs', n: trunkFw, balls: [ball(Cf(ax, 0.128, q(0.064, 0.056)), ar)] },
+      { muscle: 'abs', n: trunkFw, balls: [ball(lerp(Cf(ax, 0.06, q(0.066, 0.056)), Pf(ax, 0.27, q(0.06, 0.052)), 0.5), ar)] },
+      { muscle: 'abs', n: trunkFw, balls: [ball(Pf(ax * 0.97, 0.2, q(0.058, 0.05)), ar - 0.001), ball(Pf(ax * 0.9, 0.13, q(0.058, 0.052)), ar - 0.004)] },
     );
   }
+  const lb = q(0.038, 0.033);
+  const tx = q(0.105, 0.094);
   patches.push(
-    { muscle: 'lower_back', n: mul(trunkFw, -1), balls: [ball(Cf(0.034, 0.1, -0.058), 0.038), ball(Pf(0.034, 0.12, -0.05), 0.036)] },
-    { muscle: 'lower_back', n: mul(trunkFw, -1), balls: [ball(Cf(-0.034, 0.1, -0.058), 0.038), ball(Pf(-0.034, 0.12, -0.05), 0.036)] },
-    { muscle: 'traps', n: norm(madd(mul(Cfw, -0.9), Cup, 0.35)), balls: [ball(Cf(0, 0.325, -0.03), 0.046), ball(Cf(0.105, 0.322, -0.02), 0.036), ball(Cf(-0.105, 0.322, -0.02), 0.036), ball(Cf(0, 0.2, -0.078), 0.04)] },
+    { muscle: 'lower_back', n: mul(trunkFw, -1), balls: [ball(Cf(0.034, 0.1, q(-0.058, -0.05)), lb), ball(Pf(0.034, 0.12, q(-0.05, -0.044)), lb - 0.002)] },
+    { muscle: 'lower_back', n: mul(trunkFw, -1), balls: [ball(Cf(-0.034, 0.1, q(-0.058, -0.05)), lb), ball(Pf(-0.034, 0.12, q(-0.05, -0.044)), lb - 0.002)] },
+    { muscle: 'traps', n: norm(madd(mul(Cfw, -0.9), Cup, 0.35)), balls: [ball(Cf(0, 0.325, -0.03), q(0.046, 0.04)), ball(Cf(tx, 0.322, -0.02), q(0.036, 0.03)), ball(Cf(-tx, 0.322, -0.02), q(0.036, 0.03)), ball(Cf(0, 0.2, q(-0.078, -0.068)), q(0.04, 0.036))] },
   );
 
+  const waistLow = pair(Pf, q(0.07, 0.06), 0.15, 0.006, q(0.076, 0.065));
+  const waistHigh = (grow: number): Ball[] => pair(Cf, q(0.094, 0.078), 0.1, 0.012, q(0.086, 0.071) * grow);
   const torso: Group = {
     limb: false,
     centre: mul(add(add(s.P.o, Cf(0, 0.15, 0)), Cf(0, 0.3, 0)), 1 / 3),
+    through: fem ? ['glutes', 'chest', 'lats', 'traps'] : ['glutes'],
     blobs: [
-      // waist
-      { tone: 'body', balls: [...pair(Pf, 0.07, 0.15, 0.006, 0.076), ...pair(Cf, 0.094, 0.1, 0.012, 0.086)] },
+      { tone: 'body', balls: [...waistLow, ...waistHigh(1)] },
       // shorts
-      { tone: 'short', balls: [...pair(Pf, 0.082, -0.012, 0, 0.092), ...pair(Pf, 0.074, -0.03, -0.05, 0.088), ...pair(Pf, 0.074, 0.07, 0.004, 0.08)] },
+      { tone: 'short', balls: [...pair(Pf, q(0.082, 0.088), -0.012, 0, q(0.092, 0.094)), ...pair(Pf, q(0.074, 0.078), -0.03, q(-0.05, -0.054), q(0.088, 0.09)), ...pair(Pf, q(0.074, 0.068), 0.07, 0.004, q(0.08, 0.073))] },
       // rib cage, chest and upper back
       {
         tone: 'body',
         balls: [
-          ...pair(Cf, 0.094, 0.1, 0.012, 0.086 * br),
-          ...pair(Cf, 0.14, 0.235, 0, 0.084 * br),
-          ...pair(Cf, 0.15, 0.3, -0.004, 0.06),
-          ...pair(Cf, 0.08, 0.215, 0.058, 0.074 * br),
-          ...pair(Cf, 0.075, 0.22, -0.05, 0.082),
-          ...pair(Cf, 0.055, 0.335, -0.012, 0.056),
+          ...waistHigh(br),
+          ...pair(Cf, q(0.14, 0.124), 0.235, 0, q(0.084, 0.073) * br),
+          ...pair(Cf, q(0.15, 0.142), 0.3, -0.004, q(0.06, 0.05)),
+          ...pair(Cf, q(0.08, 0.07), q(0.215, 0.205), q(0.058, 0.06), q(0.074, 0.069) * br),
+          ...pair(Cf, q(0.075, 0.068), 0.22, q(-0.05, -0.044), q(0.082, 0.071)),
+          ...pair(Cf, q(0.055, 0.05), 0.335, -0.012, q(0.056, 0.047)),
         ],
       },
       // neck
-      { tone: 'body', balls: [ball(Cf(0, 0.33, -0.004), 0.056), ball(madd(s.head, Hup, -0.08), 0.052)] },
+      { tone: 'body', balls: [ball(Cf(0, 0.33, -0.004), q(0.056, 0.046)), ball(madd(s.head, Hup, -0.08), q(0.052, 0.043))] },
       // head: skull, jaw and a hint of nose/brow so the facing direction reads
-      { tone: 'body', balls: [ball(madd(s.head, Hup, 0.012), 0.094), ball(madd(madd(s.head, Hup, -0.058), Hfw, 0.03), 0.066), ball(madd(madd(s.head, Hup, -0.012), Hfw, 0.074), 0.03)] },
+      { tone: 'body', balls: [ball(madd(s.head, Hup, 0.012), q(0.094, 0.09)), ball(madd(madd(s.head, Hup, -0.058), Hfw, 0.03), q(0.066, 0.059)), ball(madd(madd(s.head, Hup, -0.012), Hfw, q(0.074, 0.071)), q(0.03, 0.026))] },
     ],
     patches,
   };
   // Ears (tiny, same tone) help the head read from the front and back.
-  torso.blobs.push({ tone: 'body', balls: [ball(madd(madd(s.head, Hside, 0.094), Hup, -0.014), 0.022)] }, { tone: 'body', balls: [ball(madd(madd(s.head, Hside, -0.094), Hup, -0.014), 0.022)] });
+  const ear = q(0.094, 0.09);
+  torso.blobs.push({ tone: 'body', balls: [ball(madd(madd(s.head, Hside, ear), Hup, -0.014), q(0.022, 0.019))] }, { tone: 'body', balls: [ball(madd(madd(s.head, Hside, -ear), Hup, -0.014), q(0.022, 0.019))] });
+  if (fem) {
+    torso.blobs.push(
+      // sports top
+      { tone: 'short', balls: [...pair(Cf, 0.071, 0.208, 0.062, 0.068 * br), ...pair(Cf, 0.123, 0.23, 0.002, 0.0715 * br), ...pair(Cf, 0.068, 0.224, -0.045, 0.0705)] },
+      // hair tied in a bun
+      { tone: 'short', balls: [ball(madd(madd(s.head, Hup, 0.1), Hfw, -0.04), 0.043)] },
+    );
+  }
 
   const groups: Group[] = [torso];
   for (let i = 0; i < 2; i++) {
@@ -295,20 +318,22 @@ function bodyGroups(s: Skel, breath: number): Group[] {
     const fa = norm(sub(wr, el));
     // Biceps side = where the forearm folds to; when the arm is straight, opposite the elbow's pole.
     const armFront = mul(facing(sh, el, wr, s.armPole[i], true), -1);
-    const hand: Ball[] = s.fist[i] ? [ball(madd(wr, s.hand[i], 0.03), 0.042)] : [ball(wr, 0.034), ball(madd(wr, s.hand[i], D.hand), 0.027)];
+    const hand: Ball[] = s.fist[i] ? [ball(madd(wr, s.hand[i], 0.03), q(0.042, 0.036))] : [ball(wr, q(0.034, 0.028)), ball(madd(wr, s.hand[i], q(D.hand, D.hand - 0.006)), q(0.027, 0.023))];
+    const am = q(1, 0.84); // muscle relief follows the arm's girth
     groups.push({
       limb: true,
+      through: [],
       centre: mul(add(add(sh, el), wr), 1 / 3),
       blobs: [
-        { tone: 'body', balls: [ball(madd(sh, Cup, 0.004), 0.07), ball(madd(sh, ua, 0.12), 0.059), ball(el, 0.047)] },
-        { tone: 'body', balls: [ball(el, 0.046), ball(madd(el, fa, 0.07), 0.049), ball(wr, 0.034)] },
+        { tone: 'body', balls: [ball(madd(sh, Cup, 0.004), q(0.07, 0.058)), ball(madd(sh, ua, 0.12), q(0.059, 0.047)), ball(el, q(0.047, 0.039))] },
+        { tone: 'body', balls: [ball(el, q(0.046, 0.038)), ball(madd(el, fa, 0.07), q(0.049, 0.04)), ball(wr, q(0.034, 0.028))] },
         { tone: 'body', balls: hand },
       ],
       patches: [
-        { muscle: 'shoulders', n: null, balls: [ball(madd(madd(sh, Cside, 0.004 * side), Cup, 0.006), 0.064), ball(madd(sh, ua, 0.075), 0.05)] },
-        { muscle: 'biceps', n: armFront, balls: [ball(madd(madd(sh, ua, 0.125), armFront, 0.024), 0.04), ball(madd(madd(sh, ua, 0.24), armFront, 0.018), 0.034)] },
-        { muscle: 'triceps', n: mul(armFront, -1), balls: [ball(madd(madd(sh, ua, 0.12), armFront, -0.026), 0.04), ball(madd(madd(sh, ua, 0.245), armFront, -0.018), 0.034)] },
-        { muscle: 'forearms', n: null, balls: [ball(madd(el, fa, 0.045), 0.043), ball(madd(el, fa, 0.17), 0.034)] },
+        { muscle: 'shoulders', n: null, balls: [ball(madd(madd(sh, Cside, 0.004 * side), Cup, 0.006), 0.064 * am), ball(madd(sh, ua, 0.075), 0.05 * am)] },
+        { muscle: 'biceps', n: armFront, balls: [ball(madd(madd(sh, ua, 0.125), armFront, 0.024 * am), 0.04 * am), ball(madd(madd(sh, ua, 0.24), armFront, 0.018 * am), 0.034 * am)] },
+        { muscle: 'triceps', n: mul(armFront, -1), balls: [ball(madd(madd(sh, ua, 0.12), armFront, -0.026 * am), 0.04 * am), ball(madd(madd(sh, ua, 0.245), armFront, -0.018 * am), 0.034 * am)] },
+        { muscle: 'forearms', n: null, balls: [ball(madd(el, fa, 0.045), 0.043 * am), ball(madd(el, fa, 0.17), 0.034 * am)] },
       ],
     });
 
@@ -322,22 +347,25 @@ function bodyGroups(s: Skel, breath: number): Group[] {
     const shinBack = mul(facing(hip, kn, an, s.legPole[i], false), -1);
     const toe = s.toe[i];
     const sole = s.sole[i];
+    const lm = q(1, 0.9);
+    const fs = q(1, 0.93); // shoe size
     groups.push({
       limb: true,
+      through: [],
       centre: mul(add(add(hip, kn), an), 1 / 3),
       blobs: [
-        { tone: 'body', balls: [ball(hip, 0.094), ball(madd(madd(hip, th, 0.16), thighFront, 0.014), 0.09), ball(kn, 0.06)] },
-        { tone: 'body', balls: [ball(kn, 0.057), ball(madd(madd(kn, shn, D.shin * 0.3), shinBack, 0.02), 0.063), ball(an, 0.04)] },
-        { tone: 'short', balls: [ball(hip, 0.098), ball(madd(madd(hip, th, D.thigh * 0.3), thighFront, 0.012), 0.093)] },
+        { tone: 'body', balls: [ball(hip, q(0.094, 0.093)), ball(madd(madd(hip, th, 0.16), thighFront, 0.014), q(0.09, 0.084)), ball(kn, q(0.06, 0.053))] },
+        { tone: 'body', balls: [ball(kn, q(0.057, 0.05)), ball(madd(madd(kn, shn, D.shin * 0.3), shinBack, q(0.02, 0.017)), q(0.063, 0.055)), ball(an, q(0.04, 0.035))] },
+        { tone: 'short', balls: [ball(hip, q(0.098, 0.097)), ball(madd(madd(hip, th, D.thigh * q(0.3, 0.2)), thighFront, 0.012), q(0.093, 0.09))] },
         {
           tone: 'shoe',
-          balls: [ball(an, 0.043), ball(madd(madd(an, toe, -0.045), sole, 0.025), 0.045), ball(madd(madd(an, toe, 0.11), sole, 0.036), 0.034), ball(madd(madd(an, toe, 0.165), sole, 0.042), 0.028)],
+          balls: [ball(an, 0.043 * fs), ball(madd(madd(an, toe, -0.045 * fs), sole, 0.025), 0.045 * fs), ball(madd(madd(an, toe, 0.11 * fs), sole, 0.036), 0.034 * fs), ball(madd(madd(an, toe, 0.165 * fs), sole, 0.042), 0.028 * fs)],
         },
       ],
       patches: [
-        { muscle: 'quads', n: thighFront, balls: [ball(madd(madd(hip, th, 0.11), thighFront, 0.04), 0.07), ball(madd(madd(hip, th, 0.37), thighFront, 0.026), 0.046)] },
-        { muscle: 'hamstrings', n: mul(thighFront, -1), balls: [ball(madd(madd(hip, th, 0.13), thighFront, -0.04), 0.064), ball(madd(madd(hip, th, 0.37), thighFront, -0.026), 0.044)] },
-        { muscle: 'calves', n: shinBack, balls: [ball(madd(madd(kn, shn, 0.06), shinBack, 0.028), 0.048), ball(madd(madd(kn, shn, 0.22), shinBack, 0.02), 0.04)] },
+        { muscle: 'quads', n: thighFront, balls: [ball(madd(madd(hip, th, 0.11), thighFront, 0.04 * lm), 0.07 * lm), ball(madd(madd(hip, th, 0.37), thighFront, 0.026 * lm), 0.046 * lm)] },
+        { muscle: 'hamstrings', n: mul(thighFront, -1), balls: [ball(madd(madd(hip, th, 0.13), thighFront, -0.04 * lm), 0.064 * lm), ball(madd(madd(hip, th, 0.37), thighFront, -0.026 * lm), 0.044 * lm)] },
+        { muscle: 'calves', n: shinBack, balls: [ball(madd(madd(kn, shn, 0.06), shinBack, 0.028 * lm), 0.048 * lm), ball(madd(madd(kn, shn, 0.22), shinBack, 0.02 * lm), 0.04 * lm)] },
       ],
     });
   }
@@ -474,22 +502,22 @@ function groupItem(ctx: CanvasRenderingContext2D, g: Group, cam: Camera, pal: Pa
         else shade(ctx, poly, far ? pal.reliefFar : pal.relief, 0.55 * vis);
       }
       ctx.restore();
-      // Shorts go over the muscles of the hips; trained glutes still show through.
+      // Clothes go over the muscles; trained muscles under them still show through.
       blobs.forEach((b, i) => {
         if (b.tone !== 'short') return;
         shade(ctx, polys[i], far ? pal.shortFar : pal.short);
       });
-      const glutes = g.patches.filter((p) => p.muscle === 'glutes' && (lv.glutes ?? 0) > 0);
-      if (glutes.length) {
+      const covered = g.patches.filter((p) => g.through.includes(p.muscle) && (lv[p.muscle] ?? 0) > 0);
+      if (covered.length) {
         ctx.save();
         ctx.beginPath();
         blobs.forEach((b, i) => {
           if (b.tone === 'short') trace(ctx, polys[i]);
         });
         ctx.clip();
-        for (const p of glutes) {
+        for (const p of covered) {
           const vis = p.n ? step(-0.4, 0.05, dot(p.n, cam.to)) : 1;
-          if (vis >= 0.02) shade(ctx, hull(p.balls, cam), pal.accent, ((lv.glutes ?? 0) >= 1 ? 0.82 : 0.42) * vis);
+          if (vis >= 0.02) shade(ctx, hull(p.balls, cam), pal.accent, ((lv[p.muscle] ?? 0) >= 1 ? 0.82 : 0.42) * vis);
         }
         ctx.restore();
       }
@@ -710,13 +738,14 @@ function floor(ctx: CanvasRenderingContext2D, s: Skel, b: Bounds, cam: Camera, p
 export interface DrawOptions {
   levels: Levels;
   breath?: number;
+  build?: Build;
 }
 
 /** Paint one frame. The canvas transform must already map CSS pixels. */
 export function draw(ctx: CanvasRenderingContext2D, s: Skel, pose: Pose, b: Bounds, cam: Camera, pal: Palette, opts: DrawOptions): void {
   const line = Math.max(1.1, cam.scale * 0.0098);
   floor(ctx, s, b, cam, pal);
-  const groups = bodyGroups(s, opts.breath ?? 0);
+  const groups = bodyGroups(s, opts.breath ?? 0, opts.build ?? 'male');
   const torsoDepth = depth(cam, groups[0].centre);
   const items: Item[] = groups.map((g) => groupItem(ctx, g, cam, pal, opts.levels, torsoDepth, line));
   for (const p of pose.props ?? []) items.push(...propItems(ctx, p, cam, pal, line));

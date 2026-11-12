@@ -1,7 +1,7 @@
 /** App state: signed-in user, favorites, theme, and the workout draft. */
 import { api, ApiError } from './api';
 import { setLang } from './i18n';
-import type { DraftWorkout, Exercise, Prescription, Unit, User } from './types';
+import type { BodyType, DraftWorkout, Exercise, Prescription, Unit, User } from './types';
 
 type Listener = () => void;
 
@@ -125,6 +125,37 @@ export function setTheme(theme: Theme): void {
 export function onThemeChange(fn: (t: Theme) => void): () => void {
   themeListeners.add(fn);
   return () => themeListeners.delete(fn);
+}
+
+// ------------------------------------------------------------ body model
+// One choice for the muscle map and the animated athlete. A choice made on
+// this device wins over the profile's, until the profile is saved again.
+let bodyChoice: BodyType | null = null;
+try {
+  const saved = localStorage.getItem('mp-body');
+  if (saved === 'male' || saved === 'female') bodyChoice = saved;
+} catch {
+  /* storage unavailable */
+}
+const bodyListeners = new Set<(b: BodyType) => void>();
+
+export function getBody(): BodyType {
+  return bodyChoice ?? store.user?.body ?? 'male';
+}
+
+export function setBody(body: BodyType): void {
+  bodyChoice = body;
+  try {
+    localStorage.setItem('mp-body', body);
+  } catch {
+    /* ignore */
+  }
+  bodyListeners.forEach((fn) => fn(body));
+}
+
+export function onBodyChange(fn: (b: BodyType) => void): () => void {
+  bodyListeners.add(fn);
+  return () => bodyListeners.delete(fn);
 }
 
 // --------------------------------------------------------- workout draft

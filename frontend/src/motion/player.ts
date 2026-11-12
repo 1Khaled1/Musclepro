@@ -2,7 +2,7 @@
  *  canvas, with play / pause, slow motion and a camera the user can turn.
  *  Loaded on demand (the pages import it dynamically). */
 import { t } from '../i18n';
-import { getTheme, onThemeChange } from '../store';
+import { getBody, getTheme, onBodyChange, onThemeChange } from '../store';
 import { prefersReducedMotion } from '../ui/dom';
 import { iconHtml } from '../ui/icons';
 import { DEMOS, type Demo } from './demos';
@@ -124,6 +124,7 @@ export function mountDemo(host: HTMLElement, o: DemoOptions): DemoPlayer | null 
   viewButtons.forEach((b) => (b.textContent = t(`demo.view.${b.dataset.view as Preset}`)));
 
   let palette = currentPalette();
+  let build = getBody();
   let width = 0;
   let height = 0;
   let time = 0;
@@ -152,7 +153,7 @@ export function mountDemo(host: HTMLElement, o: DemoOptions): DemoPlayer | null 
     ctx.clearRect(0, 0, width, height);
     ctx.globalAlpha = 1;
     canvas.style.opacity = String(m.alpha);
-    draw(ctx, solve(pose), pose, bounds, frameCamera(bounds, width, height, yaw), palette, { levels: o.levels, breath: m.held * Math.sin((time * 2 * Math.PI) / 3.6) });
+    draw(ctx, solve(pose), pose, bounds, frameCamera(bounds, width, height, yaw), palette, { levels: o.levels, build, breath: m.held * Math.sin((time * 2 * Math.PI) / 3.6) });
   };
 
   const running = (): boolean => playing && visible && !document.hidden;
@@ -273,6 +274,11 @@ export function mountDemo(host: HTMLElement, o: DemoOptions): DemoPlayer | null 
     palette = currentPalette();
     request();
   });
+  // The athlete follows the body model chosen on the muscle map or in the profile.
+  const offBody = onBodyChange((b) => {
+    build = b;
+    request();
+  });
 
   fit();
   request();
@@ -285,6 +291,7 @@ export function mountDemo(host: HTMLElement, o: DemoOptions): DemoPlayer | null 
       resize.disconnect();
       watch.disconnect();
       offTheme();
+      offBody();
       host.innerHTML = '';
     },
   };

@@ -2,7 +2,7 @@
  *  highlights (front/back, male/female, artwork per theme) over a GLSL light
  *  field. API: select, highlight levels, front/back, dispose. */
 import { t } from '../i18n';
-import { getTheme, onThemeChange, store } from '../store';
+import { getBody, getTheme, onThemeChange, setBody } from '../store';
 import type { BodyType, Muscle } from '../types';
 import type { AuraBackdrop } from '../three/AuraBackdrop';
 import { renderAnatomy, type View } from './anatomy';
@@ -32,8 +32,6 @@ const BEST_VIEW: Record<Muscle, View> = {
 };
 export const bestView = (m: Muscle): View => BEST_VIEW[m];
 
-let preferredBody: BodyType | null = null;
-
 // The 3D viewer was retired; forget its saved preference.
 try {
   localStorage.removeItem('mp-body-mode');
@@ -44,7 +42,7 @@ try {
 export async function mountBody(host: HTMLElement, opts: BodyViewerOptions = {}): Promise<BodyViewer> {
   const layout = opts.layout ?? 'single';
   const interactive = opts.interactive ?? layout === 'single';
-  let body: BodyType = preferredBody ?? store.user?.body ?? 'male';
+  let body: BodyType = getBody();
   let view: View = opts.view ?? 'front';
   let selected: Muscle | null = null;
   let levels: Partial<Record<Muscle, number>> = {};
@@ -206,7 +204,7 @@ export async function mountBody(host: HTMLElement, opts: BodyViewerOptions = {})
       if (btn.dataset.view) flip(btn.dataset.view as View);
       else if (btn.dataset.body) {
         body = btn.dataset.body as BodyType;
-        preferredBody = body;
+        setBody(body);
         render();
       } else flip(view === 'front' ? 'back' : 'front');
       return;

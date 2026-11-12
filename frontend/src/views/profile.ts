@@ -1,7 +1,7 @@
 import { api } from '../api';
 import { formatDate, setLang, t } from '../i18n';
 import { navigate, type View } from '../router';
-import { store } from '../store';
+import { setBody, store } from '../store';
 import { GOALS, LEVELS, type User } from '../types';
 import { requireUser } from '../ui/components';
 import { glass, html, initials, qs, raw } from '../ui/dom';
@@ -76,6 +76,7 @@ export const profileView: View = (root, ctx) => {
     try {
       const { user } = await api.updateProfile(data);
       store.user = user;
+      setBody(user.body);
       setLang(user.lang); // re-renders the page if the language changed
       store.emit();
       toast(t('profile.saved'));
