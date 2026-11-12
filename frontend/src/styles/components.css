@@ -246,7 +246,7 @@
 .badge.intermediate { color: var(--warn); }
 .badge.advanced,
 .badge.pro { color: var(--danger); }
-.badge.accent { color: var(--accent); border-color: rgb(var(--accent-rgb) / 0.4); }
+.badge.accent { color: var(--accent-ink); border-color: rgb(var(--accent-rgb) / 0.4); }
 .badge.holo { color: var(--holo); }
 
 /* --------------------------------------------------------------- avatar */

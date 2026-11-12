@@ -36,6 +36,7 @@
 **Track**
 - **Live workout logger**: per-set weight with **per-set kg/lbs**, reps, done check, automatic rest timer, autosaved draft (survives reloads).
 - **Smart progression**: when a session starts, each exercise shows what to aim for today and why, worked out from what you actually logged (“Today: 105 kg × 5 — every set reached the target last time: weight up”). The weights are filled in for you and stay editable. The rules are a coach's double progression: add the smallest sensible step when every set reached the top of the target, one more rep inside the range, repeat after missed reps and go 10 % lighter after two misses, % of 1RM from your best recent estimate, lighter on deload weeks and after three weeks off. Bodyweight work progresses in reps; stretches and jumps are left alone.
+- **Recovery map**: the body map on the Progress page shows which muscles are fresh, recovering or tired, with a time until each is fresh again. It is an estimate from the sets you logged over the last four days (about ten hard sets tire a muscle fully; fatigue fades over one to three days), not a measurement. The workout generator uses it: a full-body session leaves tired muscles out, and a muscle you pick by name is kept with a note. A switch turns this off.
 - **Progress**: sessions, week streak, total volume, 8-week volume chart, estimated 1RM records (Epley), “muscles trained this week” heat map on the body, **CSV export**.
 - **Favorites** on any exercise.
 - **Accessible**: WCAG 2.2 AA audit with no axe violations, a keyboard-operable muscle map, and correct contrast in both themes ([accessibility statement](docs/ACCESSIBILITY.md)).
@@ -180,6 +181,7 @@ backend/
   app/security.py        hashing, JWT cookie, CSRF, rate limit
   app/catalog.py         catalog loader + workout generator
   app/progression.py     smart progression: next load and reps from the logs
+  app/recovery.py        recovery map: how fresh each muscle is
   app/routes/            auth, me, catalog, workouts, admin
   app/data/              exercises.json, programs.json (EN/FR, generated)
   scripts/build_programs.py  periodized programs: edit, run, validated output
@@ -209,9 +211,10 @@ Dockerfile · render.yaml · database.rules.json
 | `GET /api/me/programs`, `POST/DELETE /api/me/programs/<id>` | user | program enrollment |
 | `GET /api/exercises[?muscle&equipment&difficulty&q]`, `GET /api/exercises/<id>` | – | exercise catalog |
 | `GET /api/programs`, `GET /api/programs/<id>` | – | programs |
-| `POST /api/generate` | – | workout generator |
+| `POST /api/generate` | – | workout generator (signed in: respects the recovery map) |
 | `POST/GET /api/workouts`, `DELETE /api/workouts/<id>`, `GET /api/workouts/stats`, `GET /api/workouts/export.csv` | user | workout log |
 | `POST /api/workouts/suggest` | user | next load and reps per exercise (smart progression) |
+| `GET /api/workouts/recovery` | user | how fresh each muscle is (recovery map) |
 | `GET /api/admin/users`, `GET /api/admin/stats`, `PATCH/DELETE /api/admin/users/<id>` | admin | user management |
 
 ---

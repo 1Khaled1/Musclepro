@@ -151,14 +151,27 @@ def _warmup(available: list[dict], chosen: list[dict], muscles: list[str], rng: 
     return [{"id": e["id"], "sets": 1, "reps": e["dose"], "rest": 15} for e in picked]
 
 
-def generate_workout(params: dict, seed: int | None = None) -> dict:
+def generate_workout(params: dict, seed: int | None = None, recovery: dict[str, dict] | None = None) -> dict:
     """Build a session from the catalog.
 
     Picks, for each requested muscle in turn, the best-matching exercise that
     fits the equipment and level, then orders the session the way a coach
     would: explosive work first, big compounds next, isolation, then core.
+
+    With the athlete's `recovery` map, a full-body session leaves out the
+    muscles that are still tired; muscles asked for by name are always kept,
+    and reported back when they are tired.
     """
-    muscles = _str_list(params.get("muscles"), MUSCLES, "muscles_invalid") or FULL_BODY
+    asked = _str_list(params.get("muscles"), MUSCLES, "muscles_invalid")
+    muscles = asked or FULL_BODY
+    worn = {m for m, r in (recovery or {}).items() if r.get("status") == "tired"}
+    skipped: list[str] = []
+    if not asked and worn:
+        rested = [m for m in FULL_BODY if m not in worn]
+        if len(rested) >= 3:  # keep a real session even after a heavy week
+            skipped = [m for m in FULL_BODY if m in worn]
+            muscles = rested
+    avoid = worn - set(asked)
     equipment = set(_str_list(params.get("equipment"), EQUIPMENT, "equipment_invalid"))
     equipment.add("bodyweight")
     level = params.get("level", "beginner")
@@ -212,6 +225,8 @@ def generate_workout(params: dict, seed: int | None = None) -> dict:
         s += 0.4 * DIFFICULTY_ORDER[e["difficulty"]]
         if len(e["primary"]) == 1 and e["primary"][0] == muscle:
             s += 0.5
+        # Spare the muscles that are still tired (unless they were asked for).
+        s -= 1.5 * sum(1 for m in e["primary"] if m in avoid)
         # Vary the movement pattern: avoid a second near-identical lift.
         if any(c["primary"][0] == e["primary"][0] and c["force"] == e["force"] for c in chosen):
             s -= 1.2
@@ -268,4 +283,6 @@ def generate_workout(params: dict, seed: int | None = None) -> dict:
         "warmup": warmup,
         "exercises": items,
         "estimated_minutes": round(total),
+        "skipped": skipped,
+        "tired": [m for m in asked if m in worn],
     }

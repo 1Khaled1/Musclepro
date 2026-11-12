@@ -2,9 +2,10 @@ import { api } from '../api';
 import { fmtReps, fmtSec, loc, t } from '../i18n';
 import { navigate, type View } from '../router';
 import { loadDraft, startDraft, store } from '../store';
-import { EQUIPMENT, GOALS, LEVELS, MUSCLES, type Exercise, type GeneratedWorkout, type Goal } from '../types';
+import { EQUIPMENT, GOALS, LEVELS, MUSCLES, type Exercise, type GeneratedWorkout, type Goal, type Recovery } from '../types';
 import { glass, html, qs, raw } from '../ui/dom';
 import { icon } from '../ui/icons';
+import { readyIn, readyInShort } from '../ui/recovery';
 import { toastError } from '../ui/toast';
 
 const GEN_GOALS: Goal[] = GOALS.filter((g) => g !== 'fat_loss');
@@ -19,6 +20,9 @@ export const generatorView: View = async (root) => {
   };
   let result: GeneratedWorkout | null = null;
   let exercises: Exercise[] = [];
+  // Signed in: the session respects how recovered each muscle is (can be switched off).
+  let recovery: Recovery | null = null;
+  let respectRecovery = true;
 
   root.innerHTML = html`
     <div class="page-head">
@@ -51,21 +55,37 @@ export const generatorView: View = async (root) => {
           <legend class="label" style="margin-bottom:4px">${t('gen.muscles')}</legend>
           <span class="muted" style="font-size:.8rem;margin-bottom:8px">${t('gen.musclesHint')}</span>
           <div class="chips" id="g-mus"></div>
+          <div id="g-rec"></div>
         </fieldset>
         <button class="btn btn-primary btn-block" type="submit">${icon('spark')} ${t('gen.generate')}</button>
       </form>`))}
       <div id="gen-result"></div>
     </div>`;
 
-  const chip = (group: string, value: string, label: string, on: boolean) =>
-    html`<button class="chip" type="button" data-group="${group}" data-value="${value}" aria-pressed="${String(on)}">${label}</button>`;
+  const chip = (group: string, value: string, label: string, on: boolean, note = '') =>
+    html`<button class="chip" type="button" data-group="${group}" data-value="${value}" aria-pressed="${String(on)}">${label}${raw(note)}</button>`;
+  /** Muscles that are not fresh carry their status and time left, in words. */
+  const recoveryNote = (m: (typeof MUSCLES)[number]) => {
+    const r = recovery?.[m];
+    if (!r || r.status === 'fresh') return '';
+    // Short on screen ("tired · 2 d"), in full for screen readers.
+    const short = `${r.status === 'tired' ? `${t('rec.shortTired')} · ` : ''}${readyInShort(r.ready_in_h)}`;
+    return html`<span class="chip-note" data-status="${r.status}" aria-hidden="true">${short}</span><span class="visually-hidden">, ${t(`rec.status.${r.status}`)}, ${readyIn(r.ready_in_h)}</span>`;
+  };
 
   const renderChips = () => {
     qs('#g-goal', root).innerHTML = GEN_GOALS.map((g) => chip('goal', g, t(`goal.${g}`), state.goal === g)).join('');
     qs('#g-eq', root).innerHTML = EQUIPMENT.filter((e) => e !== 'bodyweight')
       .map((e) => chip('equipment', e, t(`equip.${e}`), state.equipment.has(e)))
       .join('');
-    qs('#g-mus', root).innerHTML = MUSCLES.map((m) => chip('muscles', m, t(`muscle.${m}`), state.muscles.has(m))).join('');
+    qs('#g-mus', root).innerHTML = MUSCLES.map((m) => chip('muscles', m, t(`muscle.${m}`), state.muscles.has(m), recoveryNote(m))).join('');
+    const anyTired = recovery && MUSCLES.some((m) => recovery![m]?.status === 'tired');
+    const anyNote = recovery && MUSCLES.some((m) => recovery![m]?.status !== 'fresh');
+    qs('#g-rec', root).innerHTML = html`${anyNote ? raw(html`<p class="muted" style="font-size:.8rem;margin:10px 0 0">${t('gen.recoveryHint')}</p>`) : ''}${
+      anyTired
+        ? raw(html`<label class="switch" style="margin-top:12px"><input type="checkbox" name="recovery" ${raw(respectRecovery ? 'checked' : '')} /><span class="track" aria-hidden="true"></span><span>${t('gen.recovery')}</span></label>`)
+        : ''
+    }`;
   };
 
   const renderResult = () => {
@@ -86,6 +106,12 @@ export const generatorView: View = async (root) => {
             <span class="muted" style="font-size:.85rem">${t(`goal.${result.goal}`)} · ${t('gen.estimate', { n: result.estimated_minutes })}</span></div>
           <button class="btn btn-sm" type="button" data-act="shuffle">${icon('repeat', 'icon-sm')} ${t('gen.regenerate')}</button>
         </div>
+        ${result.skipped?.length || result.tired?.length
+          ? raw(html`<div class="panel tip rec-tip">${icon('info')}<div>
+              ${result.skipped?.length ? raw(html`<p>${t('gen.skipped', { list: result.skipped.map((m) => t(`muscle.${m}`)).join(', ') })}</p>`) : ''}
+              ${result.tired?.length ? raw(html`<p>${t('gen.tiredChosen', { list: result.tired.map((m) => t(`muscle.${m}`)).join(', ') })}</p>`) : ''}
+            </div></div>`)
+          : ''}
         ${result.warmup?.length
           ? raw(html`<h3 class="plan-heading">${icon('flame', 'icon-sm')} ${t('gen.warmup')}</h3>
             <ul class="plan-list">${raw(
@@ -130,6 +156,7 @@ export const generatorView: View = async (root) => {
           minutes: state.minutes,
           equipment: [...state.equipment],
           muscles: [...state.muscles],
+          recovery: respectRecovery,
         }),
         api.exercises(),
       ]);
@@ -153,6 +180,7 @@ export const generatorView: View = async (root) => {
       state.minutes = Number(el.value);
       qs('#g-min', root).textContent = el.value;
     } else if (el.name === 'level') state.level = el.value as typeof state.level;
+    else if (el.name === 'recovery') respectRecovery = el.checked;
   });
   root.addEventListener('click', (e) => {
     const target = e.target as HTMLElement;
@@ -180,4 +208,13 @@ export const generatorView: View = async (root) => {
 
   renderChips();
   renderResult();
+  if (store.user) {
+    void api.recovery().then(
+      (rec) => {
+        recovery = rec;
+        renderChips();
+      },
+      () => undefined, // offline: the generator works without it
+    );
+  }
 };

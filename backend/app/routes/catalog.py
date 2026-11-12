@@ -1,7 +1,7 @@
 """Public catalog: muscles, equipment, exercises, programs, generator."""
 from __future__ import annotations
 
-from flask import Blueprint, request
+from flask import Blueprint, g, request
 
 from ..catalog import (
     EQUIPMENT,
@@ -75,4 +75,11 @@ def generate():
     data = request.get_json(silent=True)
     if not isinstance(data, dict):
         raise ApiError("bad_request")
-    return generate_workout(data)
+    # Signed-in athletes get a session that respects their recovery (opt out with "recovery": false).
+    recovery = None
+    if g.get("user") and data.get("recovery", True) is not False:
+        from ..recovery import compute_recovery
+        from .workouts import _workouts_for
+
+        recovery = compute_recovery(_workouts_for(g.user["id"]))
+    return generate_workout(data, recovery=recovery)

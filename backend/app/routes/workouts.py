@@ -13,6 +13,7 @@ from flask import Blueprint, Response, current_app, g, request
 
 from ..catalog import get_exercise, get_program, program_day
 from ..progression import suggest
+from ..recovery import compute_recovery
 from ..security import ApiError, login_required
 from ..store import as_list
 from ..users import now_iso
@@ -330,6 +331,13 @@ def compute_stats(items: list[dict], now: datetime | None = None) -> dict:
 @login_required
 def stats():
     return compute_stats(_workouts_for(g.user["id"]))
+
+
+@bp.get("/recovery")
+@login_required
+def recovery():
+    """How fresh each muscle is right now, estimated from the last four days of training."""
+    return {"recovery": compute_recovery(_workouts_for(g.user["id"]))}
 
 
 def _csv_safe(value) -> str:

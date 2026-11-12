@@ -34,7 +34,8 @@ demonstration playing, at 1280 and 360 px in both themes.
   or has a role, a name and keyboard support (the SVG muscle groups).
 - Focus is always visible (`:focus-visible` halo), never removed.
 - Colour never carries meaning alone: levels are also written ("Beginner"),
-  and muscle roles are listed in text next to the body map.
+  muscle roles are listed in text next to the body map, and the recovery map
+  comes with a list that names each muscle's status and time to recover.
 - Motion respects `prefers-reduced-motion`: the GLSL light field and the
   transitions stop, and demonstrations do not start by themselves.
 - Anything that moves can be paused (WCAG 2.2.2): every demonstration has a

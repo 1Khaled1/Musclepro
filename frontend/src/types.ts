@@ -146,6 +146,9 @@ export interface Stats {
   muscle_sets_7d: Partial<Record<Muscle, number>>;
 }
 
+/** How fresh each muscle is, estimated from the last days of training. */
+export type Recovery = Record<Muscle, { readiness: number; status: 'fresh' | 'recovering' | 'tired'; ready_in_h: number }>;
+
 export interface GeneratedWorkout {
   goal: Goal;
   level: Level;
@@ -154,6 +157,10 @@ export interface GeneratedWorkout {
   warmup: Prescription[];
   exercises: Prescription[];
   estimated_minutes: number;
+  /** Full-body session: muscles left out because they are still tired. */
+  skipped?: Muscle[];
+  /** Muscles asked for by name although they are still tired. */
+  tired?: Muscle[];
 }
 
 /** What to aim for next on one exercise, worked out from the logs (smart progression). */

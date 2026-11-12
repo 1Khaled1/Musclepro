@@ -2,11 +2,12 @@ import { api } from '../api';
 import { formatDate, formatNumber, getLang, loc, t, tn } from '../i18n';
 import { refresh, type View } from '../router';
 import { flushOutbox, pendingCount } from '../offline';
-import type { Exercise, Muscle, Stats, Workout } from '../types';
+import type { Exercise, Muscle, Recovery, Stats, Workout } from '../types';
 import { mountBody } from '../ui/bodyViewer';
 import { errorBlock, loadingBlock, requireUser } from '../ui/components';
 import { glass, html, qs, raw } from '../ui/dom';
 import { icon } from '../ui/icons';
+import { fatigueLevels, recoveryList } from '../ui/recovery';
 import { errorMessage, toast, toastError } from '../ui/toast';
 
 /** Weekly volume: single series → no legend, title names it. Bars anchored
@@ -110,8 +111,9 @@ export const historyView: View = async (root, ctx) => {
   let stats: Stats;
   let workouts: Workout[];
   let exercises: Exercise[];
+  let recovery: Recovery | null;
   try {
-    [stats, { workouts }, exercises] = await Promise.all([api.stats(), api.workouts(30), api.exercises()]);
+    [stats, { workouts }, exercises, recovery] = await Promise.all([api.stats(), api.workouts(30), api.exercises(), api.recovery().catch(() => null)]);
   } catch (err) {
     root.innerHTML = pendingBanner() + errorBlock(errorMessage(err));
     return;
@@ -187,9 +189,18 @@ export const historyView: View = async (root, ctx) => {
             : raw(html`<div class="empty">${icon('trophy')}<p>${t('hist.noPrs')}</p></div>`)}`, { delay: 60 }))}
       </div>
       ${raw(glass(html`
-        <div class="section-title"><h2>${t('hist.heat')}</h2></div>
-        <span class="legend" style="margin-bottom:10px"><span><i class="l-heat-lo"></i>${t('hist.heatLow')}</span><span><i class="l-heat-hi"></i>${t('hist.heatHigh')}</span></span>
-        <div id="heat-body"></div>`, { cls: 'body-stage', delay: 90 }))}
+        <div class="section-title" style="flex-wrap:wrap">
+          <h2 id="heat-title">${t(recovery ? 'rec.title' : 'hist.heat')}</h2>
+          ${recovery
+            ? raw(html`<div class="segmented" role="group" aria-label="${t('rec.show')}">
+                <button type="button" data-heat="recovery" aria-pressed="true">${t('rec.title')}</button>
+                <button type="button" data-heat="week" aria-pressed="false">${t('rec.week')}</button>
+              </div>`)
+            : ''}
+        </div>
+        <span class="legend" id="heat-legend" style="margin-bottom:10px"></span>
+        <div id="heat-body"></div>
+        <div id="heat-list"></div>`, { cls: 'body-stage', delay: 90 }))}
     </div>
 
     <section style="margin-top:28px">
@@ -203,17 +214,33 @@ export const historyView: View = async (root, ctx) => {
 
   bindChart(root, stats.weekly);
 
-  // Heat map: sequential single hue, intensity = sets in the last 7 days.
-  const levels: Partial<Record<Muscle, number>> = {};
+  // Body map: recovery (how tired each muscle still is) or the week's volume.
+  // Both use one hue; the text list under the body says the same in words.
+  const weekLevels: Partial<Record<Muscle, number>> = {};
   for (const [m, sets] of Object.entries(stats.muscle_sets_7d)) {
-    levels[m as Muscle] = Math.min(1, 0.2 + (sets ?? 0) / 12);
+    weekLevels[m as Muscle] = Math.min(1, 0.2 + (sets ?? 0) / 12);
   }
-  const viewerPromise = mountBody(qs('#heat-body', root), { layout: 'dual' }).then((v) => {
-    v.setLevels(levels);
-    return v;
-  });
+  let heatMode: 'recovery' | 'week' = recovery ? 'recovery' : 'week';
+  const viewerPromise = mountBody(qs('#heat-body', root), { layout: 'dual' });
+  const paintHeat = () => {
+    const rec = heatMode === 'recovery' && recovery;
+    qs('#heat-title', root).textContent = t(rec ? 'rec.title' : 'hist.heat');
+    qs('#heat-legend', root).innerHTML = rec
+      ? html`<span><i class="l-heat-lo"></i>${t('rec.status.recovering')}</span><span><i class="l-heat-hi"></i>${t('rec.status.tired')}</span>`
+      : html`<span><i class="l-heat-lo"></i>${t('hist.heatLow')}</span><span><i class="l-heat-hi"></i>${t('hist.heatHigh')}</span>`;
+    qs('#heat-list', root).innerHTML = rec ? html`${raw(recoveryList(rec))}<p class="muted rec-note">${t('rec.lead')}</p>` : '';
+    root.querySelectorAll<HTMLButtonElement>('[data-heat]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.heat === heatMode)));
+    void viewerPromise.then((v) => v.setLevels(rec ? fatigueLevels(rec) : weekLevels));
+  };
+  paintHeat();
 
   root.addEventListener('click', async (e) => {
+    const mode = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-heat]');
+    if (mode) {
+      heatMode = mode.dataset.heat as typeof heatMode;
+      paintHeat();
+      return;
+    }
     const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-del]');
     if (!btn || !confirm(t('hist.deleteConfirm'))) return;
     try {
