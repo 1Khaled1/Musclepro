@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from flask import Blueprint, current_app, g, jsonify, request
 
+from .. import coaching
 from ..catalog import get_exercise, get_program
 from ..security import (
     ApiError,
@@ -11,6 +12,7 @@ from ..security import (
     issue_token,
     login_required,
     set_session_cookie,
+    throttle,
     validate_password,
     verify_password,
 )
@@ -134,4 +136,55 @@ def unenroll(program_id: str):
     if not get_program(program_id):
         raise ApiError("not_found", 404)
     _store().delete(f"enrollments/{g.user['id']}/{program_id}")
+    return {"ok": True}
+
+
+# -- coach -------------------------------------------------------------------
+def _my_coach() -> dict:
+    found = coaching.coach_of(_store(), g.user["id"])
+    if not found:
+        return {"coach": None, "assignment": None}
+    assignment = _store().get(f"coach_assignments/{g.user['id']}")
+    if assignment and not get_program(assignment.get("program_id", "")):
+        assignment = None
+    return {
+        "coach": {"name": found["coach"].get("name"), "since": found["since"]},
+        "assignment": assignment and {k: assignment.get(k) for k in ("program_id", "note", "at")},
+    }
+
+
+@bp.get("/coach")
+@login_required
+def my_coach():
+    return _my_coach()
+
+
+@bp.post("/coach")
+@login_required
+def join_coach():
+    """Join a coach with their invite code: from now on they can see this athlete's training."""
+    throttle("coach-join")
+    code = coaching.normalize_code(_json().get("code"))
+    coach_id = _store().get(f"coach_codes/{code}") if len(code) == coaching.CODE_LEN else None
+    coach = _store().get(f"users/{coach_id}") if coach_id else None
+    if not coach or coach.get("role") not in coaching.COACH_ROLES or not coach.get("active", True):
+        raise ApiError("coach_code_invalid", 404)
+    if coach_id == g.user["id"]:
+        raise ApiError("coach_self")
+    current = coaching.coach_of(_store(), g.user["id"])
+    if current and current["coach"]["id"] != coach_id:
+        raise ApiError("coach_already", 409)
+    if not current:
+        if len(_store().get(f"coach_athletes/{coach_id}") or {}) >= coaching.MAX_ATHLETES:
+            raise ApiError("coach_full", 409)
+        coaching.link(_store(), coach_id, g.user["id"], now_iso())
+    return _my_coach(), 201
+
+
+@bp.delete("/coach")
+@login_required
+def leave_coach():
+    link = _store().get(f"coach_of/{g.user['id']}")
+    if isinstance(link, dict) and link.get("coach_id"):
+        coaching.unlink(_store(), link["coach_id"], g.user["id"])
     return {"ok": True}

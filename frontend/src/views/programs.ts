@@ -1,5 +1,5 @@
 import { api } from '../api';
-import { t } from '../i18n';
+import { loc, t } from '../i18n';
 import type { View } from '../router';
 import { store } from '../store';
 import { LEVELS, type ProgramSummary } from '../types';
@@ -19,6 +19,7 @@ export const programsView: View = async (root, ctx) => {
       </div>
       <div class="segmented" role="group" aria-label="${t('ex.level')}" id="lvl"></div>
     </div>
+    <div id="prog-assigned"></div>
     <div id="prog-list">${raw(loadingBlock(2))}</div>`;
 
   let programs: ProgramSummary[];
@@ -27,6 +28,24 @@ export const programsView: View = async (root, ctx) => {
   } catch (err) {
     qs('#prog-list', root).innerHTML = errorBlock(errorMessage(err));
     return;
+  }
+
+  if (store.user) {
+    void api.myCoach().then(
+      ({ coach, assignment }) => {
+        const slot = root.querySelector<HTMLElement>('#prog-assigned');
+        const p = assignment && programs.find((x) => x.id === assignment.program_id);
+        if (!slot || !coach || !assignment || !p) return;
+        slot.innerHTML = html`<a class="panel coach-banner" href="/programs/${p.id}">
+          ${icon('target')}
+          <span class="grow"><span class="muted">${t('mycoach.assignedBy', { name: coach.name })}</span>
+            <strong>${loc(p.name)}</strong>
+            ${assignment.note ? raw(html`<span class="text-2">“${assignment.note}”</span>`) : ''}</span>
+          ${icon('right')}
+        </a>`;
+      },
+      () => undefined,
+    );
   }
 
   const lvlEl = qs('#lvl', root);

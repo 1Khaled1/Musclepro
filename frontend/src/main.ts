@@ -31,6 +31,8 @@ route('/login', 'login', () => import('./views/auth').then((m) => m.loginView));
 route('/register', 'register', () => import('./views/auth').then((m) => m.registerView));
 route('/profile', 'profile', () => import('./views/profile').then((m) => m.profileView));
 route('/admin', 'admin', () => import('./views/admin').then((m) => m.adminView));
+route('/coach', 'coach', () => import('./views/coach').then((m) => m.coachView));
+route('/coach/athletes/:id', 'coach-athlete', () => import('./views/coach').then((m) => m.coachAthleteView));
 fallback(() => import('./views/notfound').then((m) => m.notFoundView));
 
 document.addEventListener('click', (e) => {

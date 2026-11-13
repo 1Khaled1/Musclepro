@@ -174,7 +174,13 @@ def history():
     except ValueError:
         limit = 30
     items = _workouts_for(g.user["id"])
-    return {"workouts": items[:limit], "total": len(items)}
+    # Feedback a coach left on a workout travels with it.
+    comments = _store().get(f"coach_comments/{g.user['id']}") or {}
+    page = []
+    for w in items[:limit]:
+        c = comments.get(w.get("id"))
+        page.append({**w, "coach_comment": {"text": c.get("text", ""), "at": c.get("at")}} if isinstance(c, dict) else w)
+    return {"workouts": page, "total": len(items)}
 
 
 @bp.post("/suggest")
@@ -240,6 +246,7 @@ def delete(workout_id: str):
     if not _store().get(path):
         raise ApiError("not_found", 404)
     _store().delete(path)
+    _store().delete(f"coach_comments/{g.user['id']}/{workout_id}")
     return {"ok": True}
 
 

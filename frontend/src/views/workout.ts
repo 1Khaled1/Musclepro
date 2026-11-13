@@ -1,7 +1,7 @@
 /** Live workout logger: per-set weight + unit (kg/lbs) + reps, rest timer,
  *  autosaved draft (survives reloads), save to Firebase via the API. */
 import { api, ApiError } from '../api';
-import { effortLabel, fmtReps, formatNumber, getLang, loc, t, tn } from '../i18n';
+import { effortLabel, fmtReps, formatNumber, loc, relativeDay, t, tn } from '../i18n';
 import { navigate, type View } from '../router';
 import { DEFAULT_REPS, loadDraft, saveDraft, setsFor, store } from '../store';
 import type { DemoPlayer } from '../motion/player';
@@ -12,13 +12,6 @@ import { toast, toastError } from '../ui/toast';
 import { queueWorkout } from '../offline';
 
 const kgOrLb = (w: number, unit: Unit) => `${formatNumber(w, 2)} ${t(`common.${unit}`)}`;
-
-function ago(iso: string | null): string {
-  if (!iso) return '';
-  const days = Math.round((Date.now() - new Date(iso).getTime()) / 86400000);
-  if (!Number.isFinite(days)) return '';
-  return new Intl.RelativeTimeFormat(getLang(), { numeric: 'auto' }).format(-Math.max(0, days), 'day');
-}
 
 /** "Today: 62.5 kg × 8" and why, then what was done last time. */
 function suggestionBlock(s: Suggestion, item: DraftWorkout['items'][number]): string {
@@ -35,7 +28,7 @@ function suggestionBlock(s: Suggestion, item: DraftWorkout['items'][number]): st
   const last = s.last
     ? t('sug.last', {
         sets: `${s.last.weight > 0 ? `${kgOrLb(s.last.weight, s.last.unit)} × ` : ''}${s.last.reps.map((r) => formatNumber(r)).join(', ')}`,
-        when: ago(s.last.date),
+        when: relativeDay(s.last.date),
       })
     : '';
   return html`<div class="suggest" data-reason="${s.reason}">

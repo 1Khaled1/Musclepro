@@ -126,6 +126,57 @@ export interface Workout {
   day_id?: string;
   week?: number;
   entries: { exercise_id: string; sets: LoggedSet[] }[];
+  /** Feedback left by the athlete's coach. */
+  coach_comment?: { text: string; at: string } | null;
+}
+
+// ---- coach mode
+export interface CoachAssignment {
+  program_id: string;
+  note: string;
+  at: string;
+  /** Sessions of the program the athlete has completed, out of `total`. */
+  done: number;
+  total: number;
+}
+
+/** What a coach sees of an athlete: never the e-mail address. */
+export interface AthleteCard {
+  id: string;
+  name: string;
+  level: Level;
+  goal: Goal;
+  unit: Unit;
+  body: BodyType;
+}
+
+export interface CoachAthlete extends AthleteCard {
+  since: string | null;
+  last_workout_at: string | null;
+  sessions: number;
+  this_week: number;
+  streak_weeks: number;
+  assignment: CoachAssignment | null;
+}
+
+export interface CoachOverview {
+  code: string;
+  athletes: CoachAthlete[];
+}
+
+export interface CoachAthleteDetail {
+  athlete: AthleteCard;
+  since: string | null;
+  stats: Stats;
+  recovery: Recovery;
+  workouts: Workout[];
+  assignment: CoachAssignment | null;
+}
+
+/** The athlete's side of the link. */
+export interface MyCoach {
+  coach: { name: string; since: string | null } | null;
+  assignment: { program_id: string; note: string; at: string } | null;
 }
 
 export interface Stats {

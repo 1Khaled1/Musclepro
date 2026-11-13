@@ -140,6 +140,7 @@ export const historyView: View = async (root, ctx) => {
             <td class="num">${e.sets.map((s) => `${s.weight ? `${s.weight}${t(`common.${s.unit}`)}×` : ''}${s.reps}`).join(' · ')}</td></tr>`).join(''))}</tbody>
         </table></div>
         ${w.notes ? raw(html`<p class="text-2" style="margin-top:10px">${w.notes}</p>`) : ''}
+        ${w.coach_comment ? raw(html`<div class="panel coach-note">${icon('target', 'icon-sm')}<div><strong>${t('coach.feedback')}</strong><p>${w.coach_comment.text}</p></div></div>`) : ''}
         <button class="btn btn-sm btn-ghost btn-danger" type="button" data-del="${w.id}" style="margin-top:10px">${icon('trash', 'icon-sm')} ${t('common.delete')}</button>
       </div>
     </details>`;

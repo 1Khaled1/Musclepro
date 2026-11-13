@@ -1,8 +1,8 @@
 import { api } from '../api';
-import { formatDate, setLang, t } from '../i18n';
+import { formatDate, loc, setLang, t } from '../i18n';
 import { navigate, type View } from '../router';
 import { setBody, store } from '../store';
-import { GOALS, LEVELS, type User } from '../types';
+import { GOALS, LEVELS, type MyCoach, type ProgramSummary, type User } from '../types';
 import { requireUser } from '../ui/components';
 import { glass, html, initials, qs, raw } from '../ui/dom';
 import { icon } from '../ui/icons';
@@ -49,6 +49,7 @@ export const profileView: View = (root, ctx) => {
         </form>`))}
 
       <div class="stack">
+        ${raw(glass(html`<div id="coach-card"><h2>${icon('target')} ${t('mycoach.title')}</h2></div>`, { delay: 30 }))}
         ${raw(glass(html`
           <form id="pw-form" class="stack" style="gap:14px">
             <h2>${icon('lock')} ${t('profile.security')}</h2>
@@ -85,6 +86,61 @@ export const profileView: View = (root, ctx) => {
     }
   });
 
+  // ---- coach: join with a code, see what the coach can see, leave at any time
+  let mine: MyCoach = { coach: null, assignment: null };
+  let programs: ProgramSummary[] = [];
+  const coachCard = () => {
+    const el = qs('#coach-card', root);
+    const head = html`<h2>${icon('target')} ${t('mycoach.title')}</h2>`;
+    const dash = u.role !== 'user' ? html`<p style="margin-top:14px"><a class="btn btn-sm" href="/coach">${t('mycoach.dashboard')} ${icon('right', 'icon-sm')}</a></p>` : '';
+    if (!mine.coach) {
+      el.innerHTML = html`${raw(head)}
+        <p class="text-2" style="margin:8px 0 14px">${t('mycoach.none')}</p>
+        <form id="coach-form" class="row" style="align-items:flex-end">
+          <label class="field" style="flex:1;min-width:160px"><span>${t('mycoach.code')}</span>
+            <input class="input coach-code-input" name="code" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="12" placeholder="XXXX-XXXX" required /></label>
+          <button class="btn" type="submit">${t('mycoach.join')}</button>
+        </form>
+        <p class="form-error" id="coach-error" role="alert"></p>${raw(dash)}`;
+      return;
+    }
+    const a = mine.assignment;
+    const name = a ? loc(programs.find((p) => p.id === a.program_id)?.name) || a.program_id : '';
+    el.innerHTML = html`${raw(head)}
+      <p style="margin-top:8px"><strong>${t('mycoach.with', { name: mine.coach.name })}</strong>
+        ${mine.coach.since ? raw(html`<span class="muted" style="font-size:.84rem"> · ${t('mycoach.since', { date: formatDate(mine.coach.since) })}</span>`) : ''}</p>
+      <p class="text-2" style="margin:8px 0 14px">${t('mycoach.sees')}</p>
+      ${a
+        ? raw(html`<div class="panel coach-assigned" style="margin-bottom:14px">
+            <span class="muted" style="font-size:.8rem;font-weight:700">${t('mycoach.assigned')}</span>
+            <a class="link" href="/programs/${a.program_id}"><strong>${name}</strong></a>
+            ${a.note ? raw(html`<p class="text-2">“${a.note}”</p>`) : ''}
+          </div>`)
+        : ''}
+      <button class="btn btn-ghost btn-danger btn-sm" type="button" data-act="leave-coach">${t('mycoach.leave')}</button>${raw(dash)}`;
+  };
+  coachCard();
+  void Promise.all([api.myCoach(), api.programs()]).then(
+    ([m, p]) => {
+      mine = m;
+      programs = p;
+      coachCard();
+    },
+    () => undefined, // offline: the card keeps its default state
+  );
+  root.addEventListener('submit', async (e) => {
+    const form = e.target as HTMLFormElement;
+    if (form.id !== 'coach-form') return;
+    e.preventDefault();
+    try {
+      mine = await api.joinCoach(String(new FormData(form).get('code') ?? ''));
+      coachCard();
+      toast(t('mycoach.joined', { name: mine.coach?.name ?? '' }));
+    } catch (err) {
+      qs('#coach-error', root).textContent = errorMessage(err);
+    }
+  });
+
   const pwForm = qs<HTMLFormElement>('#pw-form', root);
   pwForm.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -107,6 +163,12 @@ export const profileView: View = (root, ctx) => {
         await store.setUser(null);
         toast(t('auth.loggedOut'), 'info');
         navigate('/login');
+      } else if (act === 'leave-coach') {
+        if (!confirm(t('mycoach.leaveConfirm', { name: mine.coach?.name ?? '' }))) return;
+        await api.leaveCoach();
+        mine = { coach: null, assignment: null };
+        coachCard();
+        toast(t('mycoach.left'), 'info');
       } else if (act === 'delete') {
         const password = prompt(t('profile.deletePrompt'));
         if (!password) return;

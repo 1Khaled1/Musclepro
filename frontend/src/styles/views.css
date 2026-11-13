@@ -725,3 +725,32 @@
 .rec-tip { margin-bottom: 14px; }
 .rec-tip p { margin: 0; }
 .rec-tip p + p { margin-top: 6px; }
+
+/* ------------------------------------------------------------ coach mode */
+.coach-invite { display: flex; flex-wrap: wrap; gap: 16px 24px; align-items: center; justify-content: space-between; }
+.coach-invite > div:first-child { flex: 1 1 260px; }
+.coach-code {
+  font-family: var(--mono);
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  padding: 8px 14px;
+  border-radius: var(--sg-radius-sm);
+  border: 1px dashed rgb(var(--accent-rgb) / 0.55);
+  background: rgb(var(--accent-rgb) / 0.08);
+  user-select: all;
+}
+.coach-code-input { font-family: var(--mono); letter-spacing: 0.1em; text-transform: uppercase; }
+.coach-card .card-content { display: grid; gap: 14px; }
+.coach-kv { font-size: 0.86rem; }
+.coach-progress { display: grid; gap: 6px; font-size: 0.8rem; }
+.coach-progress .rec-bar i { background: var(--accent); }
+.coach-assigned { display: grid; gap: 8px; padding: 14px; margin-top: 10px; }
+.coach-assigned p { margin: 0; }
+.coach-note { display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; margin-top: 12px; border-color: rgb(var(--holo-rgb) / 0.35); background: rgb(var(--holo-rgb) / 0.08); }
+.coach-note > .icon { flex: none; margin-top: 3px; color: var(--holo); }
+.coach-note p { margin: 2px 0 0; white-space: pre-line; }
+.coach-banner { display: flex; gap: 14px; align-items: center; padding: 14px 16px; margin-bottom: 18px; border-color: rgb(var(--accent-rgb) / 0.4); }
+.coach-banner > .icon:first-child { color: var(--accent-ink); flex: none; }
+.coach-banner .grow { display: grid; gap: 2px; min-width: 0; }
+.coach-banner .muted { font-size: 0.78rem; font-weight: 700; }

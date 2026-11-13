@@ -118,8 +118,10 @@ Shipped and running:
   fresh, recovering or tired from recent training, and the generator leaves
   tired muscles out. Next: tune the model with coaches and let athletes
   correct it ("my legs feel fine").
-- **Coach mode** — coaches assign programs, athletes train, coaches review logs
-  and records; the coach role already exists in the data model.
+- ~~**Coach mode**~~ — **shipped**: athletes join a coach with an invite code
+  (and can leave at any time); the coach follows their sessions, records and
+  recovery, assigns a program with a note and leaves feedback on workouts.
+  Next: programs written by the coach, and a weekly summary per athlete.
 - **Custom programs** — users and coaches build and share their own plans.
 - **More languages** — Arabic and Spanish next, with right-to-left support.
 
@@ -203,5 +205,5 @@ l'athlète de haut niveau : exercices détaillés étape par étape, programmes
 périodisés semaine par semaine, générateur de séances et suivi des progrès, en français et
 en anglais. Nos principes : l'anatomie d'abord, la technique avant la charge,
 un design premium sans publicité pendant l'entraînement, et le respect de la
-vie privée. Chaque exercice a sa démonstration animée, et chaque séance propose la charge et les répétitions à viser. La carte de récupération montre les muscles frais ou fatigués, et le générateur en tient compte. Prochaines étapes : mise en production, validation des démonstrations par un coach
-et mode coach.
+vie privée. Chaque exercice a sa démonstration animée, et chaque séance propose la charge et les répétitions à viser. La carte de récupération montre les muscles frais ou fatigués, et le générateur en tient compte. Le mode coach relie un coach à ses athlètes, avec leur accord. Prochaines étapes : mise en production, validation des démonstrations par un coach
+et programmes personnalisés.

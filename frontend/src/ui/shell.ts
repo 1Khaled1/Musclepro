@@ -137,6 +137,7 @@ function renderDrawer(): void {
         ? raw(html`<div class="nav-group">
             <h4>${t('nav.group.account')}</h4>
             ${raw(link('/profile', 'user', t('nav.profile')))}
+            ${user.role !== 'user' ? raw(link('/coach', 'target', t('nav.coach'))) : ''}
             ${store.isAdmin ? raw(link('/admin', 'shield', t('nav.admin'))) : ''}
             <button class="nav-link" type="button" data-action="logout">${icon('logout')}<span>${t('nav.logout')}</span></button>
           </div>`)

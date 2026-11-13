@@ -1,5 +1,5 @@
 /** Typed client for the Flask API. Same origin, cookie session, CSRF header. */
-import type { Enrollment, Exercise, GeneratedWorkout, Percent, Program, ProgramSummary, Recovery, Stats, Suggestion, Unit, User, Workout } from './types';
+import type { CoachAssignment, CoachAthleteDetail, CoachOverview, Enrollment, Exercise, GeneratedWorkout, MyCoach, Percent, Program, ProgramSummary, Recovery, Stats, Suggestion, Unit, User, Workout } from './types';
 
 export class ApiError extends Error {
   constructor(
@@ -63,7 +63,7 @@ async function send<T>(method: string, path: string, body?: unknown): Promise<T>
 const get = <T>(path: string) => request<T>('GET', path);
 const post = <T>(path: string, body: unknown = {}) => request<T>('POST', path, body);
 const patch = <T>(path: string, body: unknown) => request<T>('PATCH', path, body);
-const put = <T>(path: string) => request<T>('PUT', path, {});
+const put = <T>(path: string, body: unknown = {}) => request<T>('PUT', path, body);
 const del = <T>(path: string, body?: unknown) => request<T>('DELETE', path, body);
 
 // Catalog responses never change during a session: cache them.
@@ -123,6 +123,21 @@ export const api = {
   recovery: async () => (await get<{ recovery: Recovery }>('/api/workouts/recovery')).recovery,
   suggest: (data: { unit: Unit; program_id?: string; week?: number; items: { id: string; sets: number; reps: string | null; pct?: Percent }[] }) =>
     post<{ suggestions: Record<string, Suggestion | null> }>('/api/workouts/suggest', data),
+
+  // coach mode — athlete side
+  myCoach: () => get<MyCoach>('/api/me/coach'),
+  joinCoach: (code: string) => post<MyCoach>('/api/me/coach', { code }),
+  leaveCoach: () => del<{ ok: true }>('/api/me/coach'),
+  // coach mode — coach side
+  coach: () => get<CoachOverview>('/api/coach'),
+  coachRenewCode: () => post<{ code: string }>('/api/coach/code'),
+  coachAthlete: (id: string) => get<CoachAthleteDetail>(`/api/coach/athletes/${encodeURIComponent(id)}`),
+  coachRemoveAthlete: (id: string) => del<{ ok: true }>(`/api/coach/athletes/${encodeURIComponent(id)}`),
+  coachAssign: (id: string, program_id: string, note: string) =>
+    put<{ assignment: CoachAssignment }>(`/api/coach/athletes/${encodeURIComponent(id)}/program`, { program_id, note }),
+  coachUnassign: (id: string) => del<{ ok: true }>(`/api/coach/athletes/${encodeURIComponent(id)}/program`),
+  coachComment: (id: string, workoutId: string, text: string) =>
+    put<{ comment: { text: string; at: string } | null }>(`/api/coach/athletes/${encodeURIComponent(id)}/workouts/${encodeURIComponent(workoutId)}/comment`, { text }),
 
   // admin
   adminUsers: (q = '') => get<{ users: User[] }>(`/api/admin/users?q=${encodeURIComponent(q)}`),

@@ -55,8 +55,9 @@ def create_app(config_overrides: dict | None = None) -> Flask:
     from .routes.me import bp as me_bp
     from .routes.admin import bp as admin_bp
     from .routes.workouts import bp as workouts_bp
+    from .routes.coach import bp as coach_bp
 
-    for bp in (auth_bp, catalog_bp, me_bp, admin_bp, workouts_bp):
+    for bp in (auth_bp, catalog_bp, me_bp, admin_bp, workouts_bp, coach_bp):
         app.register_blueprint(bp)
 
     app.before_request(csrf_protect)

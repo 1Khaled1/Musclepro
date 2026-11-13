@@ -33,6 +33,9 @@
 - **Periodized programs for every level**: Foundation Full Body, Home Bodyweight Starter, Upper/Lower Strength, Push·Pull·Legs (6 days, heavy A + volume B), Athlete Power & Speed, Peak Strength Block. Each one is written week by week like a coach would: **phases** that change the exercise variations, a different **sets × reps × effort** every week (RPE, or % of 1RM for strength and power lifts), **deload/taper weeks**, a coach note per week and completion tracking. Programs are generated and validated by `backend/scripts/build_programs.py`.
 - **Workout generator**: goal × level × time × equipment × target muscles → a 2-drill warm-up matched to the session, then a balanced session ordered like a coach would (power first, compounds, isolation, core last). Stretches are never used as working sets.
 
+**Coach**
+- **Coach mode**: a coach gets an invite code; athletes enter it in their profile to join, and can leave at any time. The coach then sees each athlete's sessions, streak, records and recovery map, assigns a program with a note, and leaves feedback on a workout. The athlete sees the assigned program on the Programs page and the feedback under the workout. A coach sees training data only, never email addresses, and only for athletes who joined; leaving cuts access at once. An admin gives the coach role in user management.
+
 **Track**
 - **Live workout logger**: per-set weight with **per-set kg/lbs**, reps, done check, automatic rest timer, autosaved draft (survives reloads).
 - **Smart progression**: when a session starts, each exercise shows what to aim for today and why, worked out from what you actually logged (“Today: 105 kg × 5 — every set reached the target last time: weight up”). The weights are filled in for you and stay editable. The rules are a coach's double progression: add the smallest sensible step when every set reached the top of the target, one more rep inside the range, repeat after missed reps and go 10 % lighter after two misses, % of 1RM from your best recent estimate, lighter on deload weeks and after three weeks off. Bodyweight work progresses in reps; stretches and jumps are left alone.
@@ -158,6 +161,7 @@ Developed by **Khaled Bel Hedi** & **Coach Khalil Haded**.
 - Session JWT in an **HttpOnly, SameSite=Lax, Secure** (production) cookie; tokens carry a version that is bumped on password change, “sign out everywhere” and suspension, instantly revoking old sessions.
 - **CSRF**: every state-changing `/api` call must send `X-Requested-With: MusclePro` — browsers can't add that header cross-site without CORS, which the API never grants.
 - Strict **Content-Security-Policy** (`script-src 'self'`, no inline scripts), `frame-ancestors 'none'`, `nosniff`, HSTS in production.
+- **Coach access is consent-based**: a coach reaches an athlete's training only after the athlete joined with the coach's invite code, never sees email addresses, and loses access the moment the athlete leaves, the coach role is removed or either account is deleted. Joining by code is rate-limited.
 - Rate limiting on sign-in/sign-up, server-side validation of every field, CSV export guarded against formula injection, open-redirect-safe `?next=` handling, Firebase rules deny direct client access.
 
 ## How the demonstrations work
@@ -182,7 +186,8 @@ backend/
   app/catalog.py         catalog loader + workout generator
   app/progression.py     smart progression: next load and reps from the logs
   app/recovery.py        recovery map: how fresh each muscle is
-  app/routes/            auth, me, catalog, workouts, admin
+  app/coaching.py        coach ↔ athlete links (invite code, consent)
+  app/routes/            auth, me, catalog, workouts, coach, admin
   app/data/              exercises.json, programs.json (EN/FR, generated)
   scripts/build_programs.py  periodized programs: edit, run, validated output
   tests/                 pytest suite
@@ -215,6 +220,8 @@ Dockerfile · render.yaml · database.rules.json
 | `POST/GET /api/workouts`, `DELETE /api/workouts/<id>`, `GET /api/workouts/stats`, `GET /api/workouts/export.csv` | user | workout log |
 | `POST /api/workouts/suggest` | user | next load and reps per exercise (smart progression) |
 | `GET /api/workouts/recovery` | user | how fresh each muscle is (recovery map) |
+| `GET/POST/DELETE /api/me/coach` | user | see, join (invite code) or leave a coach |
+| `GET /api/coach`, `POST /api/coach/code`, `GET/DELETE /api/coach/athletes/<id>`, `PUT/DELETE …/program`, `PUT …/workouts/<id>/comment` | coach | athletes, program assignment, feedback |
 | `GET /api/admin/users`, `GET /api/admin/stats`, `PATCH/DELETE /api/admin/users/<id>` | admin | user management |
 
 ---

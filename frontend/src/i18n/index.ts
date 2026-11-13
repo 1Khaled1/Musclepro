@@ -85,6 +85,14 @@ export function formatDate(iso: string | undefined, opts: Intl.DateTimeFormatOpt
   return new Intl.DateTimeFormat(current === 'fr' ? 'fr-FR' : 'en-GB', opts).format(d);
 }
 
+/** "3 days ago", "today" — for dates where the day is enough. */
+export function relativeDay(iso: string | null | undefined): string {
+  if (!iso) return '';
+  const days = Math.round((Date.now() - new Date(iso).getTime()) / 86400000);
+  if (!Number.isFinite(days)) return '';
+  return new Intl.RelativeTimeFormat(current, { numeric: 'auto' }).format(-Math.max(0, days), 'day');
+}
+
 export function formatNumber(n: number, digits = 0): string {
   return new Intl.NumberFormat(current === 'fr' ? 'fr-FR' : 'en-US', {
     maximumFractionDigits: digits,
