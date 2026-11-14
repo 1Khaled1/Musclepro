@@ -51,7 +51,11 @@ export function programCard(p: ProgramSummary, delay = 0): string {
       </div>
       <div class="actions row between">
         <a class="btn btn-primary btn-sm" href="/programs/${p.id}">${t('prog.view')} ${icon('arrow', 'icon-sm')}</a>
-        ${mine ? raw(html`<span class="badge accent">${icon('target', 'icon-sm')}${t('prog.yourLevel')}</span>`) : ''}
+        ${p.custom
+          ? raw(html`<span class="badge accent">${icon('edit', 'icon-sm')}${t('cp.badge')}</span>`)
+          : mine
+            ? raw(html`<span class="badge accent">${icon('target', 'icon-sm')}${t('prog.yourLevel')}</span>`)
+            : ''}
       </div>
     `,
     { cls: 'program-card is-interactive', delay },

@@ -754,3 +754,28 @@
 .coach-banner > .icon:first-child { color: var(--accent-ink); flex: none; }
 .coach-banner .grow { display: grid; gap: 2px; min-width: 0; }
 .coach-banner .muted { font-size: 0.78rem; font-weight: 700; }
+
+/* ------------------------------------------------------------ program editor */
+.cp-day { border: 0; padding: 0; margin: 0; min-width: 0; display: grid; gap: 14px; }
+.cp-rows { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.cp-row {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr) 72px 92px 84px auto;
+  gap: 8px;
+  align-items: end;
+}
+.cp-row label { display: grid; gap: 4px; min-width: 0; }
+.cp-n { align-self: center; font-family: var(--mono); font-weight: 600; color: var(--text-2); text-align: center; padding-top: 18px; }
+.cp-label { font-size: 0.72rem; font-weight: 700; color: var(--muted); letter-spacing: 0.04em; text-transform: uppercase; }
+.cp-ex { padding-top: 0; }
+.cp-tools { display: inline-flex; gap: 2px; }
+.cp-up { transform: rotate(90deg); }
+.cp-down { transform: rotate(90deg); }
+.cp-actions { position: sticky; bottom: 12px; z-index: 5; padding: 10px; border-radius: var(--sg-radius-sm); background: var(--panel-bg); border: var(--sg-border); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); width: fit-content; max-width: 100%; flex-wrap: nowrap; }
+@media (max-width: 760px) {
+  .cp-row { grid-template-columns: 22px repeat(3, minmax(0, 1fr)); padding-bottom: 10px; border-bottom: 1px solid var(--line); }
+  .cp-ex { grid-column: 2 / -1; }
+  .cp-ex + label { grid-column: 2; }
+  .cp-tools { grid-column: 2 / -1; justify-content: flex-end; }
+  .cp-n { grid-row: 1; padding-top: 0; }
+}

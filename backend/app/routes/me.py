@@ -3,8 +3,8 @@ from __future__ import annotations
 
 from flask import Blueprint, current_app, g, jsonify, request
 
-from .. import coaching
-from ..catalog import get_exercise, get_program
+from .. import coaching, custom_programs
+from ..catalog import get_exercise
 from ..security import (
     ApiError,
     clear_session_cookie,
@@ -120,7 +120,7 @@ def my_programs():
 @bp.post("/programs/<program_id>")
 @login_required
 def enroll(program_id: str):
-    if not get_program(program_id):
+    if not custom_programs.resolve(_store(), program_id, g.user):
         raise ApiError("not_found", 404)
     path = f"enrollments/{g.user['id']}/{program_id}"
     existing = _store().get(path)
@@ -133,7 +133,8 @@ def enroll(program_id: str):
 @bp.delete("/programs/<program_id>")
 @login_required
 def unenroll(program_id: str):
-    if not get_program(program_id):
+    # Leaving also works for a custom program that was deleted or made private since.
+    if not custom_programs.resolve(_store(), program_id, g.user) and not custom_programs.ID_RE.fullmatch(program_id):
         raise ApiError("not_found", 404)
     _store().delete(f"enrollments/{g.user['id']}/{program_id}")
     return {"ok": True}
@@ -145,7 +146,7 @@ def _my_coach() -> dict:
     if not found:
         return {"coach": None, "assignment": None}
     assignment = _store().get(f"coach_assignments/{g.user['id']}")
-    if assignment and not get_program(assignment.get("program_id", "")):
+    if assignment and not custom_programs.resolve(_store(), assignment.get("program_id", ""), g.user):
         assignment = None
     return {
         "coach": {"name": found["coach"].get("name"), "since": found["since"]},
@@ -187,4 +188,57 @@ def leave_coach():
     link = _store().get(f"coach_of/{g.user['id']}")
     if isinstance(link, dict) and link.get("coach_id"):
         coaching.unlink(_store(), link["coach_id"], g.user["id"])
+    return {"ok": True}
+
+
+# -- custom programs ---------------------------------------------------------
+@bp.get("/custom-programs")
+@login_required
+def my_custom_programs():
+    return {"programs": custom_programs.list_for(_store(), g.user["id"])}
+
+
+@bp.post("/custom-programs")
+@login_required
+def create_custom_program():
+    """Create from the editor's template, or copy any program the user can open ({"from": id})."""
+    data = _json()
+    if "from" in data:
+        source = custom_programs.resolve(_store(), data.get("from"), g.user)
+        if not source:
+            raise ApiError("not_found", 404)
+        lang = g.user.get("lang", "en")
+        template = custom_programs.template_from(source, lang, " (copie)" if lang == "fr" else " (copy)")
+    else:
+        template = custom_programs.validate_template(data)
+    doc = custom_programs.create(_store(), g.user, template)
+    return {"program": custom_programs.resolve(_store(), doc["id"], g.user)}, 201
+
+
+def _template(doc: dict) -> dict:
+    keys = ("id", "name", "description", "level", "goal", "weeks", "deload_every", "visibility", "days")
+    return {k: doc.get(k) for k in keys}
+
+
+@bp.get("/custom-programs/<program_id>")
+@login_required
+def custom_program_template(program_id: str):
+    """The editable template (owner only)."""
+    return {"template": _template(custom_programs.owned(_store(), program_id, g.user["id"]))}
+
+
+@bp.put("/custom-programs/<program_id>")
+@login_required
+def update_custom_program(program_id: str):
+    doc = custom_programs.owned(_store(), program_id, g.user["id"])
+    template = custom_programs.validate_template(_json())
+    doc.update(template, updated_at=now_iso())
+    _store().set(f"custom_programs/{program_id}", doc)
+    return {"program": custom_programs.resolve(_store(), program_id, g.user)}
+
+
+@bp.delete("/custom-programs/<program_id>")
+@login_required
+def delete_custom_program(program_id: str):
+    custom_programs.delete(_store(), custom_programs.owned(_store(), program_id, g.user["id"]))
     return {"ok": True}

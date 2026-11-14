@@ -11,7 +11,8 @@ from datetime import datetime, timedelta, timezone
 
 from flask import Blueprint, Response, current_app, g, request
 
-from ..catalog import get_exercise, get_program, program_day
+from ..catalog import get_exercise, program_day
+from ..custom_programs import resolve as resolve_program
 from ..progression import suggest
 from ..recovery import compute_recovery
 from ..security import ApiError, login_required
@@ -54,7 +55,7 @@ def _text(value, max_len: int, code: str, required: bool = False) -> str:
     return value
 
 
-def validate_workout(data: dict) -> dict:
+def validate_workout(data: dict, viewer: dict | None = None) -> dict:
     out: dict = {
         "title": _text(data.get("title"), 120, "title_invalid", required=True),
         "notes": _text(data.get("notes"), 1000, "notes_invalid"),
@@ -71,7 +72,7 @@ def validate_workout(data: dict) -> dict:
         out["finished_at"] = when.astimezone(timezone.utc).isoformat(timespec="seconds")
     program_id = data.get("program_id")
     if program_id:
-        program = get_program(program_id) if isinstance(program_id, str) else None
+        program = resolve_program(_store(), program_id, viewer)
         day_id = data.get("day_id")
         if not program or not isinstance(day_id, str) or not DAY_ID_RE.match(day_id):
             raise ApiError("program_invalid")
@@ -137,7 +138,7 @@ def create():
     client_id = data.get("client_id")
     if client_id is not None and not (isinstance(client_id, str) and CLIENT_ID_RE.fullmatch(client_id)):
         raise ApiError("client_id_invalid")
-    workout = validate_workout(data)
+    workout = validate_workout(data, g.user)
     uid = g.user["id"]
     workout["id"] = _new_workout_id()
     status = 201
@@ -196,7 +197,7 @@ def suggestions():
     deload = False
     program_id = data.get("program_id")
     if program_id is not None:
-        program = get_program(program_id) if isinstance(program_id, str) else None
+        program = resolve_program(_store(), program_id, g.user)
         week = data.get("week", 1)
         if not program or isinstance(week, bool) or not isinstance(week, int) or not 1 <= week <= len(program["plan"]):
             raise ApiError("program_invalid")

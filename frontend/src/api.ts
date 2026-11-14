@@ -1,5 +1,5 @@
 /** Typed client for the Flask API. Same origin, cookie session, CSRF header. */
-import type { CoachAssignment, CoachAthleteDetail, CoachOverview, Enrollment, Exercise, GeneratedWorkout, MyCoach, Percent, Program, ProgramSummary, Recovery, Stats, Suggestion, Unit, User, Workout } from './types';
+import type { CoachAssignment, CoachAthleteDetail, CoachOverview, Enrollment, Exercise, GeneratedWorkout, MyCoach, Percent, Program, ProgramSummary, ProgramTemplate, Recovery, Stats, Suggestion, Unit, User, Workout } from './types';
 
 export class ApiError extends Error {
   constructor(
@@ -114,6 +114,21 @@ export const api = {
   program: (id: string) =>
     cached(`program:${id}`, async () => (await get<{ program: Program }>(`/api/programs/${encodeURIComponent(id)}`)).program),
   generate: (params: Record<string, unknown>) => post<GeneratedWorkout>('/api/generate', params),
+
+  // custom programs (a saved change drops the cached copy of that program)
+  myPrograms: async () => (await get<{ programs: ProgramSummary[] }>('/api/me/custom-programs')).programs,
+  programTemplate: async (id: string) => (await get<{ template: ProgramTemplate }>(`/api/me/custom-programs/${encodeURIComponent(id)}`)).template,
+  createProgram: async (template: ProgramTemplate) => (await post<{ program: Program }>('/api/me/custom-programs', template)).program,
+  copyProgram: async (from: string) => (await post<{ program: Program }>('/api/me/custom-programs', { from })).program,
+  updateProgram: async (id: string, template: ProgramTemplate) => {
+    const { program } = await put<{ program: Program }>(`/api/me/custom-programs/${encodeURIComponent(id)}`, template);
+    cache.delete(`program:${id}`);
+    return program;
+  },
+  deleteProgram: async (id: string) => {
+    await del<{ ok: true }>(`/api/me/custom-programs/${encodeURIComponent(id)}`);
+    cache.delete(`program:${id}`);
+  },
 
   // workouts
   saveWorkout: (data: unknown) => post<{ workout: Workout }>('/api/workouts', data),

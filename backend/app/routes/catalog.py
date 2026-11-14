@@ -1,7 +1,7 @@
 """Public catalog: muscles, equipment, exercises, programs, generator."""
 from __future__ import annotations
 
-from flask import Blueprint, g, request
+from flask import Blueprint, current_app, g, request
 
 from ..catalog import (
     EQUIPMENT,
@@ -64,7 +64,11 @@ def list_programs():
 
 @bp.get("/programs/<program_id>")
 def program_detail(program_id: str):
-    program = get_program(program_id)
+    # Built-in programs are public; a custom one opens for its owner, for anyone
+    # holding the link once sharing is on, and for an athlete it was assigned to.
+    from ..custom_programs import resolve
+
+    program = resolve(current_app.extensions["store"], program_id, g.get("user"))
     if not program:
         raise ApiError("not_found", 404)
     return {"program": program}

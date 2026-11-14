@@ -31,7 +31,9 @@ export const coachView: View = async (root, ctx) => {
   let athletes: CoachAthlete[];
   let programs: ProgramSummary[];
   try {
-    [{ code, athletes }, programs] = await Promise.all([api.coach(), api.programs()]);
+    let mine: ProgramSummary[];
+    [{ code, athletes }, programs, mine] = await Promise.all([api.coach(), api.programs(), api.myPrograms()]);
+    programs = [...mine, ...programs];
   } catch (err) {
     root.innerHTML = errorBlock(errorMessage(err));
     return;
@@ -121,7 +123,9 @@ export const coachAthleteView: View = async (root, ctx) => {
   let programs: ProgramSummary[];
   let exercises: Exercise[];
   try {
-    [data, programs, exercises] = await Promise.all([api.coachAthlete(id), api.programs(), api.exercises()]);
+    let mine: ProgramSummary[];
+    [data, programs, exercises, mine] = await Promise.all([api.coachAthlete(id), api.programs(), api.exercises(), api.myPrograms()]);
+    programs = [...mine, ...programs]; // the coach's own programs first
   } catch (err) {
     root.innerHTML = html`<a class="back-link" href="/coach">${icon('left', 'icon-sm')} ${t('coach.back')}</a>${raw(errorBlock(errorMessage(err)))}`;
     return;
@@ -171,7 +175,7 @@ export const coachAthleteView: View = async (root, ctx) => {
         <label class="field"><span>${t('coach.assign')}</span>
           <select class="select" name="program_id" required>
             <option value="">${t('coach.pick')}</option>
-            ${raw(programs.map((p) => html`<option value="${p.id}" ${raw(a?.program_id === p.id ? 'selected' : '')}>${loc(p.name)} · ${t(`level.${p.level}`)}</option>`).join(''))}
+            ${raw(programs.map((p) => html`<option value="${p.id}" ${raw(a?.program_id === p.id ? 'selected' : '')}>${loc(p.name)} · ${p.custom ? t('cp.badge') : t(`level.${p.level}`)}</option>`).join(''))}
           </select>
           <span class="muted" style="font-size:.8rem">${t('coach.assignLead')}</span></label>
         <label class="field"><span>${t('coach.note')}</span>

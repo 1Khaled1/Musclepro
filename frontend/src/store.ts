@@ -67,6 +67,14 @@ class Store {
   }
 
   async setUser(user: User | null, emit = true): Promise<void> {
+    // Offline copies of private data (custom programs) never outlive the account that loaded them.
+    if (readUserCache()?.id !== user?.id) {
+      try {
+        void caches.delete('mp-private-v1');
+      } catch {
+        /* Cache Storage unavailable */
+      }
+    }
     this.user = user;
     writeUserCache(user);
     this.favorites.clear();

@@ -20,6 +20,14 @@ export const programsView: View = async (root, ctx) => {
       <div class="segmented" role="group" aria-label="${t('ex.level')}" id="lvl"></div>
     </div>
     <div id="prog-assigned"></div>
+    <section id="prog-mine" style="margin-bottom:28px">
+      <div class="section-title" style="flex-wrap:wrap">
+        <h2>${t('cp.mine')}</h2>
+        <a class="btn btn-sm" href="${store.user ? '/programs/new' : '/login?next=/programs/new'}">${icon('plus', 'icon-sm')} ${t('cp.create')}</a>
+      </div>
+      <div id="prog-mine-list"><p class="muted">${t(store.user ? 'cp.none' : 'cp.loginToCreate')}</p></div>
+    </section>
+    <div class="section-title"><h2>${t('prog.title')}</h2></div>
     <div id="prog-list">${raw(loadingBlock(2))}</div>`;
 
   let programs: ProgramSummary[];
@@ -31,6 +39,13 @@ export const programsView: View = async (root, ctx) => {
   }
 
   if (store.user) {
+    void api.myPrograms().then(
+      (mine) => {
+        const slot = root.querySelector<HTMLElement>('#prog-mine-list');
+        if (slot && mine.length) slot.innerHTML = `<div class="grid-3">${mine.map((p, i) => programCard(p, i * 60)).join('')}</div>`;
+      },
+      () => undefined,
+    );
     void api.myCoach().then(
       ({ coach, assignment }) => {
         const slot = root.querySelector<HTMLElement>('#prog-assigned');

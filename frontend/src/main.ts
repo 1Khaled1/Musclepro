@@ -23,6 +23,8 @@ route('/', 'home', () => import('./views/home').then((m) => m.homeView));
 route('/exercises', 'exercises', () => import('./views/exercises').then((m) => m.exercisesView));
 route('/exercises/:id', 'exercise', () => import('./views/exercise').then((m) => m.exerciseView));
 route('/programs', 'programs', () => import('./views/programs').then((m) => m.programsView));
+route('/programs/new', 'program-new', () => import('./views/programEditor').then((m) => m.programEditorView));
+route('/programs/:id/edit', 'program-edit', () => import('./views/programEditor').then((m) => m.programEditorView));
 route('/programs/:id', 'program', () => import('./views/program').then((m) => m.programView));
 route('/generator', 'generator', () => import('./views/generator').then((m) => m.generatorView));
 route('/workout', 'workout', () => import('./views/workout').then((m) => m.workoutView));

@@ -6,6 +6,9 @@
  *  - Pages: network first (3.5 s), cached shell as fallback (the SPA routes itself).
  *  - Hashed assets and anatomy art: cache first (immutable content).
  *  - Exercise / program catalog API: stale-while-revalidate → library works offline.
+ *  - Programs written by users: network first (they can be edited, and may be
+ *    private); the last copy is kept for offline use in a private cache that
+ *    the app clears when the signed-in account changes.
  *  - Everything else (auth, user data, writes): network only, never cached.
  */
 const VERSION = '__VERSION__';
@@ -14,6 +17,8 @@ const SHELL = `mp-shell-${VERSION}`;
 const RUNTIME = 'mp-runtime-v1';
 const CATALOG = 'mp-catalog-v1';
 const CATALOG_PATHS = ['/api/exercises', '/api/programs', '/api/meta'];
+const PRIVATE = 'mp-private-v1'; // same name in src/store.ts
+const CUSTOM_PROGRAM = /^\/api\/programs\/u[0-9a-f]{16}$/;
 const PRECACHED = new Set(PRECACHE);
 
 self.addEventListener('install', (event) => {
@@ -75,6 +80,20 @@ async function staleWhileRevalidate(request) {
   return cached || network;
 }
 
+/** Fresh from the network; the saved copy only when the network fails or is too slow. */
+async function networkFirst(request, cacheName, timeoutMs) {
+  const cache = await caches.open(cacheName);
+  const cached = await cache.match(request);
+  const network = fetch(request).then((response) => {
+    if (response.ok) cache.put(request, response.clone());
+    else cache.delete(request); // deleted, or no longer shared with this user
+    return response;
+  });
+  if (!cached) return network;
+  const timeout = new Promise((resolve) => setTimeout(() => resolve(cached), timeoutMs));
+  return Promise.race([network.catch(() => cached), timeout]);
+}
+
 self.addEventListener('fetch', (event) => {
   const { request } = event;
   if (request.method !== 'GET') return;
@@ -89,6 +108,8 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(cacheFirst(request, SHELL));
   } else if (url.pathname.startsWith('/assets/') || url.pathname.startsWith('/anatomy/')) {
     event.respondWith(cacheFirst(request, url.pathname.startsWith('/assets/') ? SHELL : RUNTIME));
+  } else if (CUSTOM_PROGRAM.test(url.pathname)) {
+    event.respondWith(networkFirst(request, PRIVATE, 4000));
   } else if (CATALOG_PATHS.some((p) => url.pathname === p || url.pathname.startsWith(`${p}/`))) {
     event.respondWith(staleWhileRevalidate(request));
   }

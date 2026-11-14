@@ -7,7 +7,7 @@ from functools import wraps
 from flask import Blueprint, current_app, g, request
 
 from .. import coaching
-from ..catalog import get_program
+from ..custom_programs import resolve
 from ..recovery import compute_recovery
 from ..security import ApiError
 from ..users import now_iso
@@ -52,7 +52,7 @@ def _card(user: dict) -> dict:
 
 def _assignment(athlete_id: str) -> dict | None:
     a = _store().get(f"coach_assignments/{athlete_id}")
-    program = get_program(a.get("program_id", "")) if isinstance(a, dict) else None
+    program = resolve(_store(), a.get("program_id", ""), g.user) if isinstance(a, dict) else None
     if not program:
         return None
     done = _store().get(f"enrollments/{athlete_id}/{program['id']}/completed") or {}
@@ -142,8 +142,9 @@ def assign_program(athlete_id: str):
     data = request.get_json(silent=True)
     if not isinstance(data, dict):
         raise ApiError("bad_request")
-    program = get_program(data.get("program_id")) if isinstance(data.get("program_id"), str) else None
-    if not program:
+    # A built-in program, or one the coach wrote (not somebody else's shared plan).
+    program = resolve(_store(), data.get("program_id"), g.user)
+    if not program or (program.get("custom") and not program.get("mine")):
         raise ApiError("program_invalid")
     note = _text(data.get("note"), 500, "note_invalid")
     store = _store()

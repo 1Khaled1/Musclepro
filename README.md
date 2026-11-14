@@ -31,6 +31,7 @@
 - **Exercise library**: 155 exercises — strength, power and conditioning, plus 33 mobility and stretching drills and rehab-friendly work — each with numbered steps and a coach tip in EN/FR. Filters for muscle, equipment, level, type and search (accent-insensitive: “squat bulgare” works). Stretches show a suggested dose.
 - **Animated demonstration of every exercise**: an athlete performs each of the 155 movements in a loop, with the working muscles lit up. Play / pause, slow motion, four camera angles, or drag to turn the athlete. The athlete is male or female, following the body model you chose on the muscle map or in your profile (the choice is remembered on the device). The animation is computed in the browser by a small movement engine (no video files): it adds about 28 kB to the app, works offline, follows the theme, and waits for you to press play if your device asks for reduced motion. Also available under each exercise while you log a workout.
 - **Periodized programs for every level**: Foundation Full Body, Home Bodyweight Starter, Upper/Lower Strength, Push·Pull·Legs (6 days, heavy A + volume B), Athlete Power & Speed, Peak Strength Block. Each one is written week by week like a coach would: **phases** that change the exercise variations, a different **sets × reps × effort** every week (RPE, or % of 1RM for strength and power lifts), **deload/taper weeks**, a coach note per week and completion tracking. Programs are generated and validated by `backend/scripts/build_programs.py`.
+- **Custom programs**: build your own plan in the program editor (a week of training: days, exercises, sets, reps and rest, repeated for 1 to 24 weeks, with optional deload weeks), or open any program and customize a copy. A custom program works like the built-in ones: follow it, log its sessions, get load suggestions. It is private by default; the owner can share it with anyone who has the link, and a coach can assign their own programs to their athletes.
 - **Workout generator**: goal × level × time × equipment × target muscles → a 2-drill warm-up matched to the session, then a balanced session ordered like a coach would (power first, compounds, isolation, core last). Stretches are never used as working sets.
 
 **Coach**
@@ -161,6 +162,7 @@ Developed by **Khaled Bel Hedi** & **Coach Khalil Haded**.
 - Session JWT in an **HttpOnly, SameSite=Lax, Secure** (production) cookie; tokens carry a version that is bumped on password change, “sign out everywhere” and suspension, instantly revoking old sessions.
 - **CSRF**: every state-changing `/api` call must send `X-Requested-With: MusclePro` — browsers can't add that header cross-site without CORS, which the API never grants.
 - Strict **Content-Security-Policy** (`script-src 'self'`, no inline scripts), `frame-ancestors 'none'`, `nosniff`, HSTS in production.
+- **Custom programs are private by default**: only the owner opens them, unless sharing by link is switched on (ids are random, 64 bits) or a coach assigned the program to that athlete. Their offline copy sits in a separate cache that is cleared when the signed-in account changes.
 - **Coach access is consent-based**: a coach reaches an athlete's training only after the athlete joined with the coach's invite code, never sees email addresses, and loses access the moment the athlete leaves, the coach role is removed or either account is deleted. Joining by code is rate-limited.
 - Rate limiting on sign-in/sign-up, server-side validation of every field, CSV export guarded against formula injection, open-redirect-safe `?next=` handling, Firebase rules deny direct client access.
 
@@ -187,6 +189,7 @@ backend/
   app/progression.py     smart progression: next load and reps from the logs
   app/recovery.py        recovery map: how fresh each muscle is
   app/coaching.py        coach ↔ athlete links (invite code, consent)
+  app/custom_programs.py programs written by users and coaches
   app/routes/            auth, me, catalog, workouts, coach, admin
   app/data/              exercises.json, programs.json (EN/FR, generated)
   scripts/build_programs.py  periodized programs: edit, run, validated output
@@ -215,7 +218,8 @@ Dockerfile · render.yaml · database.rules.json
 | `GET/PUT/DELETE /api/me/favorites[/<id>]` | user | favorites |
 | `GET /api/me/programs`, `POST/DELETE /api/me/programs/<id>` | user | program enrollment |
 | `GET /api/exercises[?muscle&equipment&difficulty&q]`, `GET /api/exercises/<id>` | – | exercise catalog |
-| `GET /api/programs`, `GET /api/programs/<id>` | – | programs |
+| `GET /api/programs`, `GET /api/programs/<id>` | – | programs (a custom one opens for its owner, by link when shared, or when assigned by a coach) |
+| `GET/POST /api/me/custom-programs`, `GET/PUT/DELETE /api/me/custom-programs/<id>` | user | write, copy, edit and delete own programs |
 | `POST /api/generate` | – | workout generator (signed in: respects the recovery map) |
 | `POST/GET /api/workouts`, `DELETE /api/workouts/<id>`, `GET /api/workouts/stats`, `GET /api/workouts/export.csv` | user | workout log |
 | `POST /api/workouts/suggest` | user | next load and reps per exercise (smart progression) |

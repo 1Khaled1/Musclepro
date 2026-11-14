@@ -106,12 +106,14 @@ def find_user_by_email(store, email: str) -> dict | None:
 
 def delete_user_data(store, user: dict) -> None:
     from .coaching import cleanup_paths
+    from .custom_programs import cleanup_paths as program_paths
 
     uid = user["id"]
     store.update(
         "/",
         {
             **cleanup_paths(store, uid),
+            **program_paths(store, uid),
             f"users/{uid}": None,
             f"user_emails/{email_key(user['email'])}": None,
             f"workouts/{uid}": None,

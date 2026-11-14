@@ -98,6 +98,35 @@ export interface ProgramSummary {
   summary: Localized;
   progression: Localized[];
   phases: ProgramPhase[];
+  /** Written by a user or a coach (not one of the built-in programs). */
+  custom?: boolean;
+  owner_name?: string;
+  /** The signed-in user wrote it. */
+  mine?: boolean;
+  /** Only sent to the owner. */
+  visibility?: 'private' | 'link';
+}
+
+export interface TemplateExercise {
+  id: string;
+  sets: number;
+  reps: string;
+  rest: number;
+  rpe?: number;
+}
+
+/** What the program editor edits: one week, repeated. */
+export interface ProgramTemplate {
+  id?: string;
+  name: string;
+  description: string;
+  level: Level;
+  goal: Goal;
+  weeks: number;
+  /** 0 = no deload weeks; otherwise every Nth week is lighter. */
+  deload_every: number;
+  visibility: 'private' | 'link';
+  days: { name: string; exercises: TemplateExercise[] }[];
 }
 
 export interface Program extends ProgramSummary {

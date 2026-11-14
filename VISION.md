@@ -122,7 +122,10 @@ Shipped and running:
   (and can leave at any time); the coach follows their sessions, records and
   recovery, assigns a program with a note and leaves feedback on workouts.
   Next: programs written by the coach, and a weekly summary per athlete.
-- **Custom programs** — users and coaches build and share their own plans.
+- ~~**Custom programs**~~ — **shipped**: users and coaches write their own
+  plans in a program editor or customize a copy of any program, share them by
+  link, and coaches assign them to athletes. Next: plans that change from
+  week to week (phases), like the built-in ones.
 - **More languages** — Arabic and Spanish next, with right-to-left support.
 
 ### Later — the performance platform (9–18 months)
@@ -205,5 +208,5 @@ l'athlète de haut niveau : exercices détaillés étape par étape, programmes
 périodisés semaine par semaine, générateur de séances et suivi des progrès, en français et
 en anglais. Nos principes : l'anatomie d'abord, la technique avant la charge,
 un design premium sans publicité pendant l'entraînement, et le respect de la
-vie privée. Chaque exercice a sa démonstration animée, et chaque séance propose la charge et les répétitions à viser. La carte de récupération montre les muscles frais ou fatigués, et le générateur en tient compte. Le mode coach relie un coach à ses athlètes, avec leur accord. Prochaines étapes : mise en production, validation des démonstrations par un coach
-et programmes personnalisés.
+vie privée. Chaque exercice a sa démonstration animée, et chaque séance propose la charge et les répétitions à viser. La carte de récupération montre les muscles frais ou fatigués, et le générateur en tient compte. Le mode coach relie un coach à ses athlètes, avec leur accord, et chacun peut écrire et partager ses propres programmes. Prochaines étapes : mise en production, validation des démonstrations par un coach
+et programmes à phases.

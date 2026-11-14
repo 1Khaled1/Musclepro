@@ -1,4 +1,4 @@
-import { api } from '../api';
+import { api, ApiError } from '../api';
 import { effortLabel, fmtReps, fmtSec, loc, t } from '../i18n';
 import { navigate, type View } from '../router';
 import { loadDraft, startDraft, store } from '../store';
@@ -20,9 +20,18 @@ export const programView: View = async (root, ctx) => {
   let program: Program;
   let exercises: Exercise[];
   let enrollment: Enrollment | null = null;
+  // Offline, the plan still opens from the saved copy; only the progress is unknown.
+  let progressUnknown = false;
   try {
     [program, exercises] = await Promise.all([api.program(ctx.params.id), api.exercises()]);
-    if (store.user) enrollment = (await api.enrollments()).enrollments[program.id] ?? null;
+    if (store.user) {
+      try {
+        enrollment = (await api.enrollments()).enrollments[program.id] ?? null;
+      } catch (err) {
+        if (!(err instanceof ApiError && err.code === 'network')) throw err;
+        progressUnknown = true;
+      }
+    }
   } catch (err) {
     root.innerHTML = errorBlock(errorMessage(err).replace(t('err.not_found'), t('prog.notFound')));
     return;
@@ -41,6 +50,9 @@ export const programView: View = async (root, ctx) => {
     if (!store.user) {
       return html`<div class="panel tip">${icon('lock')}<div><p>${t('prog.loginToEnroll')}</p>
         <a class="link" href="/login?next=/programs/${program.id}">${t('nav.login')}</a></div></div>`;
+    }
+    if (progressUnknown) {
+      return html`<p class="muted" style="font-size:.86rem">${icon('info', 'icon-sm')} ${t('prog.offlineProgress')}</p>`;
     }
     if (!enrollment) {
       return html`<button class="btn btn-primary btn-block" type="button" data-act="enroll">${icon('play')} ${t('prog.enroll')}</button>`;
@@ -129,10 +141,17 @@ export const programView: View = async (root, ctx) => {
       <a class="back-link" href="/programs">${icon('left', 'icon-sm')} ${t('nav.programs')}</a>
       <div class="page-head">
         <div>
-          <span class="row">${raw(levelBadge(program.level))}<span class="badge holo">${t(`goal.${program.goal}`)}</span>${raw(levelBar(program.level))}</span>
+          <span class="row">${raw(levelBadge(program.level))}<span class="badge holo">${t(`goal.${program.goal}`)}</span>${raw(levelBar(program.level))}
+            ${program.custom ? raw(html`<span class="badge accent">${icon('edit', 'icon-sm')} ${t('cp.badge')}${program.owner_name && !program.mine ? ` · ${t('cp.by', { name: program.owner_name })}` : ''}</span>`) : ''}</span>
           <h1 style="margin-top:12px">${loc(program.name)}</h1>
           <p class="lead">${loc(program.summary)}</p>
         </div>
+        ${program.mine
+          ? raw(html`<div class="row">
+              <a class="btn" href="/programs/${program.id}/edit">${icon('edit')} ${t('cp.editBtn')}</a>
+              <button class="btn btn-ghost btn-danger" type="button" data-act="delete-program">${icon('trash', 'icon-sm')} ${t('cp.delete')}</button>
+            </div>`)
+          : ''}
       </div>
       <div class="detail-grid">
         <div class="stack" id="days">
@@ -150,6 +169,18 @@ export const programView: View = async (root, ctx) => {
               <span>${icon('clock', 'icon-sm')}${t('prog.minutes', { n: program.minutes })}</span>
             </div>
             <div id="enroll">${raw(enrollBlock())}</div>`, { delay: 40 }))}
+          ${program.mine
+            ? raw(glass(html`
+              <div class="row between" style="gap:10px">
+                <strong>${icon(program.visibility === 'link' ? 'globe' : 'lock', 'icon-sm')} ${t(program.visibility === 'link' ? 'cp.shared' : 'cp.private')}</strong>
+                ${program.visibility === 'link' ? raw(html`<button class="btn btn-sm" type="button" data-act="copy-link">${t('cp.copyLink')}</button>`) : ''}
+              </div>
+              <p class="muted" style="font-size:.82rem;margin-top:8px">${t(program.visibility === 'link' ? 'cp.share' : 'cp.shareHint')}</p>`, { delay: 55 }))
+            : store.user
+              ? raw(glass(html`
+                <p class="text-2" style="margin-bottom:12px">${t('cp.copyLead')}</p>
+                <button class="btn btn-block" type="button" data-act="copy-program">${icon('edit')} ${t('cp.copy')}</button>`, { delay: 55 }))
+              : ''}
           ${raw(glass(html`
             <h3 style="margin-bottom:12px">${t('prog.structure')}</h3>
             ${raw(structure())}`, { delay: 70 }))}
@@ -187,6 +218,24 @@ export const programView: View = async (root, ctx) => {
     const act = el.closest<HTMLButtonElement>('[data-act]')?.dataset.act;
     if (!act) return;
     try {
+      if (act === 'copy-program') {
+        const copy = await api.copyProgram(program.id);
+        toast(t('cp.copied'));
+        navigate(`/programs/${copy.id}/edit`);
+        return;
+      }
+      if (act === 'copy-link') {
+        await navigator.clipboard.writeText(`${location.origin}/programs/${program.id}`);
+        toast(t('cp.linkCopied'));
+        return;
+      }
+      if (act === 'delete-program') {
+        if (!confirm(t('cp.deleteConfirm', { name: loc(program.name) }))) return;
+        await api.deleteProgram(program.id);
+        toast(t('cp.deleted'), 'info');
+        navigate('/programs');
+        return;
+      }
       if (act === 'enroll') {
         enrollment = (await api.enroll(program.id)).enrollment;
         toast(t('prog.enrolled'));
