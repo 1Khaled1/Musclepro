@@ -88,7 +88,7 @@ a.link:hover { text-decoration: underline; text-underline-offset: 3px; }
 
 img, svg, canvas { display: block; max-width: 100%; }
 /* An icon that opens a label, a heading or a note sits on the text line. */
-.eyebrow > .icon, h2 > .icon, p > .icon { display: inline-block; vertical-align: -0.16em; margin-right: 0.3em; }
+.eyebrow > .icon, h2 > .icon, p > .icon, strong > .icon { display: inline-block; vertical-align: -0.16em; margin-right: 0.3em; }
 
 button, input, select, textarea { font: inherit; color: inherit; }
 button { cursor: pointer; }
